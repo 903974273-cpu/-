@@ -1,0 +1,963 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>业务逻辑问答助手</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --sidebar: #ffffff;
+      --panel: #ffffff;
+      --ink: #151b2d;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --soft: #f2f5f9;
+      --brand: #2563eb;
+      --brand-soft: #eaf2ff;
+      --green: #16a34a;
+      --shadow: 0 14px 36px rgba(17, 24, 39, .08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    button, textarea {
+      font: inherit;
+    }
+
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 292px minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: var(--sidebar);
+      padding: 18px 14px;
+      display: grid;
+      grid-template-rows: auto auto auto auto;
+      align-content: start;
+      gap: 14px;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 6px 4px;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, .26);
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 15px;
+    }
+
+    .brand span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .new-chat {
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--brand);
+      border-radius: 10px;
+      background: var(--brand);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .history-title {
+      padding: 4px 8px 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .history {
+      overflow: auto;
+      display: grid;
+      align-content: start;
+      gap: 6px;
+      padding-right: 3px;
+      max-height: min(460px, calc(100vh - 190px));
+    }
+
+    .history-item {
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #374151;
+      padding: 10px;
+      text-align: left;
+      cursor: pointer;
+      display: grid;
+      gap: 4px;
+    }
+
+    .history-item:hover,
+    .history-item.active {
+      background: var(--soft);
+    }
+
+    .history-item strong {
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-item span {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      padding: 14px 8px 2px;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .main {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .top {
+      background: rgba(255,255,255,.86);
+      border-bottom: 1px solid var(--line);
+      padding: 16px 28px 14px;
+      z-index: 5;
+      backdrop-filter: blur(14px);
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 13px;
+    }
+
+    .title-row h1 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .title-row p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #ecfdf3;
+      color: #14783f;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .system-tabs {
+      display: flex;
+      gap: 8px;
+      overflow: auto;
+      padding-bottom: 2px;
+    }
+
+    .system-tab {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: #374151;
+      height: 34px;
+      padding: 0 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-weight: 650;
+      box-shadow: 0 4px 12px rgba(17, 24, 39, .04);
+    }
+
+    .system-tab.active {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, .2);
+    }
+
+    .chat {
+      overflow: auto;
+      padding: 28px 24px 18px;
+      min-height: 0;
+      overscroll-behavior: contain;
+    }
+
+    .chat-inner {
+      width: min(880px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    .welcome {
+      background: linear-gradient(135deg, #ffffff, #f0f6ff);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .welcome h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .welcome p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .quick {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .quick button {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      padding: 11px 12px;
+      text-align: left;
+      cursor: pointer;
+      color: #374151;
+    }
+
+    .quick button:hover {
+      border-color: #b8d3ff;
+      background: var(--brand-soft);
+      color: #174ea6;
+    }
+
+    .msg {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      animation: rise .2s ease-out both;
+    }
+
+    .msg.user {
+      grid-template-columns: minmax(0, 1fr) 38px;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bot-avatar,
+    .user-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .bot-avatar {
+      border-radius: 12px;
+      background: var(--brand);
+      color: #fff;
+    }
+
+    .user-avatar {
+      background: #e5e7eb;
+      color: #4b5563;
+    }
+
+    .bubble {
+      width: fit-content;
+      max-width: min(760px, 100%);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      padding: 14px 15px;
+      line-height: 1.65;
+      font-size: 14px;
+      box-shadow: 0 8px 22px rgba(17, 24, 39, .06);
+    }
+
+    .msg.user .bubble {
+      justify-self: end;
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, .18);
+    }
+
+    .bubble p {
+      margin: 0;
+    }
+
+    .bubble p + p {
+      margin-top: 8px;
+    }
+
+    .bubble ul {
+      margin: 8px 0 0;
+      padding-left: 20px;
+    }
+
+    .bubble li + li {
+      margin-top: 5px;
+    }
+
+    .answer-title {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 800;
+    }
+
+    .source-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 11px;
+    }
+
+    .source {
+      display: inline-flex;
+      align-items: center;
+      min-height: 25px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4f91;
+      border: 1px solid #cfe3ff;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .image-preview {
+      margin-top: 10px;
+      width: 280px;
+      max-width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.4);
+      background: rgba(255,255,255,.18);
+    }
+
+    .image-preview img {
+      display: block;
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .typing {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+      height: 22px;
+    }
+
+    .typing i {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #94a3b8;
+      animation: typing 1s infinite ease-in-out;
+    }
+
+    .typing i:nth-child(2) { animation-delay: .12s; }
+    .typing i:nth-child(3) { animation-delay: .24s; }
+
+    @keyframes typing {
+      0%, 80%, 100% { transform: translateY(0); opacity: .45; }
+      40% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    .composer-area {
+      border-top: 1px solid var(--line);
+      background: rgba(247,248,251,.92);
+      padding: 14px 24px 22px;
+      z-index: 4;
+    }
+
+    .composer {
+      width: min(880px, 100%);
+      margin: 0 auto;
+      border: 1px solid #cfd8e6;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 14px 34px rgba(17, 24, 39, .1);
+      padding: 12px;
+    }
+
+    .attachment-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid #dbeafe;
+      background: #eff6ff;
+      color: #1d4f91;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .pill button {
+      border: 0;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      padding: 0;
+      font-weight: 800;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 58px;
+      max-height: 150px;
+      resize: none;
+      border: 0;
+      outline: 0;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    textarea::placeholder {
+      color: #9ca3af;
+    }
+
+    .composer-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .tool-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .icon-btn,
+    .send-btn {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--ink);
+      height: 38px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .icon-btn {
+      width: 38px;
+      font-size: 18px;
+    }
+
+    .send-btn {
+      border-color: var(--brand);
+      background: var(--brand);
+      color: #fff;
+      padding: 0 18px;
+    }
+
+    .send-btn:hover,
+    .new-chat:hover {
+      filter: brightness(.96);
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+      .top {
+        padding: 14px 16px 12px;
+      }
+      .title-row {
+        align-items: flex-start;
+      }
+      .status {
+        display: none;
+      }
+      .chat {
+        padding: 18px 14px;
+      }
+      .quick {
+        grid-template-columns: 1fr;
+      }
+      .composer-area {
+        padding: 12px 14px 18px;
+      }
+      .msg.user .bubble {
+        max-width: 88%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">M</div>
+        <div>
+          <strong>业务逻辑问答</strong>
+          <span>营销代码逻辑助手</span>
+        </div>
+      </div>
+
+      <button class="new-chat" id="newChatBtn">＋ 新建对话</button>
+
+      <div class="history-title">历史对话</div>
+      <div class="history" id="history">
+        <button class="history-item active" data-system="营销平台" data-title="新人券为什么没命中">
+          <strong>新人券为什么没命中</strong>
+          <span>营销平台 · 3 分钟前</span>
+        </button>
+        <button class="history-item" data-system="商品中心" data-title="商品标签影响活动展示吗">
+          <strong>商品标签影响活动展示吗</strong>
+          <span>商品中心 · 今天 11:24</span>
+        </button>
+        <button class="history-item" data-system="定制活动" data-title="定制活动不可叠加规则">
+          <strong>定制活动不可叠加规则</strong>
+          <span>定制活动 · 昨天</span>
+        </button>
+        <button class="history-item" data-system="任务中心" data-title="省钱任务返现发放条件">
+          <strong>省钱任务返现发放条件</strong>
+          <span>任务中心 · 周一</span>
+        </button>
+        <button class="history-item" data-system="里程" data-title="里程抵扣和券能否同用">
+          <strong>里程抵扣和券能否同用</strong>
+          <span>里程 · 上周</span>
+        </button>
+      </div>
+
+      <div class="profile">
+        <div class="avatar">PM</div>
+        <div>
+          <strong style="color:#374151">产品/运营视图</strong><br>
+          <span>自然语言问业务逻辑</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="top">
+        <div class="title-row">
+          <div>
+            <h1 id="pageTitle">营销平台问答助手</h1>
+            <p id="pageSub">先选择系统，再用自然语言问活动、券、任务、里程或商品逻辑</p>
+          </div>
+          <div class="status"><i></i> 当前回答限定在所选系统</div>
+        </div>
+
+        <nav class="system-tabs" id="systemTabs" aria-label="系统名称">
+          <button class="system-tab" data-system="商品中心">商品中心</button>
+          <button class="system-tab active" data-system="营销平台">营销平台</button>
+          <button class="system-tab" data-system="定制活动">定制活动</button>
+          <button class="system-tab" data-system="里程">里程</button>
+          <button class="system-tab" data-system="任务中心">任务中心</button>
+          <button class="system-tab" data-system="优惠券中心">优惠券中心</button>
+          <button class="system-tab" data-system="价格试算">价格试算</button>
+        </nav>
+      </header>
+
+      <section class="chat" id="chat">
+        <div class="chat-inner" id="chatInner">
+          <div class="welcome" id="welcome">
+            <h2>你想了解哪个业务逻辑？</h2>
+            <p>像和通用大模型聊天一样提问即可。可以问文字问题，也可以上传活动配置、前端页面或运营后台截图。</p>
+            <div class="quick">
+              <button data-question="用户为什么没有拿到新人券？">用户为什么没有拿到新人券？</button>
+              <button data-question="这张活动配置截图里的“不可叠加”是什么意思？">这张活动配置截图里的“不可叠加”是什么意思？</button>
+              <button data-question="前端展示活动，下单为什么没有优惠？">前端展示活动，下单为什么没有优惠？</button>
+              <button data-question="退款后券会自动退回吗？">退款后券会自动退回吗？</button>
+            </div>
+          </div>
+
+          <div class="msg user">
+            <div class="bubble">用户为什么没有拿到新人券？</div>
+            <div class="user-avatar">你</div>
+          </div>
+
+          <div class="msg ai">
+            <div class="bot-avatar">AI</div>
+            <div class="bubble">
+              <p><span class="answer-title">结论：优先排查新人资格、券模板状态和活动互斥。</span></p>
+              <p>在营销平台里，用户看到活动入口不代表一定能领券或抵扣。真正发券/用券时，还会重新校验活动时间、库存、人群条件和不可叠加规则。</p>
+              <ul>
+                <li>如果用户已有历史有效支付订单，可能不满足新人条件。</li>
+                <li>如果券模板过期、库存不足或渠道不匹配，也会领取失败。</li>
+                <li>如果订单已命中更高优先级优惠，下单页可能不展示这张券。</li>
+              </ul>
+              <div class="source-row">
+                <span class="source">新人规则</span>
+                <span class="source">券模板</span>
+                <span class="source">活动互斥</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="composer-area">
+        <div class="composer">
+          <div class="attachment-row" id="attachmentRow">
+            <span class="pill">当前系统：<b id="currentSystemLabel">营销平台</b></span>
+            <span class="pill">支持文字和图片</span>
+          </div>
+          <textarea id="questionInput" placeholder="输入问题，例如：这个活动为什么前端展示了但下单没优惠？"></textarea>
+          <div class="composer-actions">
+            <div class="tool-row">
+              <input id="imageInput" type="file" accept="image/*" hidden />
+              <button class="icon-btn" id="uploadBtn" title="上传图片">＋</button>
+              <span id="uploadText">上传图片后可直接问截图里的配置含义</span>
+            </div>
+            <button class="send-btn" id="sendBtn">发送</button>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    const systemCopy = {
+      "商品中心": "可问商品标签、商品类型、售卖规则、商品与活动的关联逻辑",
+      "营销平台": "可问活动、券、补贴、互斥、优先级和发放/使用规则",
+      "定制活动": "可问定制活动配置、投放人群、页面展示和活动生效条件",
+      "里程": "可问里程获取、抵扣、退回、和优惠券叠加规则",
+      "任务中心": "可问任务完成条件、奖励发放、返现、进度和补偿逻辑",
+      "优惠券中心": "可问发券、领券、用券、退券、券模板和错误原因",
+      "价格试算": "可问下单优惠、试算结果、优惠过滤和金额展示差异"
+    };
+
+    const tabs = document.querySelectorAll(".system-tab");
+    const pageTitle = document.querySelector("#pageTitle");
+    const pageSub = document.querySelector("#pageSub");
+    const currentSystemLabel = document.querySelector("#currentSystemLabel");
+    const chat = document.querySelector("#chat");
+    const chatInner = document.querySelector("#chatInner");
+    const questionInput = document.querySelector("#questionInput");
+    const sendBtn = document.querySelector("#sendBtn");
+    const uploadBtn = document.querySelector("#uploadBtn");
+    const imageInput = document.querySelector("#imageInput");
+    const attachmentRow = document.querySelector("#attachmentRow");
+    const historyItems = document.querySelectorAll(".history-item");
+    const newChatBtn = document.querySelector("#newChatBtn");
+    let currentSystem = "营销平台";
+    let uploadedImageUrl = "";
+    let uploadedName = "";
+
+    function escapeHtml(text) {
+      return text.replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function setSystem(name) {
+      currentSystem = name;
+      tabs.forEach(tab => tab.classList.toggle("active", tab.dataset.system === name));
+      pageTitle.textContent = `${name}问答助手`;
+      pageSub.textContent = systemCopy[name] || "可以用自然语言询问当前系统的业务逻辑";
+      currentSystemLabel.textContent = name;
+    }
+
+    function scrollBottom() {
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function userMessage(text, imageUrl) {
+      return `
+        <div class="msg user">
+          <div class="bubble">
+            ${escapeHtml(text).replace(/\n/g, "<br>")}
+            ${imageUrl ? `<div class="image-preview"><img src="${imageUrl}" alt="上传截图"></div>` : ""}
+          </div>
+          <div class="user-avatar">你</div>
+        </div>
+      `;
+    }
+
+    function aiMessage(html) {
+      return `
+        <div class="msg ai">
+          <div class="bot-avatar">AI</div>
+          <div class="bubble">${html}</div>
+        </div>
+      `;
+    }
+
+    function typingMessage() {
+      return aiMessage(`<span class="typing"><i></i><i></i><i></i></span>`);
+    }
+
+    function buildAnswer(question, hasImage) {
+      const q = question.toLowerCase();
+      let title = `结论：我会按「${currentSystem}」的业务规则来回答。`;
+      let points = [
+        "先确认用户问题属于哪个业务动作：展示、领取、下单、支付、退款或奖励发放。",
+        "再看活动/券/任务是否满足时间、库存、人群、渠道和互斥条件。",
+        "如果要定位具体用户，需要补充用户 ID、活动 ID、券模板 ID 或订单号。"
+      ];
+      let sources = ["系统规则", "配置项", "接口返回"];
+
+      if (hasImage || q.includes("截图") || q.includes("图片") || q.includes("配置")) {
+        title = "结论：截图里的配置会影响用户是否可见、可领或可用。";
+        points = [
+          "我会先识别截图里的活动名称、系统范围、限制条件和按钮/字段含义。",
+          "如果出现“限新客”“不可叠加”“指定渠道”等字段，下单时还会被后端再次校验。",
+          "页面是否展示可以宽松一些，但最终优惠金额和可用状态建议以后端返回为准。"
+        ];
+        sources = ["图片识别", "活动配置", "后端校验"];
+      } else if (q.includes("新人") || q.includes("新客") || q.includes("没拿到")) {
+        title = "结论：没有拿到新人券，优先看新人资格和券模板状态。";
+        points = [
+          "用户看到入口，不代表一定满足新人资格；发券时通常会查历史有效支付订单。",
+          "券模板如果过期、库存不足、渠道不匹配，也会导致领取失败。",
+          "如果订单命中其他不可叠加优惠，下单页可能不会展示这张券。"
+        ];
+        sources = ["新人规则", "券模板", "优惠互斥"];
+      } else if (q.includes("前端") || q.includes("展示") || q.includes("页面")) {
+        title = "结论：前端不建议自己复刻复杂营销判断。";
+        points = [
+          "活动入口可以按活动状态、时间和渠道展示。",
+          "券按钮状态、不可用原因和优惠金额，应以后端接口返回为准。",
+          "如果后端返回不可用原因，前端可以直接展示给用户或运营排查。"
+        ];
+        sources = ["展示规则", "可用状态", "试算接口"];
+      } else if (q.includes("退款") || q.includes("退回") || q.includes("退券")) {
+        title = "结论：退款后是否退券，要看券状态和退款场景。";
+        points = [
+          "未使用优惠和已核销优惠的处理方式不同。",
+          "全额退款、部分退款、取消订单可能走不同退券规则。",
+          "重复退款或回调重试时，一般要按订单号和券流水做幂等。"
+        ];
+        sources = ["退券规则", "订单状态", "幂等处理"];
+      } else if (currentSystem === "里程") {
+        title = "结论：里程逻辑重点看获取、抵扣、退回和叠加限制。";
+        points = [
+          "先判断用户里程余额和本单是否支持里程抵扣。",
+          "再看是否与优惠券、活动补贴或会员权益互斥。",
+          "退款时需要关注里程退回时机和原订单状态。"
+        ];
+        sources = ["里程余额", "抵扣规则", "退回规则"];
+      }
+
+      return `
+        <p><span class="answer-title">${title}</span></p>
+        <ul>${points.map(point => `<li>${point}</li>`).join("")}</ul>
+        <p>你可以继续补充具体 ID 或截图，我会继续沿着「${currentSystem}」回答。</p>
+        <div class="source-row">${sources.map(source => `<span class="source">${source}</span>`).join("")}</div>
+      `;
+    }
+
+    function resetAttachment() {
+      uploadedImageUrl = "";
+      uploadedName = "";
+      attachmentRow.innerHTML = `
+        <span class="pill">当前系统：<b id="currentSystemLabel">${currentSystem}</b></span>
+        <span class="pill">支持文字和图片</span>
+      `;
+    }
+
+    function sendQuestion(customQuestion) {
+      const question = (customQuestion || questionInput.value).trim();
+      if (!question && !uploadedImageUrl) return;
+
+      const imageUrl = uploadedImageUrl;
+      chatInner.insertAdjacentHTML("beforeend", userMessage(question || "请解析这张截图里的业务配置", imageUrl));
+      questionInput.value = "";
+      resetAttachment();
+      scrollBottom();
+
+      const typingId = `typing-${Date.now()}`;
+      chatInner.insertAdjacentHTML("beforeend", `<div id="${typingId}">${typingMessage()}</div>`);
+      scrollBottom();
+
+      setTimeout(() => {
+        const typing = document.querySelector(`#${typingId}`);
+        if (typing) typing.remove();
+        chatInner.insertAdjacentHTML("beforeend", aiMessage(buildAnswer(question, Boolean(imageUrl))));
+        scrollBottom();
+      }, 650);
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => setSystem(tab.dataset.system));
+    });
+
+    document.querySelectorAll(".quick button").forEach(button => {
+      button.addEventListener("click", () => {
+        questionInput.value = button.dataset.question;
+        questionInput.focus();
+      });
+    });
+
+    historyItems.forEach(item => {
+      item.addEventListener("click", () => {
+        historyItems.forEach(entry => entry.classList.remove("active"));
+        item.classList.add("active");
+        setSystem(item.dataset.system);
+        chatInner.innerHTML = `
+          <div class="welcome">
+            <h2>${escapeHtml(item.dataset.title)}</h2>
+            <p>已切换到历史对话。你可以继续追问，也可以上传截图补充上下文。</p>
+          </div>
+          ${aiMessage(`<p><span class="answer-title">已载入这段历史对话。</span></p><p>当前系统是「${item.dataset.system}」，后续问题会继续限定在这个系统内回答。</p>`)}
+        `;
+        scrollBottom();
+      });
+    });
+
+    newChatBtn.addEventListener("click", () => {
+      historyItems.forEach(entry => entry.classList.remove("active"));
+      chatInner.innerHTML = `
+        <div class="welcome">
+          <h2>新对话已开始</h2>
+          <p>请选择上方系统，然后直接输入问题。支持文字和图片。</p>
+          <div class="quick">
+            <button data-question="这个活动为什么下单没有优惠？">这个活动为什么下单没有优惠？</button>
+            <button data-question="帮我解释这张截图里的配置含义">帮我解释这张截图里的配置含义</button>
+          </div>
+        </div>
+      `;
+      document.querySelectorAll(".quick button").forEach(button => {
+        button.addEventListener("click", () => {
+          questionInput.value = button.dataset.question;
+          questionInput.focus();
+        });
+      });
+      questionInput.value = "";
+      resetAttachment();
+      scrollBottom();
+    });
+
+    sendBtn.addEventListener("click", () => sendQuestion());
+    questionInput.addEventListener("keydown", event => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendQuestion();
+      }
+    });
+
+    uploadBtn.addEventListener("click", () => imageInput.click());
+    imageInput.addEventListener("change", () => {
+      const file = imageInput.files && imageInput.files[0];
+      if (!file) return;
+      uploadedImageUrl = URL.createObjectURL(file);
+      uploadedName = file.name;
+      attachmentRow.innerHTML = `
+        <span class="pill">当前系统：<b>${currentSystem}</b></span>
+        <span class="pill">已上传：${escapeHtml(uploadedName)} <button id="removeImage">×</button></span>
+      `;
+      document.querySelector("#removeImage").addEventListener("click", () => {
+        imageInput.value = "";
+        resetAttachment();
+      });
+      questionInput.focus();
+    });
+
+    setSystem(currentSystem);
+    scrollBottom();
+  </script>
+</body>
+</html>
