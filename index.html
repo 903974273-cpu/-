@@ -50,8 +50,7 @@
       background: var(--sidebar);
       padding: 18px 14px;
       display: grid;
-      grid-template-rows: auto auto auto auto;
-      align-content: start;
+      grid-template-rows: auto auto auto minmax(0, 1fr) auto;
       gap: 14px;
       height: 100vh;
       overflow: hidden;
@@ -109,7 +108,7 @@
       align-content: start;
       gap: 6px;
       padding-right: 3px;
-      max-height: min(460px, calc(100vh - 190px));
+      min-height: 0;
     }
 
     .history-item {
@@ -152,7 +151,7 @@
       padding: 14px 8px 2px;
       color: var(--muted);
       font-size: 13px;
-      margin-top: 4px;
+      margin-top: 0;
     }
 
     .avatar {
@@ -625,8 +624,8 @@
       <div class="profile">
         <div class="avatar">PM</div>
         <div>
-          <strong style="color:#374151">产品/运营视图</strong><br>
-          <span>自然语言问业务逻辑</span>
+          <strong style="color:#374151">王小明</strong><br>
+          <span>工号：100862</span>
         </div>
       </div>
     </aside>
