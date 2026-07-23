@@ -217,27 +217,21 @@
       min-height: 100%;
     }
 
-    .chat-inner.empty {
-      grid-template-rows: auto minmax(0, 1fr);
-    }
-
     .conversation {
       display: grid;
       gap: 20px;
       min-height: 0;
     }
 
-    .system-picker {
+    .composer-system-picker {
       display: grid;
       gap: 9px;
-      padding: 12px 14px 8px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: rgba(255,255,255,.82);
-      box-shadow: 0 8px 20px rgba(17, 24, 39, .04);
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
     }
 
-    .system-picker-head {
+    .composer-system-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -247,7 +241,7 @@
       font-weight: 700;
     }
 
-    .system-picker-head strong { color: var(--ink); }
+    .composer-system-head strong { color: var(--ink); }
 
     .chat-inner.empty .welcome {
       align-self: center;
@@ -258,6 +252,19 @@
       margin: auto;
       text-align: center;
       padding: 36px 24px;
+    }
+
+    .welcome-mark {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 18px;
+      filter: drop-shadow(0 10px 18px rgba(37, 99, 235, .22));
+    }
+
+    .welcome-mark svg {
+      display: block;
+      width: 100%;
+      height: 100%;
     }
 
     .welcome h2 {
@@ -448,7 +455,7 @@
     }
 
     .composer {
-      width: min(880px, 100%);
+      width: min(980px, 100%);
       margin: 0 auto;
       border: 1px solid #cfd8e6;
       border-radius: 16px;
@@ -627,8 +634,39 @@
     <main class="main">
       <section class="chat" id="chat">
         <div class="chat-inner empty" id="chatInner">
-          <div class="system-picker">
-            <div class="system-picker-head">
+          <div class="conversation" id="conversation">
+            <div class="welcome" id="welcome">
+              <div class="welcome-mark" aria-label="营销贾维斯管家头像">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="welcomeJarvisGradient" x1="7" y1="6" x2="41" y2="43" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#4f8cff" />
+                      <stop offset="1" stop-color="#153eaa" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M24 2.8 42.5 13.5v21L24 45.2 5.5 34.5v-21L24 2.8Z" fill="url(#welcomeJarvisGradient)" />
+                  <path d="M24 9.6 36.7 17v14L24 38.4 11.3 31V17L24 9.6Z" fill="none" stroke="#c9e6ff" stroke-width="1.5" opacity=".9" />
+                  <circle cx="24" cy="24" r="5.2" fill="#fff" />
+                  <path d="M24 15.1v3M24 29.9v3M15.1 24h3M29.9 24h3" stroke="#c9e6ff" stroke-width="1.7" stroke-linecap="round" />
+                </svg>
+              </div>
+              <h2>营销贾维斯解决您的一切营销问题</h2>
+              <p>选择一个或多个关联系统后，直接输入问题，或上传活动配置、前端页面和运营后台截图。</p>
+              <div class="quick">
+                <button data-question="请帮我审核这份营销需求文档的逻辑是否完整">文档审核</button>
+                <button data-question="这个活动为什么前端展示了但下单没有优惠？">业务问答</button>
+                <button data-question="请梳理这个活动从创建到上线的操作流程">操作流程</button>
+                <button data-question="我是新人，请带我快速了解当前系统的核心业务规则">新人带教</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="composer-area">
+        <div class="composer">
+          <div class="composer-system-picker">
+            <div class="composer-system-head">
               <strong>关联系统</strong>
               <span id="selectedHint">已选择 1 个系统，可多选</span>
             </div>
@@ -642,21 +680,6 @@
               <button class="system-tab" data-system="价格试算" aria-pressed="false">价格试算</button>
             </nav>
           </div>
-          <div class="conversation" id="conversation">
-            <div class="welcome" id="welcome">
-              <h2>营销贾维斯解决您的一切营销问题</h2>
-              <p>选择一个或多个关联系统后，直接输入问题，或上传活动配置、前端页面和运营后台截图。</p>
-              <div class="quick">
-                <button data-question="请帮我审核这份营销需求文档的逻辑是否完整">文档审核</button>
-                <button data-question="这个活动为什么前端展示了但下单没有优惠？">业务问答</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <footer class="composer-area">
-        <div class="composer">
           <div class="attachment-row" id="attachmentRow">
             <span class="pill">关联系统：<b id="currentSystemLabel">营销平台</b></span>
             <span class="pill">支持文字和图片</span>
@@ -775,7 +798,24 @@
     }
 
     function welcomeMarkup() {
-      return `<div class="welcome" id="welcome"><h2>营销贾维斯解决您的一切营销问题</h2><p>选择一个或多个关联系统后，直接输入问题，或上传活动配置、前端页面和运营后台截图。</p><div class="quick"><button data-question="请帮我审核这份营销需求文档的逻辑是否完整">文档审核</button><button data-question="这个活动为什么前端展示了但下单没有优惠？">业务问答</button></div></div>`;
+      return `<div class="welcome" id="welcome">
+        <div class="welcome-mark" aria-label="营销贾维斯管家头像">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <defs><linearGradient id="newChatJarvisGradient" x1="7" y1="6" x2="41" y2="43" gradientUnits="userSpaceOnUse"><stop stop-color="#4f8cff" /><stop offset="1" stop-color="#153eaa" /></linearGradient></defs>
+            <path d="M24 2.8 42.5 13.5v21L24 45.2 5.5 34.5v-21L24 2.8Z" fill="url(#newChatJarvisGradient)" />
+            <path d="M24 9.6 36.7 17v14L24 38.4 11.3 31V17L24 9.6Z" fill="none" stroke="#c9e6ff" stroke-width="1.5" opacity=".9" />
+            <circle cx="24" cy="24" r="5.2" fill="#fff" /><path d="M24 15.1v3M24 29.9v3M15.1 24h3M29.9 24h3" stroke="#c9e6ff" stroke-width="1.7" stroke-linecap="round" />
+          </svg>
+        </div>
+        <h2>营销贾维斯解决您的一切营销问题</h2>
+        <p>选择一个或多个关联系统后，直接输入问题，或上传活动配置、前端页面和运营后台截图。</p>
+        <div class="quick">
+          <button data-question="请帮我审核这份营销需求文档的逻辑是否完整">文档审核</button>
+          <button data-question="这个活动为什么前端展示了但下单没有优惠？">业务问答</button>
+          <button data-question="请梳理这个活动从创建到上线的操作流程">操作流程</button>
+          <button data-question="我是新人，请带我快速了解当前系统的核心业务规则">新人带教</button>
+        </div>
+      </div>`;
     }
 
     tabs.forEach(tab => tab.addEventListener("click", () => {
