@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>业务逻辑问答助手</title>
+  <title>营销贾维斯管家</title>
   <style>
     :root {
       --bg: #f7f8fb;
@@ -65,15 +65,12 @@
     }
 
     .brand-mark {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
+      width: 38px;
+      height: 38px;
       display: grid;
       place-items: center;
-      background: var(--brand);
-      color: #fff;
-      font-weight: 800;
-      box-shadow: 0 8px 18px rgba(37, 99, 235, .26);
+      filter: drop-shadow(0 6px 12px rgba(37, 99, 235, .28));
+      flex: 0 0 auto;
     }
 
     .brand strong {
@@ -173,65 +170,16 @@
     .main {
       min-width: 0;
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr) auto;
+      grid-template-rows: minmax(0, 1fr) auto;
       height: 100vh;
       overflow: hidden;
-    }
-
-    .top {
-      background: rgba(255,255,255,.86);
-      border-bottom: 1px solid var(--line);
-      padding: 16px 28px 14px;
-      z-index: 5;
-      backdrop-filter: blur(14px);
-    }
-
-    .title-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 13px;
-    }
-
-    .title-row h1 {
-      margin: 0;
-      font-size: 18px;
-      letter-spacing: 0;
-    }
-
-    .title-row p {
-      margin: 3px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      height: 30px;
-      padding: 0 10px;
-      border-radius: 999px;
-      background: #ecfdf3;
-      color: #14783f;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .status i {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--green);
     }
 
     .system-tabs {
       display: flex;
       gap: 8px;
       overflow: auto;
-      padding-bottom: 2px;
+      padding: 2px 2px 6px;
     }
 
     .system-tab {
@@ -256,49 +204,88 @@
 
     .chat {
       overflow: auto;
-      padding: 28px 24px 18px;
+      padding: 22px 24px 18px;
       min-height: 0;
       overscroll-behavior: contain;
     }
 
     .chat-inner {
-      width: min(880px, 100%);
+      width: min(980px, 100%);
       margin: 0 auto;
       display: grid;
       gap: 20px;
+      min-height: 100%;
+    }
+
+    .chat-inner.empty {
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .conversation {
+      display: grid;
+      gap: 20px;
+      min-height: 0;
+    }
+
+    .system-picker {
+      display: grid;
+      gap: 9px;
+      padding: 12px 14px 8px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.82);
+      box-shadow: 0 8px 20px rgba(17, 24, 39, .04);
+    }
+
+    .system-picker-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .system-picker-head strong { color: var(--ink); }
+
+    .chat-inner.empty .welcome {
+      align-self: center;
     }
 
     .welcome {
-      background: linear-gradient(135deg, #ffffff, #f0f6ff);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: var(--shadow);
+      width: min(680px, 100%);
+      margin: auto;
+      text-align: center;
+      padding: 36px 24px;
     }
 
     .welcome h2 {
       margin: 0 0 8px;
-      font-size: 20px;
+      font-size: 28px;
+      line-height: 1.32;
     }
 
     .welcome p {
       margin: 0;
       color: var(--muted);
       line-height: 1.6;
+      font-size: 14px;
     }
 
     .quick {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
       gap: 10px;
-      margin-top: 16px;
+      margin-top: 22px;
     }
 
     .quick button {
       border: 1px solid var(--line);
-      border-radius: 10px;
+      border-radius: 999px;
       background: #fff;
-      padding: 11px 12px;
+      padding: 9px 14px;
       text-align: left;
       cursor: pointer;
       color: #374151;
@@ -566,20 +553,8 @@
       .sidebar {
         display: none;
       }
-      .top {
-        padding: 14px 16px 12px;
-      }
-      .title-row {
-        align-items: flex-start;
-      }
-      .status {
-        display: none;
-      }
       .chat {
         padding: 18px 14px;
-      }
-      .quick {
-        grid-template-columns: 1fr;
       }
       .composer-area {
         padding: 12px 14px 18px;
@@ -594,10 +569,23 @@
   <div class="app">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-mark">M</div>
+        <div class="brand-mark" aria-label="营销贾维斯管家标识">
+          <svg viewBox="0 0 48 48" width="38" height="38" aria-hidden="true">
+            <defs>
+              <linearGradient id="jarvisGradient" x1="7" y1="6" x2="41" y2="43" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#4f8cff" />
+                <stop offset="1" stop-color="#153eaa" />
+              </linearGradient>
+            </defs>
+            <path d="M24 2.8 42.5 13.5v21L24 45.2 5.5 34.5v-21L24 2.8Z" fill="url(#jarvisGradient)" />
+            <path d="M24 9.6 36.7 17v14L24 38.4 11.3 31V17L24 9.6Z" fill="none" stroke="#c9e6ff" stroke-width="1.5" opacity=".9" />
+            <circle cx="24" cy="24" r="5.2" fill="#fff" />
+            <path d="M24 15.1v3M24 29.9v3M15.1 24h3M29.9 24h3" stroke="#c9e6ff" stroke-width="1.7" stroke-linecap="round" />
+          </svg>
+        </div>
         <div>
-          <strong>业务逻辑问答</strong>
-          <span>营销代码逻辑助手</span>
+          <strong>营销贾维斯管家</strong>
+          <span>营销业务逻辑助手</span>
         </div>
       </div>
 
@@ -637,58 +625,30 @@
     </aside>
 
     <main class="main">
-      <header class="top">
-        <div class="title-row">
-          <div>
-            <h1 id="pageTitle">营销平台问答助手</h1>
-            <p id="pageSub">先选择系统，再用自然语言问活动、券、任务、里程或商品逻辑</p>
-          </div>
-          <div class="status"><i></i> 当前回答限定在所选系统</div>
-        </div>
-
-        <nav class="system-tabs" id="systemTabs" aria-label="系统名称">
-          <button class="system-tab" data-system="商品中心">商品中心</button>
-          <button class="system-tab active" data-system="营销平台">营销平台</button>
-          <button class="system-tab" data-system="定制活动">定制活动</button>
-          <button class="system-tab" data-system="里程">里程</button>
-          <button class="system-tab" data-system="任务中心">任务中心</button>
-          <button class="system-tab" data-system="优惠券中心">优惠券中心</button>
-          <button class="system-tab" data-system="价格试算">价格试算</button>
-        </nav>
-      </header>
-
       <section class="chat" id="chat">
-        <div class="chat-inner" id="chatInner">
-          <div class="welcome" id="welcome">
-            <h2>你想了解哪个业务逻辑？</h2>
-            <p>像和通用大模型聊天一样提问即可。可以问文字问题，也可以上传活动配置、前端页面或运营后台截图。</p>
-            <div class="quick">
-              <button data-question="用户为什么没有拿到新人券？">用户为什么没有拿到新人券？</button>
-              <button data-question="这张活动配置截图里的“不可叠加”是什么意思？">这张活动配置截图里的“不可叠加”是什么意思？</button>
-              <button data-question="前端展示活动，下单为什么没有优惠？">前端展示活动，下单为什么没有优惠？</button>
-              <button data-question="退款后券会自动退回吗？">退款后券会自动退回吗？</button>
+        <div class="chat-inner empty" id="chatInner">
+          <div class="system-picker">
+            <div class="system-picker-head">
+              <strong>关联系统</strong>
+              <span id="selectedHint">已选择 1 个系统，可多选</span>
             </div>
+            <nav class="system-tabs" id="systemTabs" aria-label="选择关联系统，可多选">
+              <button class="system-tab" data-system="商品中心" aria-pressed="false">商品中心</button>
+              <button class="system-tab active" data-system="营销平台" aria-pressed="true">营销平台</button>
+              <button class="system-tab" data-system="定制活动" aria-pressed="false">定制活动</button>
+              <button class="system-tab" data-system="里程" aria-pressed="false">里程</button>
+              <button class="system-tab" data-system="任务中心" aria-pressed="false">任务中心</button>
+              <button class="system-tab" data-system="优惠券中心" aria-pressed="false">优惠券中心</button>
+              <button class="system-tab" data-system="价格试算" aria-pressed="false">价格试算</button>
+            </nav>
           </div>
-
-          <div class="msg user">
-            <div class="bubble">用户为什么没有拿到新人券？</div>
-            <div class="user-avatar">你</div>
-          </div>
-
-          <div class="msg ai">
-            <div class="bot-avatar">AI</div>
-            <div class="bubble">
-              <p><span class="answer-title">结论：优先排查新人资格、券模板状态和活动互斥。</span></p>
-              <p>在营销平台里，用户看到活动入口不代表一定能领券或抵扣。真正发券/用券时，还会重新校验活动时间、库存、人群条件和不可叠加规则。</p>
-              <ul>
-                <li>如果用户已有历史有效支付订单，可能不满足新人条件。</li>
-                <li>如果券模板过期、库存不足或渠道不匹配，也会领取失败。</li>
-                <li>如果订单已命中更高优先级优惠，下单页可能不展示这张券。</li>
-              </ul>
-              <div class="source-row">
-                <span class="source">新人规则</span>
-                <span class="source">券模板</span>
-                <span class="source">活动互斥</span>
+          <div class="conversation" id="conversation">
+            <div class="welcome" id="welcome">
+              <h2>营销贾维斯解决您的一切营销问题</h2>
+              <p>选择一个或多个关联系统后，直接输入问题，或上传活动配置、前端页面和运营后台截图。</p>
+              <div class="quick">
+                <button data-question="请帮我审核这份营销需求文档的逻辑是否完整">文档审核</button>
+                <button data-question="这个活动为什么前端展示了但下单没有优惠？">业务问答</button>
               </div>
             </div>
           </div>
@@ -698,7 +658,7 @@
       <footer class="composer-area">
         <div class="composer">
           <div class="attachment-row" id="attachmentRow">
-            <span class="pill">当前系统：<b id="currentSystemLabel">营销平台</b></span>
+            <span class="pill">关联系统：<b id="currentSystemLabel">营销平台</b></span>
             <span class="pill">支持文字和图片</span>
           </div>
           <textarea id="questionInput" placeholder="输入问题，例如：这个活动为什么前端展示了但下单没优惠？"></textarea>
@@ -716,22 +676,11 @@
   </div>
 
   <script>
-    const systemCopy = {
-      "商品中心": "可问商品标签、商品类型、售卖规则、商品与活动的关联逻辑",
-      "营销平台": "可问活动、券、补贴、互斥、优先级和发放/使用规则",
-      "定制活动": "可问定制活动配置、投放人群、页面展示和活动生效条件",
-      "里程": "可问里程获取、抵扣、退回、和优惠券叠加规则",
-      "任务中心": "可问任务完成条件、奖励发放、返现、进度和补偿逻辑",
-      "优惠券中心": "可问发券、领券、用券、退券、券模板和错误原因",
-      "价格试算": "可问下单优惠、试算结果、优惠过滤和金额展示差异"
-    };
-
     const tabs = document.querySelectorAll(".system-tab");
-    const pageTitle = document.querySelector("#pageTitle");
-    const pageSub = document.querySelector("#pageSub");
-    const currentSystemLabel = document.querySelector("#currentSystemLabel");
+    const selectedHint = document.querySelector("#selectedHint");
     const chat = document.querySelector("#chat");
     const chatInner = document.querySelector("#chatInner");
+    const conversation = document.querySelector("#conversation");
     const questionInput = document.querySelector("#questionInput");
     const sendBtn = document.querySelector("#sendBtn");
     const uploadBtn = document.querySelector("#uploadBtn");
@@ -739,225 +688,143 @@
     const attachmentRow = document.querySelector("#attachmentRow");
     const historyItems = document.querySelectorAll(".history-item");
     const newChatBtn = document.querySelector("#newChatBtn");
-    let currentSystem = "营销平台";
+    const selectedSystems = new Set(["营销平台"]);
     let uploadedImageUrl = "";
-    let uploadedName = "";
 
     function escapeHtml(text) {
-      return text.replace(/[&<>"']/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        "\"": "&quot;",
-        "'": "&#039;"
-      }[char]));
+      return text.replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;" }[char]));
     }
 
-    function setSystem(name) {
-      currentSystem = name;
-      tabs.forEach(tab => tab.classList.toggle("active", tab.dataset.system === name));
-      pageTitle.textContent = `${name}问答助手`;
-      pageSub.textContent = systemCopy[name] || "可以用自然语言询问当前系统的业务逻辑";
-      currentSystemLabel.textContent = name;
+    function selectedSystemText() { return Array.from(selectedSystems).join("、"); }
+
+    function updateSystemSelection() {
+      tabs.forEach(tab => {
+        const active = selectedSystems.has(tab.dataset.system);
+        tab.classList.toggle("active", active);
+        tab.setAttribute("aria-pressed", String(active));
+      });
+      selectedHint.textContent = `已选择 ${selectedSystems.size} 个系统，可多选`;
+      const label = document.querySelector("#currentSystemLabel");
+      if (label) label.textContent = selectedSystemText();
     }
 
-    function scrollBottom() {
-      chat.scrollTop = chat.scrollHeight;
+    function selectOnlySystem(name) {
+      selectedSystems.clear();
+      selectedSystems.add(name);
+      updateSystemSelection();
     }
+
+    function scrollBottom() { chat.scrollTop = chat.scrollHeight; }
 
     function userMessage(text, imageUrl) {
-      return `
-        <div class="msg user">
-          <div class="bubble">
-            ${escapeHtml(text).replace(/\n/g, "<br>")}
-            ${imageUrl ? `<div class="image-preview"><img src="${imageUrl}" alt="上传截图"></div>` : ""}
-          </div>
-          <div class="user-avatar">你</div>
-        </div>
-      `;
+      return `<div class="msg user"><div class="bubble">${escapeHtml(text).replace(/\n/g, "<br>")}${imageUrl ? `<div class="image-preview"><img src="${imageUrl}" alt="上传截图"></div>` : ""}</div><div class="user-avatar">你</div></div>`;
     }
 
     function aiMessage(html) {
-      return `
-        <div class="msg ai">
-          <div class="bot-avatar">AI</div>
-          <div class="bubble">${html}</div>
-        </div>
-      `;
-    }
-
-    function typingMessage() {
-      return aiMessage(`<span class="typing"><i></i><i></i><i></i></span>`);
+      return `<div class="msg ai"><div class="bot-avatar">AI</div><div class="bubble">${html}</div></div>`;
     }
 
     function buildAnswer(question, hasImage) {
       const q = question.toLowerCase();
-      let title = `结论：我会按「${currentSystem}」的业务规则来回答。`;
-      let points = [
-        "先确认用户问题属于哪个业务动作：展示、领取、下单、支付、退款或奖励发放。",
-        "再看活动/券/任务是否满足时间、库存、人群、渠道和互斥条件。",
-        "如果要定位具体用户，需要补充用户 ID、活动 ID、券模板 ID 或订单号。"
-      ];
+      const systems = selectedSystemText();
+      let title = `结论：我会按「${systems}」的业务规则来回答。`;
+      let points = ["先确认问题属于展示、领取、下单、支付、退款或奖励发放哪个动作。", "再看活动、券或任务是否满足时间、库存、人群、渠道和互斥条件。", "需要定位具体用户时，请补充用户 ID、活动 ID、券模板 ID 或订单号。"];
       let sources = ["系统规则", "配置项", "接口返回"];
-
       if (hasImage || q.includes("截图") || q.includes("图片") || q.includes("配置")) {
         title = "结论：截图里的配置会影响用户是否可见、可领或可用。";
-        points = [
-          "我会先识别截图里的活动名称、系统范围、限制条件和按钮/字段含义。",
-          "如果出现“限新客”“不可叠加”“指定渠道”等字段，下单时还会被后端再次校验。",
-          "页面是否展示可以宽松一些，但最终优惠金额和可用状态建议以后端返回为准。"
-        ];
+        points = ["我会识别截图里的活动名称、限制条件和字段含义。", "“限新客”“不可叠加”“指定渠道”等字段会在下单时由后端再次校验。", "页面展示可以相对宽松，最终优惠金额和可用状态应以后端返回为准。"];
         sources = ["图片识别", "活动配置", "后端校验"];
       } else if (q.includes("新人") || q.includes("新客") || q.includes("没拿到")) {
         title = "结论：没有拿到新人券，优先看新人资格和券模板状态。";
-        points = [
-          "用户看到入口，不代表一定满足新人资格；发券时通常会查历史有效支付订单。",
-          "券模板如果过期、库存不足、渠道不匹配，也会导致领取失败。",
-          "如果订单命中其他不可叠加优惠，下单页可能不会展示这张券。"
-        ];
+        points = ["用户看到入口不代表一定满足新人资格；发券时通常会查历史有效支付订单。", "券模板过期、库存不足或渠道不匹配，也会导致领取失败。", "订单命中其他不可叠加优惠时，下单页可能不会展示这张券。"];
         sources = ["新人规则", "券模板", "优惠互斥"];
       } else if (q.includes("前端") || q.includes("展示") || q.includes("页面")) {
-        title = "结论：前端不建议自己复刻复杂营销判断。";
-        points = [
-          "活动入口可以按活动状态、时间和渠道展示。",
-          "券按钮状态、不可用原因和优惠金额，应以后端接口返回为准。",
-          "如果后端返回不可用原因，前端可以直接展示给用户或运营排查。"
-        ];
+        title = "结论：前端不建议自行复刻复杂营销判断。";
+        points = ["活动入口可以按活动状态、时间和渠道展示。", "券按钮状态、不可用原因和优惠金额，应以后端接口返回为准。", "后端若返回不可用原因，前端可直接展示给用户或运营。"];
         sources = ["展示规则", "可用状态", "试算接口"];
       } else if (q.includes("退款") || q.includes("退回") || q.includes("退券")) {
         title = "结论：退款后是否退券，要看券状态和退款场景。";
-        points = [
-          "未使用优惠和已核销优惠的处理方式不同。",
-          "全额退款、部分退款、取消订单可能走不同退券规则。",
-          "重复退款或回调重试时，一般要按订单号和券流水做幂等。"
-        ];
+        points = ["未使用优惠和已核销优惠的处理方式不同。", "全额退款、部分退款、取消订单可能走不同退券规则。", "重复退款或回调重试时，一般要按订单号和券流水做幂等。"];
         sources = ["退券规则", "订单状态", "幂等处理"];
-      } else if (currentSystem === "里程") {
-        title = "结论：里程逻辑重点看获取、抵扣、退回和叠加限制。";
-        points = [
-          "先判断用户里程余额和本单是否支持里程抵扣。",
-          "再看是否与优惠券、活动补贴或会员权益互斥。",
-          "退款时需要关注里程退回时机和原订单状态。"
-        ];
-        sources = ["里程余额", "抵扣规则", "退回规则"];
       }
-
-      return `
-        <p><span class="answer-title">${title}</span></p>
-        <ul>${points.map(point => `<li>${point}</li>`).join("")}</ul>
-        <p>你可以继续补充具体 ID 或截图，我会继续沿着「${currentSystem}」回答。</p>
-        <div class="source-row">${sources.map(source => `<span class="source">${source}</span>`).join("")}</div>
-      `;
+      return `<p><span class="answer-title">${title}</span></p><ul>${points.map(point => `<li>${point}</li>`).join("")}</ul><p>你可以继续补充具体 ID 或截图，我会继续沿着「${systems}」回答。</p><div class="source-row">${sources.map(source => `<span class="source">${source}</span>`).join("")}</div>`;
     }
 
     function resetAttachment() {
       uploadedImageUrl = "";
-      uploadedName = "";
-      attachmentRow.innerHTML = `
-        <span class="pill">当前系统：<b id="currentSystemLabel">${currentSystem}</b></span>
-        <span class="pill">支持文字和图片</span>
-      `;
+      attachmentRow.innerHTML = `<span class="pill">关联系统：<b id="currentSystemLabel">${selectedSystemText()}</b></span><span class="pill">支持文字和图片</span>`;
     }
 
-    function sendQuestion(customQuestion) {
-      const question = (customQuestion || questionInput.value).trim();
+    function sendQuestion() {
+      const question = questionInput.value.trim();
       if (!question && !uploadedImageUrl) return;
-
       const imageUrl = uploadedImageUrl;
-      chatInner.insertAdjacentHTML("beforeend", userMessage(question || "请解析这张截图里的业务配置", imageUrl));
+      chatInner.classList.remove("empty");
+      document.querySelector("#welcome")?.remove();
+      conversation.insertAdjacentHTML("beforeend", userMessage(question || "请解析这张截图里的业务配置", imageUrl));
       questionInput.value = "";
       resetAttachment();
-      scrollBottom();
-
       const typingId = `typing-${Date.now()}`;
-      chatInner.insertAdjacentHTML("beforeend", `<div id="${typingId}">${typingMessage()}</div>`);
+      conversation.insertAdjacentHTML("beforeend", `<div id="${typingId}">${aiMessage(`<span class="typing"><i></i><i></i><i></i></span>`)}</div>`);
       scrollBottom();
-
       setTimeout(() => {
-        const typing = document.querySelector(`#${typingId}`);
-        if (typing) typing.remove();
-        chatInner.insertAdjacentHTML("beforeend", aiMessage(buildAnswer(question, Boolean(imageUrl))));
+        document.querySelector(`#${typingId}`)?.remove();
+        conversation.insertAdjacentHTML("beforeend", aiMessage(buildAnswer(question, Boolean(imageUrl))));
         scrollBottom();
       }, 650);
     }
 
-    tabs.forEach(tab => {
-      tab.addEventListener("click", () => setSystem(tab.dataset.system));
+    function welcomeMarkup() {
+      return `<div class="welcome" id="welcome"><h2>营销贾维斯解决您的一切营销问题</h2><p>选择一个或多个关联系统后，直接输入问题，或上传活动配置、前端页面和运营后台截图。</p><div class="quick"><button data-question="请帮我审核这份营销需求文档的逻辑是否完整">文档审核</button><button data-question="这个活动为什么前端展示了但下单没有优惠？">业务问答</button></div></div>`;
+    }
+
+    tabs.forEach(tab => tab.addEventListener("click", () => {
+      const name = tab.dataset.system;
+      if (selectedSystems.has(name) && selectedSystems.size === 1) return;
+      if (selectedSystems.has(name)) selectedSystems.delete(name); else selectedSystems.add(name);
+      updateSystemSelection();
+    }));
+
+    conversation.addEventListener("click", event => {
+      const button = event.target.closest("[data-question]");
+      if (!button) return;
+      questionInput.value = button.dataset.question;
+      questionInput.focus();
     });
 
-    document.querySelectorAll(".quick button").forEach(button => {
-      button.addEventListener("click", () => {
-        questionInput.value = button.dataset.question;
-        questionInput.focus();
-      });
-    });
-
-    historyItems.forEach(item => {
-      item.addEventListener("click", () => {
-        historyItems.forEach(entry => entry.classList.remove("active"));
-        item.classList.add("active");
-        setSystem(item.dataset.system);
-        chatInner.innerHTML = `
-          <div class="welcome">
-            <h2>${escapeHtml(item.dataset.title)}</h2>
-            <p>已切换到历史对话。你可以继续追问，也可以上传截图补充上下文。</p>
-          </div>
-          ${aiMessage(`<p><span class="answer-title">已载入这段历史对话。</span></p><p>当前系统是「${item.dataset.system}」，后续问题会继续限定在这个系统内回答。</p>`)}
-        `;
-        scrollBottom();
-      });
-    });
+    historyItems.forEach(item => item.addEventListener("click", () => {
+      historyItems.forEach(entry => entry.classList.remove("active"));
+      item.classList.add("active");
+      selectOnlySystem(item.dataset.system);
+      chatInner.classList.remove("empty");
+      conversation.innerHTML = `<div class="welcome"><h2>${escapeHtml(item.dataset.title)}</h2><p>已切换到历史对话。你可以继续追问，也可以上传截图补充上下文。</p></div>${aiMessage(`<p><span class="answer-title">已载入这段历史对话。</span></p><p>当前系统是「${item.dataset.system}」，后续问题会继续限定在这个系统内回答。</p>`)}`;
+      scrollBottom();
+    }));
 
     newChatBtn.addEventListener("click", () => {
       historyItems.forEach(entry => entry.classList.remove("active"));
-      chatInner.innerHTML = `
-        <div class="welcome">
-          <h2>新对话已开始</h2>
-          <p>请选择上方系统，然后直接输入问题。支持文字和图片。</p>
-          <div class="quick">
-            <button data-question="这个活动为什么下单没有优惠？">这个活动为什么下单没有优惠？</button>
-            <button data-question="帮我解释这张截图里的配置含义">帮我解释这张截图里的配置含义</button>
-          </div>
-        </div>
-      `;
-      document.querySelectorAll(".quick button").forEach(button => {
-        button.addEventListener("click", () => {
-          questionInput.value = button.dataset.question;
-          questionInput.focus();
-        });
-      });
+      chatInner.classList.add("empty");
+      conversation.innerHTML = welcomeMarkup();
       questionInput.value = "";
       resetAttachment();
       scrollBottom();
     });
 
-    sendBtn.addEventListener("click", () => sendQuestion());
+    sendBtn.addEventListener("click", sendQuestion);
     questionInput.addEventListener("keydown", event => {
-      if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        sendQuestion();
-      }
+      if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); sendQuestion(); }
     });
-
     uploadBtn.addEventListener("click", () => imageInput.click());
     imageInput.addEventListener("change", () => {
       const file = imageInput.files && imageInput.files[0];
       if (!file) return;
       uploadedImageUrl = URL.createObjectURL(file);
-      uploadedName = file.name;
-      attachmentRow.innerHTML = `
-        <span class="pill">当前系统：<b>${currentSystem}</b></span>
-        <span class="pill">已上传：${escapeHtml(uploadedName)} <button id="removeImage">×</button></span>
-      `;
-      document.querySelector("#removeImage").addEventListener("click", () => {
-        imageInput.value = "";
-        resetAttachment();
-      });
+      attachmentRow.innerHTML = `<span class="pill">关联系统：<b>${selectedSystemText()}</b></span><span class="pill">已上传：${escapeHtml(file.name)} <button id="removeImage">×</button></span>`;
+      document.querySelector("#removeImage").addEventListener("click", () => { imageInput.value = ""; resetAttachment(); });
       questionInput.focus();
     });
 
-    setSystem(currentSystem);
-    scrollBottom();
+    updateSystemSelection();
   </script>
 </body>
 </html>
