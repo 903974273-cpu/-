@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>数据分析 - 营销贾维斯管家</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --ink: #151b2d;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --soft: #f2f5f9;
+      --brand: #2563eb;
+      --brand-dark: #174ea6;
+      --brand-soft: #eaf2ff;
+      --green: #16a34a;
+      --green-soft: #ecfdf3;
+      --orange: #ea8a16;
+      --orange-soft: #fff7e8;
+      --red: #dc4c4c;
+      --red-soft: #fff1f1;
+      --shadow: 0 12px 30px rgba(17, 24, 39, .07);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      overflow: hidden;
+    }
+
+    button, select { font: inherit; }
+
+    button { color: inherit; }
+
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 236px minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .sidebar {
+      height: 100vh;
+      background: #fff;
+      border-right: 1px solid var(--line);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      padding: 18px 14px;
+      overflow: hidden;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 6px 22px;
+    }
+
+    .brand-mark, .drawer-logo {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      filter: drop-shadow(0 6px 12px rgba(37, 99, 235, .25));
+      flex: 0 0 auto;
+    }
+
+    .brand strong { display: block; font-size: 15px; }
+    .brand span { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+    .nav { display: grid; align-content: start; gap: 5px; }
+
+    .nav-label {
+      padding: 8px 10px 5px;
+      color: #9ca3af;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .nav-item {
+      width: 100%;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      padding: 0 11px;
+      color: #4b5563;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .nav-item:hover { background: var(--soft); }
+    .nav-item.active { background: var(--brand-soft); color: var(--brand-dark); }
+
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      min-width: 22px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--brand);
+      font-size: 11px;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      padding: 14px 8px 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .workspace {
+      min-width: 0;
+      height: 100vh;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .topbar {
+      min-height: 72px;
+      background: rgba(255,255,255,.96);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 13px 26px;
+      z-index: 5;
+    }
+
+    .title h1 { margin: 0; font-size: 20px; line-height: 1.3; }
+    .title p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+
+    .top-actions { min-width: 0; flex: 1; display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 9px; }
+
+    .filter-select, .date-switch, .outline-btn {
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: #374151;
+    }
+
+    .filter-select { max-width: 130px; padding: 0 30px 0 11px; outline: none; }
+
+    .date-switch { display: flex; padding: 3px; }
+
+    .date-switch button {
+      min-width: 54px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .date-switch button.active { background: var(--brand-soft); color: var(--brand-dark); }
+
+    .outline-btn { padding: 0 13px; cursor: pointer; font-weight: 650; }
+    .outline-btn:hover { border-color: #b8d3ff; color: var(--brand-dark); }
+
+    .content {
+      overflow: auto;
+      overscroll-behavior: contain;
+      padding: 22px 26px 32px;
+    }
+
+    .content-inner { width: min(1440px, 100%); margin: 0 auto; display: grid; gap: 16px; }
+
+    .context-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+    .context-row p { margin: 0; color: var(--muted); font-size: 12px; }
+    .context-row strong { color: #374151; }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid #d8e8ff;
+      border-radius: 999px;
+      background: #f4f8ff;
+      color: #315e9f;
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+
+    .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 5px 16px rgba(17, 24, 39, .035);
+    }
+
+    .kpi { min-height: 132px; padding: 17px 18px; position: relative; overflow: hidden; }
+
+    .kpi-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .kpi-label { color: var(--muted); font-size: 13px; font-weight: 650; }
+
+    .kpi-icon {
+      width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center;
+      background: var(--brand-soft); color: var(--brand); font-weight: 800;
+    }
+
+    .kpi-value { margin-top: 10px; font-size: 27px; line-height: 1; font-weight: 780; }
+    .kpi-foot { display: flex; align-items: center; gap: 6px; margin-top: 12px; color: var(--muted); font-size: 11px; }
+    .trend-up { color: var(--green); font-weight: 700; }
+    .trend-down { color: var(--red); font-weight: 700; }
+    .mini-track { flex: 1; height: 4px; border-radius: 999px; background: #edf0f4; overflow: hidden; }
+    .mini-track i { display: block; height: 100%; border-radius: inherit; background: var(--brand); }
+
+    .grid-2 { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(340px, .85fr); gap: 16px; }
+    .panel { padding: 18px; min-width: 0; }
+
+    .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+    .panel-title h2 { margin: 0; font-size: 15px; }
+    .panel-title p { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
+
+    .metric-tabs { display: flex; gap: 5px; padding: 3px; border-radius: 8px; background: var(--soft); }
+    .metric-tabs button { border: 0; border-radius: 6px; background: transparent; padding: 6px 9px; color: var(--muted); cursor: pointer; font-size: 11px; }
+    .metric-tabs button.active { background: #fff; color: var(--brand-dark); box-shadow: 0 2px 7px rgba(17,24,39,.08); }
+
+    .chart-wrap { height: 228px; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 8px; }
+    .y-axis { display: flex; flex-direction: column; justify-content: space-between; color: #9ca3af; font-size: 10px; text-align: right; padding-bottom: 23px; }
+    .plot { min-width: 0; position: relative; border-left: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 23px; }
+    .grid-lines { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+    .grid-lines i { border-top: 1px dashed #edf0f4; }
+    .bars { position: absolute; inset: 9px 10px 0; display: grid; grid-template-columns: repeat(7, minmax(30px, 1fr)); gap: 12px; align-items: end; }
+    .bar-col { height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) 20px; align-items: end; gap: 5px; }
+    .bar-stack { height: 100%; display: flex; align-items: end; justify-content: center; gap: 4px; }
+    .bar { width: min(14px, 44%); min-height: 4px; border-radius: 4px 4px 1px 1px; background: #bcd2ff; transition: height .25s ease; cursor: pointer; }
+    .bar.secondary { background: var(--brand); }
+    .bar:hover { filter: brightness(.94); }
+    .x-label { color: #8b93a1; font-size: 10px; text-align: center; white-space: nowrap; }
+    .legend { display: flex; justify-content: center; gap: 18px; margin-top: -6px; color: var(--muted); font-size: 11px; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .legend i { width: 8px; height: 8px; border-radius: 2px; background: #bcd2ff; }
+    .legend span:last-child i { background: var(--brand); }
+
+    .quality-list { display: grid; gap: 12px; }
+    .quality-row { display: grid; grid-template-columns: 84px minmax(0, 1fr) 44px; align-items: center; gap: 10px; font-size: 12px; }
+    .quality-row strong { font-size: 12px; }
+    .quality-track { height: 8px; border-radius: 999px; background: #edf0f4; overflow: hidden; }
+    .quality-track i { display: block; height: 100%; border-radius: inherit; background: var(--brand); }
+    .quality-row:nth-child(2) i { background: #4e82ed; }
+    .quality-row:nth-child(3) i { background: var(--orange); }
+    .quality-row:nth-child(4) i { background: #8b9bb7; }
+    .quality-row span { color: var(--muted); text-align: right; }
+
+    .split-note { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .note-box { border-radius: 8px; background: var(--soft); padding: 11px; }
+    .note-box b { display: block; font-size: 11px; margin-bottom: 5px; }
+    .note-box strong { font-size: 17px; }
+    .note-box span { margin-left: 4px; color: var(--muted); font-size: 10px; }
+
+    .diagnostic-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .compact-card { padding: 16px; min-width: 0; }
+    .compact-card h2 { margin: 0; font-size: 14px; }
+    .compact-card > p { margin: 4px 0 13px; color: var(--muted); font-size: 10px; }
+    .stat-lines { display: grid; gap: 9px; }
+    .stat-line { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: 11px; }
+    .stat-line span { min-width: 0; color: #4b5563; }
+    .stat-line strong { white-space: nowrap; font-size: 11px; }
+    .stat-line small { color: var(--muted); font-weight: 500; }
+    .stat-bar { grid-column: 1 / -1; height: 4px; margin-top: -4px; border-radius: 999px; background: #edf0f4; overflow: hidden; }
+    .stat-bar i { display: block; height: 100%; border-radius: inherit; background: var(--brand); }
+    .stat-lines .stat-line:nth-child(3n+2) .stat-bar i { background: #6f99ed; }
+    .stat-lines .stat-line:nth-child(3n) .stat-bar i { background: var(--orange); }
+    .metric-callout { margin-top: 11px; padding: 8px 9px; border-radius: 7px; background: var(--soft); color: var(--muted); font-size: 10px; }
+    .metric-callout strong { color: var(--ink); font-size: 13px; }
+
+    .operation-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(360px, .8fr); gap: 16px; }
+    .funnel { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; align-items: center; }
+    .funnel-step { min-width: 0; position: relative; text-align: center; }
+    .funnel-step:not(:last-child)::after { content: "›"; position: absolute; right: -7px; top: 31px; color: #aab2c0; font-size: 18px; z-index: 2; }
+    .funnel-box { min-height: 73px; display: grid; align-content: center; gap: 4px; border: 1px solid #dbe6f7; border-radius: 8px; background: #f8fbff; padding: 9px 6px; }
+    .funnel-step:nth-child(2) .funnel-box { background: #f4f8ff; }
+    .funnel-step:nth-child(3) .funnel-box { background: #eff5ff; }
+    .funnel-step:nth-child(4) .funnel-box { background: #eaf2ff; }
+    .funnel-step:nth-child(5) .funnel-box { background: #e5efff; border-color: #c5d9ff; }
+    .funnel-box strong { font-size: 18px; }
+    .funnel-box span { color: var(--muted); font-size: 10px; }
+    .funnel-rate { margin-top: 6px; color: var(--muted); font-size: 10px; }
+    .funnel-rate b { color: var(--green); }
+    .drop-row { margin-top: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .drop-item { border-radius: 8px; background: var(--soft); padding: 10px; }
+    .drop-item span { display: block; color: var(--muted); font-size: 10px; }
+    .drop-item strong { display: block; margin-top: 4px; font-size: 14px; }
+    .drop-item b { color: var(--red); font-size: 10px; font-weight: 650; }
+
+    .usage-layout { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 16px; align-items: center; }
+    .donut { width: 122px; height: 122px; border-radius: 50%; background: conic-gradient(var(--brand) 0 62%, #79a1ef 62% 100%); display: grid; place-items: center; position: relative; }
+    .donut::after { content: ""; width: 76px; height: 76px; border-radius: 50%; background: #fff; }
+    .donut-center { position: absolute; z-index: 1; text-align: center; }
+    .donut-center strong { display: block; font-size: 18px; }
+    .donut-center span { color: var(--muted); font-size: 9px; }
+    .entry-list { display: grid; gap: 10px; }
+    .entry-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; font-size: 11px; }
+    .entry-row span { display: inline-flex; align-items: center; gap: 6px; color: #4b5563; }
+    .entry-row i { width: 8px; height: 8px; border-radius: 2px; background: var(--brand); }
+    .entry-row:nth-child(2) i { background: #79a1ef; }
+    .conversion-note { margin-top: 11px; border: 1px solid #d8e8ff; border-radius: 8px; background: #f6f9ff; padding: 9px 10px; color: #315e9f; font-size: 10px; }
+    .conversion-note strong { display: block; margin-top: 3px; color: var(--brand-dark); font-size: 14px; }
+
+    .operation-bottom { margin-top: 17px; padding-top: 15px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1.15fr .85fr; gap: 18px; }
+    .subhead { margin: 0 0 11px; font-size: 11px; }
+    .feature-list { display: grid; gap: 9px; }
+    .feature-row { display: grid; grid-template-columns: 72px minmax(0,1fr) 36px; gap: 8px; align-items: center; font-size: 10px; }
+    .feature-track { height: 6px; border-radius: 999px; background: #edf0f4; overflow: hidden; }
+    .feature-track i { display: block; height: 100%; border-radius: inherit; background: #6f99ed; }
+    .feature-row span:last-child { text-align: right; color: var(--muted); }
+    .performance { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .performance-item { border: 1px solid var(--line); border-radius: 8px; padding: 9px; }
+    .performance-item span { display: block; color: var(--muted); font-size: 9px; }
+    .performance-item strong { display: block; margin-top: 4px; font-size: 15px; }
+    .performance-item small { color: var(--green); font-size: 9px; }
+
+    .optimization { padding: 0; overflow: hidden; }
+    .optimization-head { padding: 17px 18px 0; }
+    .section-tabs { display: flex; border-bottom: 1px solid var(--line); padding: 0 18px; gap: 24px; }
+    .section-tabs button { border: 0; border-bottom: 2px solid transparent; background: transparent; padding: 12px 1px 11px; color: var(--muted); cursor: pointer; font-size: 13px; font-weight: 650; }
+    .section-tabs button.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 900px; }
+    th, td { padding: 13px 18px; border-bottom: 1px solid #eef0f3; text-align: left; font-size: 12px; }
+    th { color: var(--muted); background: #fafbfc; font-size: 11px; font-weight: 650; }
+    td strong { display: block; font-size: 12px; margin-bottom: 3px; }
+    td small { color: var(--muted); font-size: 10px; }
+    tr[data-row] { cursor: pointer; }
+    tr[data-row]:hover td { background: #fbfdff; }
+    tbody tr:last-child td { border-bottom: 0; }
+
+    .rank { width: 23px; height: 23px; display: grid; place-items: center; border-radius: 6px; background: var(--soft); color: #667085; font-size: 11px; font-weight: 750; }
+    .rank.top { background: var(--brand-soft); color: var(--brand); }
+    .tag { display: inline-flex; align-items: center; border-radius: 999px; padding: 4px 7px; font-size: 10px; font-weight: 650; }
+    .tag.red { background: var(--red-soft); color: var(--red); }
+    .tag.orange { background: var(--orange-soft); color: #b4680b; }
+    .tag.blue { background: var(--brand-soft); color: var(--brand-dark); }
+    .tag.green { background: var(--green-soft); color: var(--green); }
+
+    .row-action { border: 0; background: transparent; color: var(--brand); cursor: pointer; padding: 4px; font-weight: 650; }
+
+    .drawer-mask {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, .24); opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 20;
+    }
+    .drawer-mask.open { opacity: 1; pointer-events: auto; }
+    .drawer {
+      position: absolute; top: 0; right: 0; width: min(520px, 92vw); height: 100%; background: #fff; box-shadow: -18px 0 42px rgba(15,23,42,.14);
+      transform: translateX(100%); transition: transform .24s ease; display: grid; grid-template-rows: auto minmax(0,1fr) auto;
+    }
+    .drawer-mask.open .drawer { transform: translateX(0); }
+    .drawer-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding: 18px 20px; }
+    .drawer-head h2 { margin: 0; font-size: 16px; }
+    .close-btn { width: 34px; height: 34px; border: 0; border-radius: 8px; background: var(--soft); cursor: pointer; font-size: 20px; }
+    .drawer-body { overflow: auto; padding: 20px; display: grid; align-content: start; gap: 17px; }
+    .drawer-section h3 { margin: 0 0 9px; font-size: 12px; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .detail-item { border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+    .detail-item span { display: block; color: var(--muted); font-size: 10px; margin-bottom: 4px; }
+    .detail-item strong { font-size: 13px; }
+    .sample { border-radius: 8px; background: var(--soft); padding: 12px; line-height: 1.6; font-size: 12px; }
+    .sample b { display: block; margin-bottom: 4px; }
+    .suggestion { border: 1px solid #d8e8ff; border-radius: 8px; background: #f6f9ff; padding: 12px; color: #294f88; font-size: 12px; line-height: 1.6; }
+    .drawer-foot { border-top: 1px solid var(--line); padding: 14px 20px; display: flex; justify-content: flex-end; gap: 9px; }
+    .primary-btn { height: 38px; border: 1px solid var(--brand); border-radius: 8px; background: var(--brand); color: #fff; padding: 0 15px; cursor: pointer; font-weight: 650; }
+
+    .toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 14px); border-radius: 8px; background: #172033; color: #fff; padding: 10px 14px; opacity: 0; pointer-events: none; transition: .2s ease; z-index: 50; font-size: 12px; box-shadow: var(--shadow); }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .hidden { display: none !important; }
+    .data-note { color: var(--muted); font-size: 10px; text-align: right; }
+
+    @media (max-width: 1100px) {
+      .app { grid-template-columns: 210px minmax(0, 1fr); }
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-2 { grid-template-columns: 1fr; }
+      .operation-grid { grid-template-columns: 1fr; }
+      .diagnostic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .topbar { align-items: flex-start; }
+      .top-actions { flex-wrap: wrap; justify-content: flex-end; }
+    }
+
+    @media (max-width: 760px) {
+      body { overflow: auto; }
+      .app { display: block; height: auto; }
+      .sidebar { display: none; }
+      .workspace { height: auto; min-height: 100vh; overflow: visible; }
+      .topbar { position: sticky; top: 0; padding: 12px 14px; align-items: stretch; flex-direction: column; }
+      .top-actions { justify-content: flex-start; }
+      .content { overflow: visible; padding: 15px 14px 24px; }
+      .kpis { grid-template-columns: 1fr; }
+      .diagnostic-grid { grid-template-columns: 1fr; }
+      .filter-select { min-width: 0; }
+      .funnel { grid-template-columns: 1fr; }
+      .funnel-step:not(:last-child)::after { content: "↓"; right: 50%; top: auto; bottom: -17px; transform: translateX(50%); }
+      .drop-row, .operation-bottom { grid-template-columns: 1fr; }
+      .usage-layout { grid-template-columns: 1fr; justify-items: center; }
+      .outline-btn { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div>
+        <div class="brand">
+          <div class="brand-mark" aria-label="营销贾维斯管家标识">
+            <svg viewBox="0 0 48 48" width="38" height="38" aria-hidden="true">
+              <defs><linearGradient id="jarvisGradient" x1="7" y1="6" x2="41" y2="43" gradientUnits="userSpaceOnUse"><stop stop-color="#4f8cff"/><stop offset="1" stop-color="#153eaa"/></linearGradient></defs>
+              <path d="M24 2.8 42.5 13.5v21L24 45.2 5.5 34.5v-21L24 2.8Z" fill="url(#jarvisGradient)"/>
+              <path d="M24 9.6 36.7 17v14L24 38.4 11.3 31V17L24 9.6Z" fill="none" stroke="#c9e6ff" stroke-width="1.5" opacity=".9"/>
+              <circle cx="24" cy="24" r="5.2" fill="#fff"/><path d="M24 15.1v3M24 29.9v3M15.1 24h3M29.9 24h3" stroke="#c9e6ff" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div><strong>营销贾维斯管家</strong><span>运营管理后台</span></div>
+        </div>
+        <nav class="nav">
+          <div class="nav-label">数据分析</div>
+          <button class="nav-item active"><span class="nav-icon">⌂</span>分析概览</button>
+          <div class="nav-label">产品入口</div>
+          <a class="nav-item" href="index.html"><span class="nav-icon">◫</span>返回问答前台</a>
+        </nav>
+      </div>
+      <div></div>
+      <div class="profile"><div class="avatar">PM</div><div><strong style="color:#374151">王小明</strong><br><span>工号：100862</span></div></div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div class="title"><h1>数据分析</h1><p>用真实问答反馈持续完善知识库、模型和使用体验</p></div>
+        <div class="top-actions">
+          <select class="filter-select" id="systemFilter" aria-label="系统筛选">
+            <option value="全部系统">全部系统</option><option value="营销平台">营销平台</option><option value="商品中心">商品中心</option><option value="定制活动">定制活动</option><option value="任务中心">任务中心</option><option value="里程">里程</option>
+          </select>
+          <select class="filter-select" id="roleFilter" aria-label="角色筛选">
+            <option value="全部角色">全部角色</option><option value="运营">运营</option><option value="产品">产品</option><option value="研发">研发</option>
+          </select>
+          <select class="filter-select" id="entryFilter" aria-label="入口筛选">
+            <option value="全部入口">全部入口</option><option value="专业版">专业版</option><option value="主站侧边栏">主站侧边栏</option>
+          </select>
+          <select class="filter-select" id="categoryFilter" aria-label="问题分类筛选">
+            <option value="全部问题">全部问题</option><option value="业务问答">业务问答</option><option value="文档审核">文档审核</option><option value="操作流程">操作流程</option><option value="新人带教">新人带教</option>
+          </select>
+          <div class="date-switch" id="dateSwitch"><button data-days="7">近7天</button><button class="active" data-days="30">近30天</button><button data-days="90">近90天</button></div>
+          <button class="outline-btn" id="exportBtn">导出数据</button>
+        </div>
+      </header>
+
+      <section class="content" id="content">
+        <div class="content-inner">
+          <div class="context-row">
+            <p><strong id="scopeText">全部系统 · 全部角色 · 近30天</strong>，数据更新于今天 10:30</p>
+            <span class="status-pill"><i class="status-dot"></i>数据采集正常</span>
+          </div>
+
+          <section class="kpis">
+            <article class="card kpi"><div class="kpi-head"><span class="kpi-label">有效提问数</span><span class="kpi-icon">Q</span></div><div class="kpi-value" data-kpi="questions">3,286</div><div class="kpi-foot"><span class="trend-up" data-trend="questions">↑ 18.6%</span><span>较上周期</span></div></article>
+            <article class="card kpi"><div class="kpi-head"><span class="kpi-label">问题解决率</span><span class="kpi-icon">✓</span></div><div class="kpi-value" data-kpi="resolved">82.4%</div><div class="kpi-foot"><div class="mini-track"><i data-track="resolved" style="width:82.4%"></i></div><span class="trend-up" data-trend="resolved">↑ 3.2%</span></div></article>
+            <article class="card kpi"><div class="kpi-head"><span class="kpi-label">待完善知识点</span><span class="kpi-icon">!</span></div><div class="kpi-value" data-kpi="gaps">18</div><div class="kpi-foot"><span class="trend-down" data-trend="gaps">其中 6 项高优先级</span></div></article>
+            <article class="card kpi"><div class="kpi-head"><span class="kpi-label">平均有效追问</span><span class="kpi-icon">↻</span></div><div class="kpi-value" data-kpi="turns">1.8 次</div><div class="kpi-foot"><span class="trend-up" data-trend="turns">↓ 0.3 次</span><span>回答更直接</span></div></article>
+          </section>
+
+          <section class="grid-2">
+            <article class="card panel">
+              <div class="panel-head"><div class="panel-title"><h2>问答趋势</h2><p>观察使用量与解决问题能力是否同步提升</p></div><div class="metric-tabs" id="metricTabs"><button class="active" data-metric="resolved">提问数 / 已解决</button><button data-metric="negative">提问数 / 负反馈</button></div></div>
+              <div class="chart-wrap"><div class="y-axis"><span>600</span><span>450</span><span>300</span><span>150</span><span>0</span></div><div class="plot"><div class="grid-lines"><i></i><i></i><i></i><i></i><i></i></div><div class="bars" id="bars"></div></div></div>
+              <div class="legend"><span><i></i>有效提问</span><span><i></i><b id="legendMetric">已解决</b></span></div>
+            </article>
+
+            <article class="card panel">
+              <div class="panel-head"><div class="panel-title"><h2>问答结果分布</h2><p>基于用户反馈和追问结果综合判断</p></div><span class="tag blue">共 3,286 次</span></div>
+              <div class="quality-list">
+                <div class="quality-row"><strong>直接解决</strong><div class="quality-track"><i style="width:68%"></i></div><span>68%</span></div>
+                <div class="quality-row"><strong>追问后解决</strong><div class="quality-track"><i style="width:14.4%"></i></div><span>14.4%</span></div>
+                <div class="quality-row"><strong>未解决</strong><div class="quality-track"><i style="width:10.8%"></i></div><span>10.8%</span></div>
+                <div class="quality-row"><strong>未反馈</strong><div class="quality-track"><i style="width:6.8%"></i></div><span>6.8%</span></div>
+              </div>
+              <div class="split-note">
+                <div class="note-box"><b>已交叉验证</b><strong>81.2%</strong><span>2,668 次</span></div>
+                <div class="note-box"><b>部分验证</b><strong>9.8%</strong><span>322 次</span></div>
+                <div class="note-box"><b>资料冲突</b><strong>3.1%</strong><span>模型分歧 12.4%</span></div>
+                <div class="note-box"><b>证据不足</b><strong>5.9%</strong><span>无法收敛 2.3%</span></div>
+              </div>
+            </article>
+          </section>
+
+          <section class="diagnostic-grid">
+            <article class="card compact-card">
+              <h2>用户反馈</h2><p>已提交反馈 1,842 次，分别统计用户评价</p>
+              <div class="stat-lines">
+                <div class="stat-line"><span>有帮助</span><strong>1,512 <small>82.1%</small></strong><div class="stat-bar"><i style="width:82.1%"></i></div></div>
+                <div class="stat-line"><span>不准确</span><strong>204 <small>11.1%</small></strong><div class="stat-bar"><i style="width:11.1%"></i></div></div>
+                <div class="stat-line"><span>缺少依据</span><strong>126 <small>6.8%</small></strong><div class="stat-bar"><i style="width:6.8%"></i></div></div>
+              </div>
+              <div class="metric-callout">有帮助率 <strong>82.1%</strong>，与准确率分别统计</div>
+            </article>
+            <article class="card compact-card">
+              <h2>模型验证结果</h2><p>记录答案一致、分歧及最终无法收敛问题</p>
+              <div class="stat-lines">
+                <div class="stat-line"><span>模型答案一致</span><strong>2,879 <small>87.6%</small></strong><div class="stat-bar"><i style="width:87.6%"></i></div></div>
+                <div class="stat-line"><span>模型答案分歧</span><strong>407 <small>12.4%</small></strong><div class="stat-bar"><i style="width:12.4%"></i></div></div>
+                <div class="stat-line"><span>最终无法收敛</span><strong>76 <small>2.3%</small></strong><div class="stat-bar"><i style="width:2.3%"></i></div></div>
+              </div>
+              <div class="metric-callout">一致答案仍执行证据核验和反例检查</div>
+            </article>
+            <article class="card compact-card">
+              <h2>人工复核</h2><p>已完成复核 240 条，结果不使用用户反馈替代</p>
+              <div class="stat-lines">
+                <div class="stat-line"><span>正确 / 部分正确</span><strong>164 / 43</strong><div class="stat-bar"><i style="width:86.2%"></i></div></div>
+                <div class="stat-line"><span>错误 / 无法判断</span><strong>25 / 8</strong><div class="stat-bar"><i style="width:13.8%"></i></div></div>
+                <div class="stat-line"><span>主要错误根因</span><strong>检索遗漏 34%</strong><div class="stat-bar"><i style="width:34%"></i></div></div>
+              </div>
+              <div class="metric-callout">人工复核正确率 <strong>68.3%</strong>，资料过期占 22%</div>
+            </article>
+            <article class="card compact-card">
+              <h2>提问分布</h2><p>按系统和问题分类观察提问集中方向</p>
+              <div class="stat-lines">
+                <div class="stat-line"><span>营销平台 / 商品中心</span><strong>42% / 22%</strong><div class="stat-bar"><i style="width:64%"></i></div></div>
+                <div class="stat-line"><span>任务 / 定制活动 / 里程</span><strong>15% / 12% / 9%</strong><div class="stat-bar"><i style="width:36%"></i></div></div>
+                <div class="stat-line"><span>业务问答 / 其他 Skill</span><strong>64% / 36%</strong><div class="stat-bar"><i style="width:64%"></i></div></div>
+              </div>
+              <div class="metric-callout">当前最高频：新人资格、优惠叠加、奖励到账</div>
+            </article>
+          </section>
+
+          <section class="operation-grid">
+            <article class="card panel">
+              <div class="panel-head"><div class="panel-title"><h2>用户操作漏斗</h2><p>按去重用户统计，从打开入口到反馈定位流失环节</p></div><span class="tag green">问题发送率 73.8%</span></div>
+              <div class="funnel">
+                <div class="funnel-step"><div class="funnel-box"><strong>4,600</strong><span>打开问答入口</span></div><div class="funnel-rate">基准 100%</div></div>
+                <div class="funnel-step"><div class="funnel-box"><strong>3,958</strong><span>选择系统或 Skill</span></div><div class="funnel-rate"><b>86.0%</b> 到达</div></div>
+                <div class="funnel-step"><div class="funnel-box"><strong>3,395</strong><span>发送问题</span></div><div class="funnel-rate"><b>85.8%</b> 到达</div></div>
+                <div class="funnel-step"><div class="funnel-box"><strong>3,286</strong><span>成功获得回答</span></div><div class="funnel-rate"><b>96.8%</b> 成功</div></div>
+                <div class="funnel-step"><div class="funnel-box"><strong>1,140</strong><span>追问或反馈</span></div><div class="funnel-rate">34.7% 互动</div></div>
+              </div>
+              <div class="drop-row">
+                <div class="drop-item"><span>打开后未发送</span><strong>1,205 人</strong><b>主要发生在系统选择前</b></div>
+                <div class="drop-item"><span>发送失败</span><strong>43 次</strong><b>图片过大占 41.9%</b></div>
+                <div class="drop-item"><span>回答失败</span><strong>109 次</strong><b>检索 46 · 超时 38 · 验证失败 25</b></div>
+                <div class="drop-item"><span>回答前离开</span><strong>80 次</strong><b>平均等待 18.6 秒</b></div>
+              </div>
+            </article>
+
+            <article class="card panel">
+              <div class="panel-head"><div class="panel-title"><h2>入口与功能使用</h2><p>判断入口、Skill 和上下文能力的优化方向</p></div><span class="tag blue">侧边栏转专业版 18.7%</span></div>
+              <div class="usage-layout">
+                <div class="donut"><div class="donut-center"><strong>5,180</strong><span>总访问量</span></div></div>
+                <div class="entry-list">
+                  <div class="entry-row"><span><i></i>专业版直接访问</span><strong>3,212 · 62%</strong></div>
+                  <div class="entry-row"><span><i></i>主站侧边栏打开</span><strong>1,968 · 38%</strong></div>
+                  <div class="conversion-note">按侧边栏有效会话统计<strong>前往专业版 368 次 · 转化率 18.7%</strong></div>
+                </div>
+              </div>
+              <div class="operation-bottom">
+                <div><h3 class="subhead">功能使用率</h3><div class="feature-list">
+                  <div class="feature-row"><span>系统选择</span><div class="feature-track"><i style="width:86%"></i></div><span>86%</span></div>
+                  <div class="feature-row"><span>业务问答</span><div class="feature-track"><i style="width:58%"></i></div><span>58%</span></div>
+                  <div class="feature-row"><span>图片上传</span><div class="feature-track"><i style="width:31%"></i></div><span>31%</span></div>
+                  <div class="feature-row"><span>使用当前页</span><div class="feature-track"><i style="width:24%"></i></div><span>24%</span></div>
+                  <div class="feature-row"><span>文档审核</span><div class="feature-track"><i style="width:18%"></i></div><span>18%</span></div>
+                  <div class="feature-row"><span>操作流程</span><div class="feature-track"><i style="width:14%"></i></div><span>14%</span></div>
+                  <div class="feature-row"><span>新人带教</span><div class="feature-track"><i style="width:10%"></i></div><span>10%</span></div>
+                </div></div>
+                <div><h3 class="subhead">回答性能</h3><div class="performance">
+                  <div class="performance-item"><span>回答成功率</span><strong>96.8%</strong><small>↑ 1.2%</small></div>
+                  <div class="performance-item"><span>平均回答耗时</span><strong>11.4 秒</strong><small>↓ 2.6 秒</small></div>
+                  <div class="performance-item"><span>侧边栏成功率</span><strong>95.1%</strong><small>图片场景偏低</small></div>
+                  <div class="performance-item"><span>专业版成功率</span><strong>97.5%</strong><small>保持稳定</small></div>
+                </div></div>
+              </div>
+            </article>
+          </section>
+
+          <section class="card optimization" id="optimization">
+            <div class="optimization-head"><div class="panel-head"><div class="panel-title"><h2>优化机会</h2><p>只保留一期可直接指导知识、模型和操作体验改进的数据</p></div><span class="tag orange" id="todoCount">18 项待处理</span></div></div>
+            <div class="section-tabs" id="sectionTabs"><button class="active" data-section="knowledge">知识库与问答模型</button><button data-section="experience">系统操作体验</button><button data-section="review">问题复核</button></div>
+            <div class="table-wrap"><table><thead id="tableHead"></thead><tbody id="tableBody"></tbody></table></div>
+          </section>
+          <div class="data-note">数据说明：问题样例、用户标识和业务 ID 均为脱敏 Mock 数据；报表仅展示用户有权管理的系统范围。</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="drawer-mask" id="drawerMask">
+    <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+      <div class="drawer-head"><div><span class="tag blue" id="drawerTag">知识缺口</span><h2 id="drawerTitle" style="margin-top:7px">新人券资格判断</h2></div><button class="close-btn" id="closeDrawer" aria-label="关闭">×</button></div>
+      <div class="drawer-body">
+        <section class="drawer-section"><h3>问题概况</h3><div class="detail-grid"><div class="detail-item"><span id="detailQuestionsLabel">相关提问</span><strong id="detailQuestions">126 次</strong></div><div class="detail-item"><span id="detailRateLabel">未解决率</span><strong id="detailRate">38.1%</strong></div><div class="detail-item"><span>主要系统</span><strong id="detailSystem">营销平台</strong></div><div class="detail-item"><span>优先级</span><strong id="detailPriority">高</strong></div></div></section>
+        <section class="drawer-section"><h3>典型用户问题</h3><div class="sample" id="detailSample"><b>运营 · 2天前</b>用户之前取消过一笔订单，现在还算新人吗？为什么新人券没有发下来？</div></section>
+        <section class="drawer-section hidden" id="reviewAnswerSection"><h3>最终回答</h3><div class="sample" id="detailAnswer"></div></section>
+        <section class="drawer-section hidden" id="reviewEvidenceSection"><h3>主要依据与验证状态</h3><div class="detail-grid"><div class="detail-item"><span>主要依据</span><strong id="detailEvidence"></strong></div><div class="detail-item"><span>验证状态</span><strong id="detailValidation"></strong></div><div class="detail-item" style="grid-column:1/-1"><span>用户反馈</span><strong id="detailFeedback"></strong></div></div></section>
+        <section class="drawer-section"><h3 id="detailFindingTitle">贾维斯当前表现</h3><div class="sample" id="detailFinding">回答能定位到新人资格，但对“取消订单是否计入历史订单”的规则引用不一致，导致用户继续追问。</div></section>
+        <section class="drawer-section"><h3 id="detailActionTitle">建议优化动作</h3><div class="suggestion" id="detailAction">补充《新人资格判断口径》知识点，明确已支付、已取消、已退款订单的判断规则；补充 5 条边界问法作为评测集。</div></section>
+      </div>
+      <div class="drawer-foot"><button class="outline-btn" id="ignoreBtn">暂不处理</button><button class="primary-btn" id="createTaskBtn">标记为优化项</button></div>
+    </aside>
+  </div>
+  <div class="toast" id="toast">操作成功</div>
+
+  <script>
+    const datasets = {
+      knowledge: [
+        { rank: 1, title: "新人券资格判断", sub: "相似问法集中，取消/退款边界口径缺失", system: "营销平台", count: 126, rate: "38.1%", type: "知识缺口", priority: "高", sample: "用户之前取消过一笔订单，现在还算新人吗？为什么新人券没有发下来？", finding: "回答能定位到新人资格，但对“取消订单是否计入历史订单”的规则引用不一致，导致用户继续追问。", action: "补充《新人资格判断口径》知识点，明确已支付、已取消、已退款订单的判断规则；补充 5 条边界问法作为评测集。" },
+        { rank: 2, title: "优惠叠加优先级", sub: "跨商品、券和活动的说明存在冲突", system: "商品中心", count: 98, rate: "32.7%", type: "答案冲突", priority: "高", sample: "会员价和满减券同时满足时，到底先算哪个？", finding: "不同证据分别描述了商品价计算和优惠试算，模型缺少完整计算顺序。", action: "将价格试算调用链和优惠优先级合并为一份权威知识，并提高最新接口文档的检索权重。" },
+        { rank: 3, title: "任务奖励到账时间", sub: "回答正确但缺少延迟与补发说明", system: "任务中心", count: 76, rate: "27.6%", type: "答案不完整", priority: "中", sample: "任务已经完成半小时了，为什么奖励还没有到账？", finding: "答案只说明了发放条件，没有覆盖异步发放时效、失败重试和人工补发入口。", action: "补齐正常时效、异常状态和补发方式，并沉淀为标准回答结构。" },
+        { rank: 4, title: "活动渠道映射", sub: "同一渠道在配置与接口中名称不同", system: "定制活动", count: 61, rate: "24.6%", type: "召回偏差", priority: "中", sample: "同程小程序和微信小程序是同一个渠道配置吗？", finding: "用户使用运营名称提问，知识中主要记录接口枚举，导致召回不稳定。", action: "增加运营名称、产品名称和接口枚举的同义词映射。" }
+      ],
+      experience: [
+        { rank: 1, title: "系统选择频繁修改", sub: "用户提问后才发现关联错了系统", system: "跨系统", count: 214, rate: "6.5%", type: "选择成本", priority: "高", sample: "用户先选择营销平台，回答后又增加商品中心并重复问题。", finding: "跨系统问题需要用户提前理解系统边界，初次使用者经常选不全。", action: "输入问题后自动推荐关联系统，并允许用户一键补充后重新回答。" },
+        { rank: 2, title: "截图上传后补充描述", sub: "用户不清楚只传图能否直接识别", system: "全部系统", count: 137, rate: "4.2%", type: "操作不清晰", priority: "高", sample: "用户上传截图后停留 18 秒，再输入“帮我看看哪里配错了”。", finding: "上传完成后的反馈较弱，用户不确定系统已识别图片。", action: "上传后展示图片缩略图与“已识别，可直接发送”的明确状态。" },
+        { rank: 3, title: "重复追问证据来源", sub: "研发用户更关注代码位置和版本", system: "营销平台", count: 89, rate: "2.7%", type: "结果呈现", priority: "中", sample: "这个结论对应哪个类、哪一行代码？是当前线上版本吗？", finding: "研发视角下，默认答案的代码证据不够醒目，需二次追问。", action: "对研发角色默认展开代码文件、方法和版本信息；运营角色仍优先展示自然语言结论。" },
+        { rank: 4, title: "历史对话查找耗时", sub: "相似标题较多，难以快速定位", system: "全部系统", count: 54, rate: "1.6%", type: "查找效率", priority: "中", sample: "用户连续滚动历史对话后重新新建了相同问题。", finding: "历史对话只有标题和系统，缺少搜索与时间筛选。", action: "增加历史对话关键词搜索，保留系统标签和最近访问排序。" }
+      ],
+      review: [
+        { rank: 1, title: "新人资格边界回答错误", sub: "用户反馈：不准确 · 问题 Q202608050126", system: "营销平台", count: 3, rate: "模型误判", type: "复核中", priority: "高", reviewResult: "待复核", regression: "未加入", sample: "有过已取消订单的用户是否仍然属于新人？", answer: "取消订单不会影响新人身份，用户仍可领取新人券。", evidence: "《新人活动规则 v1.3》（已过期）", validation: "已交叉验证", feedback: "不准确：线上实际未发券", finding: "两个模型结论一致，但共同引用了已过期的需求文档，未以当前代码规则为准。", action: "确认线上代码口径，修正答案并降低旧文档权重；复核通过后加入新人资格回归案例。" },
+        { rank: 2, title: "优惠叠加缺少代码依据", sub: "用户反馈：缺少依据 · 问题 Q202608040089", system: "商品中心", count: 2, rate: "检索遗漏", type: "待处理", priority: "高", reviewResult: "部分正确", regression: "未加入", sample: "会员价和满减券同时命中时，最终价格按什么顺序计算？", answer: "先计算会员价，再基于会员价判断满减券是否可用。", evidence: "商品价格说明 v2.1，未召回代码位置", validation: "部分验证", feedback: "缺少依据：需要类和方法位置", finding: "业务结论基本正确，但检索没有召回价格试算核心方法，研发用户无法验证。", action: "补充代码证据并修正检索范围，沉淀一条研发模式标准答案。" },
+        { rank: 3, title: "奖励到账时间回答不完整", sub: "人工抽样 · 问题 Q202608030214", system: "任务中心", count: 1, rate: "条件遗漏", type: "已修正", priority: "中", reviewResult: "部分正确", regression: "已加入", sample: "任务完成后奖励多久到账，失败了会自动补发吗？", answer: "奖励通常在任务完成后 10 分钟内到账。", evidence: "奖励发放接口、任务中心代码 v2026.08", validation: "部分验证", feedback: "人工抽样：遗漏失败补发条件", finding: "原回答遗漏了异步重试次数和人工补发条件。", action: "已补充奖励发放时效和异常处理知识，并加入回归案例 RC-018。" },
+        { rank: 4, title: "活动渠道资料冲突", sub: "交叉验证：资料冲突 · 问题 Q202608020167", system: "定制活动", count: 2, rate: "资料冲突", type: "待确认", priority: "中", reviewResult: "无法判断", regression: "未加入", sample: "微信小程序渠道是否包含同程小程序？", answer: "当前资料无法形成可靠结论，请确认渠道最新口径。", evidence: "活动渠道文档 v2.0、接口枚举 v2026.08", validation: "资料冲突", feedback: "缺少依据：需要确认当前生效版本", finding: "需求文档和当前接口枚举定义不一致，模型定向追问后仍无法收敛。", action: "由定制活动产品确认当前生效口径，确认前相似问题统一展示“资料冲突”。" }
+      ]
+    };
+
+    const periodData = {
+      7: { questions: "864", resolved: "80.8%", gaps: "9", turns: "1.9 次", qTrend: "↑ 12.4%", rTrend: "↑ 1.8%", labels: ["周五","周六","周日","周一","周二","周三","今天"], primary: [58,46,53,72,79,83,91], secondary: [45,37,41,55,65,68,74] },
+      30: { questions: "3,286", resolved: "82.4%", gaps: "18", turns: "1.8 次", qTrend: "↑ 18.6%", rTrend: "↑ 3.2%", labels: ["第1周","第2周","第3周","第4周","本周一","本周二","今天"], primary: [47,55,62,67,73,81,89], secondary: [34,42,49,55,60,68,74] },
+      90: { questions: "9,742", resolved: "84.1%", gaps: "31", turns: "1.7 次", qTrend: "↑ 26.3%", rTrend: "↑ 6.7%", labels: ["2月","3月","4月","5月","6月","7月","8月"], primary: [38,45,50,58,64,75,91], secondary: [24,31,36,44,51,63,77] }
+    };
+
+    let currentDays = 30;
+    let currentSection = "knowledge";
+    let currentMetric = "resolved";
+
+    const bars = document.querySelector("#bars");
+    const tableHead = document.querySelector("#tableHead");
+    const tableBody = document.querySelector("#tableBody");
+    const drawerMask = document.querySelector("#drawerMask");
+    const toast = document.querySelector("#toast");
+
+    function renderChart() {
+      const data = periodData[currentDays];
+      bars.innerHTML = data.labels.map((label, i) => {
+        const second = currentMetric === "resolved" ? data.secondary[i] : Math.max(8, Math.round(data.primary[i] * .16));
+        return `<div class="bar-col"><div class="bar-stack"><i class="bar" style="height:${data.primary[i]}%" title="${label} 有效提问"></i><i class="bar secondary" style="height:${second}%" title="${label} ${currentMetric === "resolved" ? "已解决" : "负反馈"}"></i></div><span class="x-label">${label}</span></div>`;
+      }).join("");
+      document.querySelector("#legendMetric").textContent = currentMetric === "resolved" ? "已解决" : "负反馈";
+    }
+
+    function renderKpis() {
+      const data = periodData[currentDays];
+      document.querySelector('[data-kpi="questions"]').textContent = data.questions;
+      document.querySelector('[data-kpi="resolved"]').textContent = data.resolved;
+      document.querySelector('[data-kpi="gaps"]').textContent = data.gaps;
+      document.querySelector('[data-kpi="turns"]').textContent = data.turns;
+      document.querySelector('[data-trend="questions"]').textContent = data.qTrend;
+      document.querySelector('[data-trend="resolved"]').textContent = data.rTrend;
+      document.querySelector('[data-track="resolved"]').style.width = data.resolved;
+      updateScope();
+    }
+
+    function renderTable() {
+      const isKnowledge = currentSection === "knowledge";
+      const isReview = currentSection === "review";
+      if (isReview) {
+        tableHead.innerHTML = `<tr><th style="width:58px">排序</th><th>复核问题</th><th>主要系统</th><th>错误根因</th><th>复核结果</th><th>回归案例</th><th>优先级</th><th style="width:72px">操作</th></tr>`;
+        tableBody.innerHTML = datasets.review.map((item, index) => `<tr data-row="${index}"><td><span class="rank ${item.rank <= 2 ? "top" : ""}">${item.rank}</span></td><td><strong>${item.title}</strong><small>${item.sub}</small></td><td>${item.system}</td><td>${item.rate}</td><td><span class="tag blue">${item.reviewResult}</span></td><td><span class="tag ${item.regression === "已加入" ? "green" : "orange"}">${item.regression}</span></td><td><span class="tag ${item.priority === "高" ? "red" : "orange"}">${item.priority}</span></td><td><button class="row-action">复核</button></td></tr>`).join("");
+      } else {
+        tableHead.innerHTML = `<tr><th style="width:58px">排序</th><th>${isKnowledge ? "问题主题" : "操作现象"}</th><th>主要系统</th><th>${isKnowledge ? "相关提问" : "影响次数"}</th><th>${isKnowledge ? "未解决率" : "占提问数"}</th><th>问题类型</th><th>优先级</th><th style="width:72px">操作</th></tr>`;
+        tableBody.innerHTML = datasets[currentSection].map((item, index) => `<tr data-row="${index}"><td><span class="rank ${item.rank <= 2 ? "top" : ""}">${item.rank}</span></td><td><strong>${item.title}</strong><small>${item.sub}</small></td><td>${item.system}</td><td><strong>${item.count} 次</strong></td><td>${item.rate}</td><td><span class="tag blue">${item.type}</span></td><td><span class="tag ${item.priority === "高" ? "red" : "orange"}">${item.priority}</span></td><td><button class="row-action">查看</button></td></tr>`).join("");
+      }
+      document.querySelector("#todoCount").textContent = isKnowledge ? "18 项待处理" : isReview ? "7 项待复核" : "11 项待评估";
+    }
+
+    function updateScope() {
+      const system = document.querySelector("#systemFilter").value;
+      const role = document.querySelector("#roleFilter").value;
+      const entry = document.querySelector("#entryFilter").value;
+      const category = document.querySelector("#categoryFilter").value;
+      document.querySelector("#scopeText").textContent = `${system} · ${role} · ${entry} · ${category} · 近${currentDays}天`;
+    }
+
+    function openDrawer(item) {
+      document.querySelector("#drawerTitle").textContent = item.title;
+      document.querySelector("#drawerTag").textContent = item.type;
+      document.querySelector("#detailQuestions").textContent = `${item.count} 次`;
+      document.querySelector("#detailRate").textContent = item.rate;
+      document.querySelector("#detailQuestionsLabel").textContent = currentSection === "review" ? "关联记录" : currentSection === "experience" ? "影响次数" : "相关提问";
+      document.querySelector("#detailRateLabel").textContent = currentSection === "review" ? "错误根因" : currentSection === "experience" ? "占提问数" : "未解决率";
+      document.querySelector("#detailSystem").textContent = item.system;
+      document.querySelector("#detailPriority").textContent = item.priority;
+      document.querySelector("#detailSample").innerHTML = `<b>${currentSection === "knowledge" ? "运营" : currentSection === "review" ? "待复核问题" : "用户行为样例"} · 2天前</b>${item.sample}`;
+      document.querySelector("#detailFinding").textContent = item.finding;
+      document.querySelector("#detailAction").textContent = item.action;
+      const isReview = currentSection === "review";
+      document.querySelector("#reviewAnswerSection").classList.toggle("hidden", !isReview);
+      document.querySelector("#reviewEvidenceSection").classList.toggle("hidden", !isReview);
+      document.querySelector("#detailFindingTitle").textContent = isReview ? "复核发现" : "贾维斯当前表现";
+      document.querySelector("#detailActionTitle").textContent = isReview ? "修正结论与处理动作" : "建议优化动作";
+      if (isReview) {
+        document.querySelector("#detailAnswer").textContent = item.answer;
+        document.querySelector("#detailEvidence").textContent = item.evidence;
+        document.querySelector("#detailValidation").textContent = item.validation;
+        document.querySelector("#detailFeedback").textContent = item.feedback;
+      }
+      document.querySelector("#createTaskBtn").textContent = currentSection === "review" ? "完成复核并记录" : "标记为优化项";
+      drawerMask.classList.add("open");
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    document.querySelector("#dateSwitch").addEventListener("click", event => {
+      const button = event.target.closest("button[data-days]");
+      if (!button) return;
+      currentDays = Number(button.dataset.days);
+      document.querySelectorAll("#dateSwitch button").forEach(entry => entry.classList.toggle("active", entry === button));
+      renderKpis(); renderChart();
+    });
+
+    document.querySelector("#metricTabs").addEventListener("click", event => {
+      const button = event.target.closest("button[data-metric]");
+      if (!button) return;
+      currentMetric = button.dataset.metric;
+      document.querySelectorAll("#metricTabs button").forEach(entry => entry.classList.toggle("active", entry === button));
+      renderChart();
+    });
+
+    document.querySelector("#sectionTabs").addEventListener("click", event => {
+      const button = event.target.closest("button[data-section]");
+      if (!button) return;
+      currentSection = button.dataset.section;
+      document.querySelectorAll("#sectionTabs button").forEach(entry => entry.classList.toggle("active", entry === button));
+      renderTable();
+    });
+
+    tableBody.addEventListener("click", event => {
+      const row = event.target.closest("tr[data-row]");
+      if (row) openDrawer(datasets[currentSection][Number(row.dataset.row)]);
+    });
+
+    ["systemFilter", "roleFilter", "entryFilter", "categoryFilter"].forEach(id => document.querySelector(`#${id}`).addEventListener("change", () => {
+      updateScope();
+      showToast("筛选条件已更新，数据已重新计算");
+    }));
+
+    document.querySelector("#closeDrawer").addEventListener("click", () => drawerMask.classList.remove("open"));
+    drawerMask.addEventListener("click", event => { if (event.target === drawerMask) drawerMask.classList.remove("open"); });
+    document.addEventListener("keydown", event => { if (event.key === "Escape") drawerMask.classList.remove("open"); });
+    document.querySelector("#createTaskBtn").addEventListener("click", () => { drawerMask.classList.remove("open"); showToast(currentSection === "review" ? "复核结果已记录，可继续加入标准答案或回归案例" : "已标记为优化项，并进入待办清单"); });
+    document.querySelector("#ignoreBtn").addEventListener("click", () => { drawerMask.classList.remove("open"); showToast("已暂时忽略，本周期不再提示"); });
+    document.querySelector("#exportBtn").addEventListener("click", () => showToast("分析数据已生成，正在下载 Excel 文件"));
+
+    renderKpis(); renderChart(); renderTable();
+  </script>
+</body>
+</html>

@@ -20,4 +20,5 @@ https://你的GitHub用户名.github.io/marketing-logic-admin-pages/
 ## 本地文件
 
 - `index.html`：业务逻辑问答助手原型
+- `analytics.html`：后台数据分析交互原型
 - `.nojekyll`：避免 GitHub Pages 使用 Jekyll 处理静态文件
