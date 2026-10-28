@@ -1,0 +1,2831 @@
+<!doctype html>
+<html lang="en" data-visualize-standalone>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>火车票辅营立减配置原型</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+
+</head>
+<body>
+<iframe id="codex-visualization" sandbox="allow-scripts" referrerpolicy="no-referrer" title="火车票辅营立减配置原型" data-srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot; data-visualize-standalone&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;火车票辅营立减配置原型&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 16px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans:
+    -apple-system-body, ui-sans-serif, -apple-system, system-ui, &quot;Segoe UI&quot;,
+    Helvetica, &quot;Apple Color Emoji&quot;, Arial, sans-serif, &quot;Segoe UI Emoji&quot;,
+    &quot;Segoe UI Symbol&quot;;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --icon-size: 16px;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --corner-shape: round;
+  --radius: var(--border-radius-lg, 8px);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: var(--visualize-paint-gutter, 0px);
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans) !important;
+  -webkit-font-smoothing: antialiased;
+  font-size: var(--font-size-base);
+  line-height: calc(var(--font-size-base) * 1.625);
+  font-weight: var(--font-weight-normal);
+}
+
+.cursor-interaction {
+  cursor: var(--cursor-interaction, pointer);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: var(--cursor-interaction, pointer);
+  text-decoration: none;
+  text-underline-offset: 2px;
+  font-weight: inherit;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+.table {
+  font-family: var(--font-sans);
+}
+
+h1 {
+  font-size: calc(var(--font-size-base) * 1.5);
+  line-height: 1.3333333333;
+}
+
+h2 {
+  font-size: calc(var(--font-size-base) * 1.25);
+  line-height: 1.4;
+}
+h3 {
+  font-size: calc(var(--font-size-base) * 1.125);
+  line-height: 1.5555555556;
+}
+h4 {
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+}
+h5,
+h6 {
+  font-size: var(--font-size-base);
+  line-height: calc(var(--font-size-base) * 1.625);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+b,
+strong,
+th {
+  font-weight: 600;
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+pre,
+pre code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: calc(var(--font-size-base) * 0.875);
+  line-height: calc(var(--font-size-base) * 1.625);
+  font-family: var(--font-sans);
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 5%, transparent);
+}
+.table :is(th, td):not(:last-child) {
+  padding-inline-end: calc(var(--font-size-base) * 1.5);
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead :is(th, td) {
+  border-bottom-color: var(--border-strong, var(--input));
+  padding-block: calc(var(--font-size-base) / 2);
+  line-height: var(--font-size-base);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+.table tbody :is(th, td) {
+  padding-block: calc(var(--font-size-base) * 0.625);
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 8px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: var(--corner-shape);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+.widget {
+  min-width: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  box-shadow: 0 0 0 0.5px var(--border-strong, var(--border));
+  color: var(--foreground);
+  background: var(--background);
+}
+
+#widget &gt; :not(.card, .widget, .progress) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  border: 1px solid var(--border);
+  corner-shape: var(--corner-shape);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-sans);
+  padding: 5px 12px;
+  border-color: color-mix(
+    in oklab,
+    light-dark(var(--primary-foreground), var(--foreground)) 5%,
+    transparent
+  );
+  border-radius: var(--radius-2xl);
+  color: light-dark(var(--primary-foreground), var(--foreground));
+  background: light-dark(var(--foreground), var(--popover));
+  box-shadow: 0 8px 18px rgb(15 23 42 / 20%);
+  letter-spacing: -0.15px;
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+hr {
+  width: 100%;
+  height: 1px;
+  margin-block: 6px;
+  border: 0;
+  background: var(--border);
+}
+
+.nav {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.progress {
+  display: flex;
+  height: 8px;
+  margin-block: calc((var(--line-height-normal, 1.5em) - 8px) / 2);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+}
+
+.progress-bar:only-child {
+  border-radius: var(--radius-full);
+}
+
+.progress-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border: 0;
+  background: var(--viz-series-1);
+}
+
+.viz-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  color: color-mix(in srgb, var(--foreground) 40%, var(--muted-foreground));
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+  font-family: var(--font-sans);
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: var(--font-weight-normal);
+  line-height: 1;
+}
+
+small,
+.text-small {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.nav-link,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+/* Match inline alignment without overriding a containing flex or grid layout. */
+.btn,
+.nav-link,
+.form-control,
+.form-select,
+.form-range,
+.form-check {
+  vertical-align: middle;
+}
+
+.btn,
+.nav-link {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  corner-shape: var(--corner-shape);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: inherit;
+  font-family: var(--font-sans);
+  height: fit-content;
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  padding-inline: var(--control-spacing, 12px);
+  border-color: transparent;
+  border-radius: var(--radius-full);
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: var(--font-weight-normal);
+  line-height: 18px;
+}
+
+.btn {
+  border-color: var(--border);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: var(--cursor-interaction, pointer);
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: light-dark(
+    color-mix(in srgb, var(--foreground) 5.5%, transparent),
+    color-mix(in srgb, var(--foreground) 8%, transparent)
+  );
+}
+
+.nav-link:not(:disabled):not([aria-disabled=&quot;true&quot;]):hover {
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.btn-primary {
+  border-color: var(--border);
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: border-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: border-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--muted-foreground);
+  background: light-dark(
+    color-mix(in srgb, var(--foreground) 5.5%, transparent),
+    color-mix(in srgb, var(--foreground) 8%, transparent)
+  );
+}
+
+.nav-pills .nav-link {
+  min-width: 0;
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.nav-justified .nav-link {
+  flex: 1 1 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.nav-pills .nav-link.active {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+/* Shared preview chrome; product styles stay inside each variant. */
+.viz-dotted-background {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--foreground) 14%, transparent) 0.8px,
+    transparent 0.8px
+  );
+  background-position: center;
+  background-size: 16px 16px;
+}
+
+.viz-carousel {
+  position: relative;
+  min-width: 0;
+}
+
+.viz-carousel:has(&gt; .viz-carousel-controls) {
+  min-height: calc(60px + var(--viz-carousel-picker-height, 0px));
+  padding-bottom: 60px;
+}
+
+.viz-carousel &gt; [data-variant][hidden] {
+  display: none !important;
+}
+
+.viz-carousel &gt; [data-variant] {
+  isolation: isolate;
+}
+
+.viz-carousel-controls {
+  --viz-carousel-hover: light-dark(
+    color-mix(in srgb, var(--foreground) 5.4%, transparent),
+    color-mix(in srgb, var(--foreground) 7.8%, transparent)
+  );
+  position: absolute;
+  z-index: 2;
+  bottom: 8px;
+  left: 50%;
+  display: flex;
+  width: max-content;
+  /* Leave room for the host&#x27;s design-controls launcher at the trailing edge. */
+  max-width: calc(100% - 96px);
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  /* Match the settings dropdown chrome independently of the content font size. */
+  font-size: 13px;
+  font-weight: var(--font-weight-normal);
+  line-height: 18px;
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+/* Keep authored mockup button styles out of the shared carousel chrome. */
+.viz-carousel-controls button,
+.viz-carousel-picker &gt; summary {
+  display: flex !important;
+  height: auto !important;
+  min-height: 30px;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px;
+  padding: 0 6px !important;
+  -webkit-app-region: no-drag;
+  border: 0 !important;
+  border-radius: 14px !important;
+  color: inherit !important;
+  background: transparent !important;
+  font: inherit !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.viz-carousel-controls &gt; button,
+.viz-carousel-picker &gt; summary {
+  position: relative;
+  isolation: isolate;
+}
+
+.viz-carousel-controls &gt; button {
+  --icon-size: 16px;
+  width: 30px !important;
+  padding: 0 !important;
+}
+
+.viz-carousel-picker &gt; summary {
+  padding-inline: 12px !important;
+}
+
+.viz-carousel-controls .viz-carousel-caret {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  margin: 0;
+  color: inherit;
+  transform: rotate(180deg);
+}
+
+.viz-carousel-controls &gt; button &gt; svg,
+.viz-carousel-controls .viz-carousel-caret,
+.viz-carousel-count {
+  opacity: 0.5;
+}
+
+.viz-carousel-controls &gt; button::before,
+.viz-carousel-picker &gt; summary::before {
+  position: absolute;
+  z-index: -1;
+  inset: 3px;
+  border-radius: 12px;
+  content: &quot;&quot;;
+  pointer-events: none;
+}
+
+.viz-carousel-controls &gt; button:hover::before,
+.viz-carousel-picker &gt; summary:hover::before {
+  background: var(--viz-carousel-hover);
+}
+
+.viz-carousel-controls &gt; button,
+.viz-carousel-controls [data-lucide],
+.viz-carousel-controls .lucide {
+  flex-shrink: 0;
+}
+
+.viz-carousel-picker {
+  min-width: 0;
+}
+
+.viz-carousel-picker &gt; summary {
+  min-width: 0;
+  list-style: none;
+}
+
+.viz-carousel-picker &gt; summary::-webkit-details-marker {
+  display: none;
+}
+
+.viz-carousel-count {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.viz-carousel-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viz-carousel-options {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 4px);
+  left: 0;
+  display: flex;
+  max-height: 240px;
+  flex-direction: column;
+  gap: 2px;
+  overflow: auto;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--background);
+  box-shadow: 0 4px 12px light-dark(rgb(0 0 0 / 6%), rgb(0 0 0 / 25%));
+}
+
+.viz-carousel-options &gt; button {
+  border-radius: max(0px, calc(var(--radius-lg) - 5px)) !important;
+  width: 100% !important;
+  min-height: 28px;
+  justify-content: flex-start !important;
+  padding: 4px 8px !important;
+  font-size: var(--font-size-small) !important;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.viz-carousel-options &gt; [aria-current=&quot;true&quot;],
+.viz-carousel-options &gt; button:hover {
+  background: var(--viz-carousel-hover) !important;
+}
+
+.btn:disabled,
+.nav-link:disabled,
+.nav-link[aria-disabled=&quot;true&quot;] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  height: calc(12px + 2 * var(--control-spacing, 12px));
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  padding-inline: calc(4px + var(--control-spacing, 12px) / 2);
+  border-color: var(--input);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--popover) 96%, transparent);
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.4285714286;
+}
+.form-control:is(
+  [type=&quot;file&quot;],
+  [type=&quot;date&quot;],
+  [type=&quot;datetime-local&quot;],
+  [type=&quot;month&quot;],
+  [type=&quot;week&quot;],
+  [type=&quot;color&quot;]
+) {
+  height: calc(12px + 2 * var(--control-spacing, 12px));
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  line-height: 18px;
+}
+.form-control:is(
+  [type=&quot;date&quot;],
+  [type=&quot;datetime-local&quot;],
+  [type=&quot;month&quot;],
+  [type=&quot;week&quot;]
+) {
+  padding-inline: var(--control-spacing, 12px);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+  padding: 0;
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+  min-height: calc(10px + 2 * var(--control-spacing, 12px));
+  padding-inline: var(--control-spacing, 12px);
+  margin-inline-end: var(--control-spacing, 12px);
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: calc(12px + 2 * var(--control-spacing, 12px));
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: var(--corner-shape);
+}
+
+textarea.form-control {
+  height: auto;
+  resize: vertical;
+  min-height: 96px;
+  padding: 8px 10px;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: none;
+}
+.form-control:disabled {
+  color: var(--muted-foreground);
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+  opacity: 1;
+}
+.form-control[aria-invalid=&quot;true&quot;] {
+  border-color: var(--red);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--red) 20%, transparent);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: fit-content;
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  margin: 0;
+  /* The secondary icon role is 14px at compact density and 16px at web density. */
+  --icon-size: calc(10px + var(--control-spacing, 12px) / 2);
+  /* Settings dropdowns retain a 12px inset and a 4px text-to-chevron gap. */
+  padding: 0 calc(16px + var(--icon-size)) 0 12px;
+  outline: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent calc(50% - 0.6px),
+      var(--muted-foreground) calc(50% - 0.6px) calc(50% + 0.6px),
+      transparent calc(50% + 0.6px)
+    ),
+    linear-gradient(
+      135deg,
+      transparent calc(50% - 0.6px),
+      var(--muted-foreground) calc(50% - 0.6px) calc(50% + 0.6px),
+      transparent calc(50% + 0.6px)
+    );
+  background-position:
+    calc(100% - 12px - var(--icon-size) / 2) 50%,
+    calc(100% - 12px - var(--icon-size) * 0.18) 50%;
+  background-repeat: no-repeat;
+  background-size: calc(var(--icon-size) * 0.32) calc(var(--icon-size) * 0.32);
+  cursor: var(--cursor-interaction, default);
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: var(--font-weight-normal);
+  line-height: 18px;
+}
+
+.form-select :is(option, optgroup) {
+  color: var(--popover-foreground);
+  background-color: var(--popover);
+}
+
+.form-select :is(option, optgroup):disabled {
+  color: var(--muted-foreground);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: light-dark(
+    color-mix(in srgb, var(--foreground) 5.5%, transparent),
+    color-mix(in srgb, var(--foreground) 8%, transparent)
+  );
+}
+
+.form-select:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+.form-select:disabled {
+  opacity: 0.4;
+}
+
+.form-check {
+  display: flex;
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  corner-shape: round;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  width: calc(10px + var(--control-spacing, 12px) / 2);
+  height: calc(10px + var(--control-spacing, 12px) / 2);
+  border-color: var(--border-strong, var(--input));
+  border-radius: calc(var(--radius-sm) / 2);
+  background-color: transparent;
+  color: var(--foreground);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:is(:checked, :indeterminate) {
+  border-color: var(--border-strong, var(--input));
+  background-color: color-mix(in srgb, var(--popover) 96%, transparent);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+  background-color: var(--foreground);
+}
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:indeterminate::before {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 65%;
+  height: 6.65%;
+  margin: auto;
+  border-radius: var(--radius-full);
+  background: var(--foreground);
+  mask: none;
+  content: &quot;&quot;;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  border-radius: var(--radius-full);
+  width: 16px;
+  height: 16px;
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--input);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 0;
+  background: radial-gradient(
+    circle,
+    var(--primary-foreground) 0 3px,
+    var(--foreground) 3px
+  );
+  box-shadow: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:focus-visible {
+  border-color: var(--ring);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+.form-check:not(.form-switch) .form-check-input[type=&quot;radio&quot;]:disabled,
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;radio&quot;]:disabled
+  + .form-check-label {
+  opacity: 0.5;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+  border-color: #fff;
+  background: #fff;
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--blue);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+  outline: none;
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  accent-color: var(--primary);
+  height: calc(12px + 2 * var(--control-spacing, 12px));
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  outline: none;
+  border-radius: var(--radius-full);
+  color: var(--foreground);
+  background: transparent;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  background: var(--form-range-track, var(--border));
+  height: 2px;
+  border-radius: var(--radius-full);
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  margin-top: -9px;
+  border-color: transparent;
+  background: currentColor;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Outline the native track and thumb, preserving the larger input hit area. */
+.form-range:focus-visible::-webkit-slider-runnable-track {
+  outline: 2px auto Highlight;
+  outline-color: -webkit-focus-ring-color;
+}
+
+.form-range::-moz-range-track {
+  background: var(--form-range-track, var(--border));
+  height: 2px;
+  border-radius: var(--radius-full);
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  border-color: transparent;
+  background: currentColor;
+  box-shadow: var(--shadow-sm);
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  outline: 2px solid Highlight;
+  outline-offset: 2px;
+}
+
+.form-range:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+  [aria-pressed=&quot;true&quot;],
+  [aria-selected=&quot;true&quot;],
+  .is-selected
+) {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--blue);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible,
+.nav-link:focus-visible {
+  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.viz-carousel-controls :is(button, summary):focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px !important;
+}
+
+/* Web recipes are the default, including on renderers without inline style queries. */
+@supports (border-radius: if(style(--corner-shape: round): 1px; else: 2px)) {
+  /* Match the host&#x27;s proportional text-sm scale at every text preference. */
+  .tooltip,
+  .viz-badge,
+  .btn,
+  .nav-link,
+  .form-control,
+  .form-select {
+    font-size: if(
+      style(--corner-shape: round): round(
+          nearest,
+          calc(var(--font-size-base) * 14 / 16),
+          1px
+        );
+        else: round(nearest, calc(var(--font-size-base) * 13 / 14), 1px)
+    );
+  }
+
+  .btn,
+  .nav-link,
+  .form-select {
+    border-radius: if(
+      style(--corner-shape: round): var(--radius-full); else: var(--radius-lg)
+    );
+  }
+
+  .form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+    border-radius: if(
+      style(--corner-shape: round): calc(var(--radius-sm) / 2);
+        else: calc(var(--radius-lg) * 0.4)
+    );
+  }
+
+  .tooltip {
+    font-weight: if(
+      style(--corner-shape: round): 600; else: var(--font-weight-normal)
+    );
+  }
+}
+
+@media (pointer: coarse) {
+  .viz-carousel:has(&gt; .viz-carousel-controls) {
+    min-height: calc(76px + var(--viz-carousel-picker-height, 0px));
+    padding-bottom: 76px;
+  }
+
+  .btn,
+  .nav-link,
+  .viz-carousel-controls button,
+  .viz-carousel-picker &gt; summary,
+  .form-control,
+  .form-select {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Keep small-screen WebKit from zooming when a text field receives focus. */
+  .form-control,
+  .form-select {
+    font-size: max(16px, calc(var(--font-size-base) * 14 / 16));
+    font-size: max(
+      16px,
+      round(nearest, calc(var(--font-size-base) * 14 / 16), 1px)
+    );
+  }
+  .form-control:is(
+    [type=&quot;file&quot;],
+    [type=&quot;date&quot;],
+    [type=&quot;datetime-local&quot;],
+    [type=&quot;month&quot;],
+    [type=&quot;week&quot;],
+    [type=&quot;time&quot;],
+    [type=&quot;color&quot;]
+  ) {
+    height: 44px;
+    min-height: 44px;
+    font-size: max(16px, calc(var(--font-size-base) * 14 / 16));
+    font-size: max(
+      16px,
+      round(nearest, calc(var(--font-size-base) * 14 / 16), 1px)
+    );
+  }
+
+  .form-control[type=&quot;file&quot;]::file-selector-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control-color[type=&quot;color&quot;] {
+    width: 44px;
+    height: 44px;
+  }
+
+  .form-control:is(
+    [type=&quot;date&quot;],
+    [type=&quot;datetime-local&quot;],
+    [type=&quot;month&quot;],
+    [type=&quot;time&quot;],
+    [type=&quot;week&quot;]
+  ) {
+    min-width: 0;
+    max-width: 100%;
+    padding-block: 8px;
+  }
+
+  .form-check {
+    min-height: 44px;
+    padding-inline: 15px;
+  }
+
+  .form-check-input {
+    position: relative;
+  }
+
+  .form-check-input::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: &quot;&quot;;
+    transform: translate(-50%, -50%);
+  }
+
+  .form-check-label {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .form-range {
+    height: 44px;
+    touch-action: pan-y;
+  }
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: var(--icon-size) !important;
+  height: var(--icon-size) !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script type=&quot;application/json&quot; id=&quot;codex-visualization-widget-state&quot;&gt;__CODEX_VISUALIZATION_WIDGET_STATE__&lt;/script&gt;
+&lt;script&gt;(() =&gt; {
+  const root = document.documentElement;
+  const mediaQuery = globalThis.matchMedia(&quot;(prefers-color-scheme: dark)&quot;);
+  const apply = Reflect.apply;
+  const isArray = Array.isArray;
+  const hasOwn = Object.hasOwn;
+  const parentWindow = globalThis.parent;
+  const stringify = JSON.stringify;
+  const parse = JSON.parse;
+  const encode = TextEncoder.prototype.encode.bind(new TextEncoder());
+  const initialStateElement = document.getElementById(
+    &quot;codex-visualization-widget-state&quot;,
+  );
+  const initialGlobals = parse(initialStateElement?.textContent ?? &quot;{}&quot;);
+  initialStateElement?.remove();
+  /** @type {Record&lt;string, unknown&gt; | null} */
+  let state = initialGlobals.widgetState ?? null;
+  const statePersistence = initialGlobals.statePersistence ?? &quot;none&quot;;
+  let nextStateRequestId = 0;
+  /** @type {Map&lt;number, { resolve: () =&gt; void; reject: (error: Error) =&gt; void; timeout: ReturnType&lt;typeof globalThis.setTimeout&gt;; serializedState: string }&gt;} */
+  const pendingStateWrites = new Map();
+  const persistenceError = () =&gt;
+    Object.assign(
+      new Error(&quot;The host could not persist the widget state update&quot;),
+      {
+        code: -32000,
+        data: { code: &quot;widget_state_persistence_failed&quot;, retryable: false },
+      },
+    );
+  /**
+   * @param {object} prototype
+   * @param {string} property
+   */
+  const getPrototypeGetter = (prototype, property) =&gt; {
+    // oxlint-disable-next-line typescript/unbound-method -- invoked through captured Reflect.apply
+    const getter = Object.getOwnPropertyDescriptor(prototype, property)?.get;
+    if (getter == null) {
+      throw new Error(`Missing ${property} getter`);
+    }
+    return getter;
+  };
+  const getMessageData = getPrototypeGetter(MessageEvent.prototype, &quot;data&quot;);
+  const getMessagePorts = getPrototypeGetter(MessageEvent.prototype, &quot;ports&quot;);
+  const getMessageSource = getPrototypeGetter(MessageEvent.prototype, &quot;source&quot;);
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const addHostMessageListener = MessagePort.prototype.addEventListener;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const postHostMessage = MessagePort.prototype.postMessage;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const startHostPort = MessagePort.prototype.start;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const stopMessagePropagation = Event.prototype.stopImmediatePropagation;
+  /** @type {MessagePort | null} */
+  let hostPort = null;
+  const postToHost = (type, payload) =&gt; {
+    if (hostPort != null) {
+      apply(postHostMessage, hostPort, [{ type, ...payload }]);
+    }
+  };
+  const openExternal = ({ href }) =&gt; {
+    if (globalThis.navigator.userActivation?.isActive === true) {
+      postToHost(&quot;open-external&quot;, { href });
+    }
+  };
+  const sendFollowUpMessage = ({ context, prompt, title }) =&gt; {
+    if (globalThis.navigator.userActivation?.isActive === true) {
+      postToHost(&quot;follow-up&quot;, { context, prompt, title });
+    }
+    return Promise.resolve();
+  };
+  /**
+   * @param {Record&lt;string, unknown&gt; | ((previous: Record&lt;string, unknown&gt; | null) =&gt; Record&lt;string, unknown&gt;)} next
+   * @returns {Promise&lt;void&gt;}
+   */
+  const setWidgetState = async (next) =&gt; {
+    const nextState = typeof next === &quot;function&quot; ? next(state) : next;
+    if (
+      nextState == null ||
+      typeof nextState !== &quot;object&quot; ||
+      isArray(nextState)
+    ) {
+      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+    }
+    const inputState = stringify(
+      nextState,
+      (_key, /** @type {unknown} */ value) =&gt; {
+        if (
+          typeof value === &quot;undefined&quot; ||
+          typeof value === &quot;function&quot; ||
+          typeof value === &quot;symbol&quot; ||
+          (typeof value === &quot;number&quot; &amp;&amp; !Number.isFinite(value))
+        ) {
+          throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+        }
+        return value;
+      },
+    );
+    const parsedState = parse(inputState);
+    if (
+      parsedState == null ||
+      typeof parsedState !== &quot;object&quot; ||
+      isArray(parsedState)
+    ) {
+      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+    }
+    const storedState = {
+      modelContent: null,
+      privateContent: null,
+      ...parsedState,
+    };
+    const serializedState = stringify(storedState);
+    if (encode(serializedState).length &gt; 16 * 1024) {
+      throw new TypeError(
+        &quot;Widget state must be a JSON object of at most 16 KiB&quot;,
+      );
+    }
+    if (
+      hasOwn(storedState, &quot;imageIds&quot;) &amp;&amp;
+      (!isArray(storedState.imageIds) ||
+        storedState.imageIds.some(
+          (/** @type {unknown} */ id) =&gt; typeof id !== &quot;string&quot;,
+        ))
+    ) {
+      throw new TypeError(&quot;Widget state imageIds must be an array of strings&quot;);
+    }
+    if (storedState.imageIds?.length &gt; 0) {
+      throw Object.assign(
+        new TypeError(&quot;Visualization state does not support image attachments&quot;),
+        { code: -32602, data: { code: &quot;images_unsupported&quot; } },
+      );
+    }
+    state = storedState;
+    globalThis.openai.widgetState = state;
+    globalThis.dispatchEvent(
+      new CustomEvent(&quot;openai:set_globals&quot;, {
+        detail: { globals: { widgetState: state } },
+      }),
+    );
+    if (statePersistence === &quot;none&quot;) {
+      throw persistenceError();
+    }
+    const id = ++nextStateRequestId;
+    return new Promise((resolve, reject) =&gt; {
+      const timeout = globalThis.setTimeout(() =&gt; {
+        pendingStateWrites.delete(id);
+        reject(persistenceError());
+      }, 30_000);
+      pendingStateWrites.set(id, { resolve, reject, timeout, serializedState });
+      postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
+    });
+  };
+  const syncTheme = () =&gt; {
+    const theme = mediaQuery.matches ? &quot;dark&quot; : &quot;light&quot;;
+    root.dataset.theme = theme;
+    globalThis.openai = {
+      ...globalThis.openai,
+      openExternal,
+      sendFollowUpMessage,
+      setWidgetState,
+      theme,
+      visualizationStyleVariables: {},
+      visualizationTheme: theme,
+      widgetState: state,
+      statePersistence,
+      stateModelContext: &quot;none&quot;,
+    };
+    globalThis.dispatchEvent(
+      new CustomEvent(&quot;openai:set_globals&quot;, {
+        detail: { globals: globalThis.openai },
+      }),
+    );
+  };
+  const sendHeight = () =&gt; {
+    postToHost(&quot;height&quot;, {
+      height: Math.ceil(
+        Math.max(
+          document.body.scrollHeight,
+          document.body.getBoundingClientRect().height,
+        ),
+      ),
+    });
+  };
+
+  globalThis.addEventListener(
+    &quot;message&quot;,
+    (event) =&gt; {
+      const data = apply(getMessageData, event, []);
+      const ports = apply(getMessagePorts, event, []);
+      const source = apply(getMessageSource, event, []);
+      if (
+        hostPort != null ||
+        source !== parentWindow ||
+        typeof data !== &quot;object&quot; ||
+        data?.type !== &quot;codex-visualization-initialize&quot; ||
+        !isArray(ports) ||
+        ports.length !== 1
+      ) {
+        return;
+      }
+      apply(stopMessagePropagation, event, []);
+      const nextHostPort = ports[0];
+      try {
+        apply(addHostMessageListener, nextHostPort, [
+          &quot;message&quot;,
+          (event) =&gt; {
+            const data = apply(getMessageData, event, []);
+            if (typeof data === &quot;object&quot; &amp;&amp; data?.type === &quot;measure&quot;) {
+              sendHeight();
+            } else if (
+              typeof data === &quot;object&quot; &amp;&amp;
+              data?.type === &quot;widget-state-result&quot;
+            ) {
+              /** @type {unknown} */
+              const id = data.id;
+              if (typeof id !== &quot;number&quot;) {
+                return;
+              }
+              const pending = pendingStateWrites.get(id);
+              if (pending != null) {
+                pendingStateWrites.delete(id);
+                globalThis.clearTimeout(pending.timeout);
+                if (data.ok === true) {
+                  pending.resolve();
+                } else {
+                  pending.reject(persistenceError());
+                }
+              }
+            }
+          },
+        ]);
+        apply(startHostPort, nextHostPort, []);
+      } catch {
+        return;
+      }
+      hostPort = nextHostPort;
+      for (const [id, { serializedState }] of pendingStateWrites) {
+        postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
+      }
+      sendHeight();
+    },
+    { capture: true },
+  );
+  document.currentScript?.remove();
+  mediaQuery.addEventListener(&quot;change&quot;, syncTheme);
+  globalThis.addEventListener(&quot;click&quot;, (event) =&gt; {
+    if (event.defaultPrevented) {
+      return;
+    }
+    let element = null;
+    if (event.target instanceof globalThis.Element) {
+      element = event.target;
+    } else if (event.target instanceof globalThis.Node) {
+      element = event.target.parentElement;
+    }
+    const link = element?.closest(&quot;a[href]&quot;);
+    const href = link?.getAttribute(&quot;href&quot;);
+    if (href == null) {
+      return;
+    }
+    if (href.startsWith(&quot;#&quot;)) {
+      let id;
+      try {
+        id = decodeURIComponent(href.slice(1));
+      } catch {
+        return;
+      }
+      const target = id.length === 0 ? root : document.getElementById(id);
+      if (
+        target == null ||
+        globalThis.navigator.userActivation?.isActive !== true
+      ) {
+        return;
+      }
+      event.preventDefault();
+      postToHost(&quot;scroll-to&quot;, {
+        top: target.getBoundingClientRect().top + globalThis.scrollY,
+      });
+      return;
+    }
+    event.preventDefault();
+    openExternal({ href });
+  });
+  new ResizeObserver(sendHeight).observe(document.body);
+  syncTheme();
+})();
+&lt;/script&gt;
+&lt;div id=&quot;train-discount-admin&quot; lang=&quot;zh-CN&quot;&gt;
+  &lt;style&gt;
+    #train-discount-admin{--tc-blue:#409eff;--tc-ink:#303133;--tc-muted:#909399;--tc-border:#e4e7ed;--tc-bg:#f2f4f7;--tc-red:#f56c6c;color-scheme:light;font:14px/1.55 -apple-system,BlinkMacSystemFont,&quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,sans-serif;color:var(--tc-ink);background:var(--tc-bg);border-radius:4px;overflow:clip}
+    #train-discount-admin *{box-sizing:border-box}#train-discount-admin button,#train-discount-admin input,#train-discount-admin select,#train-discount-admin textarea{font:inherit}#train-discount-admin button{cursor:inherit}#train-discount-admin input[type=radio],#train-discount-admin input[type=checkbox]{accent-color:var(--tc-blue);width:14px;height:14px;margin:0;flex:none}#train-discount-admin [hidden]{display:none!important}
+    #train-discount-admin .tc-crumb{padding:11px 22px;color:#909399;font-size:12px;border-bottom:1px solid var(--tc-border);background:#f6f7f9}#train-discount-admin .tc-crumb span{margin:0 9px;color:#c0c4cc}#train-discount-admin .tc-crumb b{font-weight:500;color:#606266}
+    #train-discount-admin .tc-top{background:#fff;padding:20px 24px 0;border-bottom:1px solid var(--tc-border)}#train-discount-admin .tc-topline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-right:80px}#train-discount-admin h1{font-size:21px;margin:0;font-weight:500}#train-discount-admin .tc-draft{font-size:12px;padding:2px 8px;border-radius:3px;background:#f4f4f5;color:#909399}#train-discount-admin .tc-subtitle{font-size:12px;color:#909399;margin:6px 0 16px}#train-discount-admin .tc-nav{display:flex;gap:26px;flex-wrap:wrap}#train-discount-admin .tc-nav a{text-decoration:none;color:#606266;font-size:13px;padding:10px 0 12px;border-bottom:2px solid transparent}#train-discount-admin .tc-nav a:first-child{color:var(--tc-blue);border-color:var(--tc-blue)}
+    #train-discount-admin .tc-layout{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:16px;padding:18px}#train-discount-admin .tc-main{min-width:0}#train-discount-admin .tc-section{background:#fff;border:1px solid #ebeef5;border-radius:3px;margin-bottom:14px;scroll-margin-top:12px}#train-discount-admin .tc-section-head{display:flex;align-items:center;gap:9px;padding:14px 18px;border-bottom:1px solid #ebeef5;font-weight:500;font-size:14px}#train-discount-admin .tc-dot{width:3px;height:13px;background:var(--tc-blue);display:inline-block;border-radius:2px}#train-discount-admin .tc-new{font-size:11px;font-weight:400;padding:1px 5px;background:#ecf5ff;color:#409eff;border:1px solid #d9ecff;border-radius:3px}#train-discount-admin .tc-body{padding:20px 18px 8px}#train-discount-admin .tc-row{display:grid;grid-template-columns:116px minmax(0,1fr);gap:12px;margin-bottom:19px;align-items:start}#train-discount-admin .tc-label{font-size:13px;color:#606266;text-align:right;padding-top:7px}#train-discount-admin .tc-required:before{content:&#x27;*&#x27;;color:var(--tc-red);margin-right:5px}#train-discount-admin .tc-field{min-width:0}#train-discount-admin .tc-input,#train-discount-admin .tc-select,#train-discount-admin .tc-textarea{width:100%;background:#fff;color:#606266;border:1px solid #dcdfe6;border-radius:4px;padding:7px 10px;min-height:34px;outline-offset:2px;transition:border-color .15s}#train-discount-admin .tc-input:focus,#train-discount-admin .tc-select:focus,#train-discount-admin .tc-textarea:focus{border-color:var(--tc-blue)}#train-discount-admin .tc-input::placeholder,#train-discount-admin .tc-textarea::placeholder{color:#b4b8bf}#train-discount-admin .tc-input[readonly]{background:#f5f7fa;color:#909399}#train-discount-admin .tc-textarea{resize:vertical;min-height:75px}#train-discount-admin .tc-inline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-height:34px}#train-discount-admin .tc-choice{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#606266;min-height:29px}#train-discount-admin .tc-choice:has(input:checked){color:#409eff}#train-discount-admin .tc-help{font-size:12px;color:#909399;margin-top:6px}#train-discount-admin .tc-help a,#train-discount-admin .tc-link{color:#409eff;text-decoration:none}#train-discount-admin .tc-link{border:0;background:none;padding:0;font-size:12px}#train-discount-admin .tc-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}#train-discount-admin .tc-grid2 .tc-minilabel{font-size:12px;color:#909399;margin-bottom:5px}#train-discount-admin .tc-channels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px 8px}#train-discount-admin .tc-channels .tc-choice{font-size:12px}#train-discount-admin .tc-tools{display:flex;gap:14px;margin-top:7px}#train-discount-admin .tc-short{max-width:300px}#train-discount-admin .tc-range{display:flex;align-items:center;gap:9px}#train-discount-admin .tc-range input{min-width:0}#train-discount-admin .tc-unit{white-space:nowrap;font-size:13px;color:#909399}#train-discount-admin .tc-error{font-size:12px;color:var(--tc-red);margin-top:5px}#train-discount-admin .tc-invalid{border-color:var(--tc-red)!important}
+    #train-discount-admin .tc-node-options{display:flex;gap:8px;flex-wrap:wrap}#train-discount-admin .tc-node{display:flex;align-items:center;gap:7px;border:1px solid #dcdfe6;border-radius:4px;padding:9px 11px;color:#606266;font-size:13px}#train-discount-admin .tc-node:has(input:checked){background:#ecf5ff;border-color:#409eff;color:#409eff}#train-discount-admin .tc-inset{background:#fafbfc;border:1px solid #ebeef5;border-radius:4px;padding:14px;margin-top:10px}#train-discount-admin .tc-inset .tc-choice{margin-right:10px}#train-discount-admin .tc-chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px}#train-discount-admin .tc-chip{display:inline-flex;gap:7px;align-items:center;padding:3px 7px;border:1px solid #d9ecff;background:#ecf5ff;color:#409eff;border-radius:3px;font-size:12px}#train-discount-admin .tc-chip button{border:0;background:none;padding:0;color:inherit}#train-discount-admin .tc-seats{display:flex;gap:7px 16px;flex-wrap:wrap}#train-discount-admin .tc-input-unit{position:relative}#train-discount-admin .tc-input-unit input{padding-right:45px}#train-discount-admin .tc-input-unit&gt;span{position:absolute;right:12px;top:7px;color:#909399;font-size:13px}#train-discount-admin .tc-amount-types{display:flex;flex-wrap:wrap;margin-bottom:12px}#train-discount-admin .tc-amount-types label{position:relative;padding:8px 11px;border:1px solid #dcdfe6;font-size:12px;margin-right:-1px;display:flex;gap:5px;align-items:center;background:#fff}#train-discount-admin .tc-amount-types label:first-child{border-radius:4px 0 0 4px}#train-discount-admin .tc-amount-types label:last-child{border-radius:0 4px 4px 0}#train-discount-admin .tc-amount-types label:has(input:checked){color:#409eff;border-color:#409eff;z-index:1;background:#ecf5ff}#train-discount-admin .tc-readout{margin-top:10px;background:#f5f7fa;padding:9px 11px;font-size:12px;color:#606266;border-radius:3px}#train-discount-admin .tc-readout strong{font-weight:500;color:#409eff}#train-discount-admin .tc-policy{background:#f4f9ff;border-left:3px solid #a0cfff;padding:10px 12px;color:#606266;font-size:12px;margin-bottom:18px}#train-discount-admin .tc-policy b{font-weight:500;color:#409eff}#train-discount-admin .tc-policy p{margin:3px 0}
+    #train-discount-admin .tc-upload{display:flex;align-items:center;gap:12px;flex-wrap:wrap}#train-discount-admin .tc-upload-btn{width:90px;height:80px;border:1px dashed #c0ccda;border-radius:4px;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#909399;gap:5px;font-size:12px}#train-discount-admin .tc-upload-btn i{font-style:normal;font-size:23px}#train-discount-admin .tc-thumbnail{max-width:150px;max-height:80px;object-fit:contain;border:1px solid #ebeef5;border-radius:3px}#train-discount-admin .tc-counter{text-align:right;font-size:12px;color:#909399}#train-discount-admin .tc-button{border:1px solid #dcdfe6;background:#fff;color:#606266;padding:7px 16px;border-radius:4px;font-size:13px;white-space:nowrap}#train-discount-admin .tc-button:hover{background:#ecf5ff;color:#409eff;border-color:#b3d8ff}#train-discount-admin .tc-primary{background:#409eff;color:#fff;border-color:#409eff}#train-discount-admin .tc-primary:hover{background:#66b1ff;color:#fff}#train-discount-admin .tc-actions{background:#fff;border:1px solid #ebeef5;border-radius:3px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:15px 18px;margin-bottom:4px}#train-discount-admin .tc-save-state{font-size:12px;color:#909399}#train-discount-admin .tc-action-group{display:flex;gap:8px}#train-discount-admin .tc-note{font-size:12px;color:#909399;margin:8px 0 0}
+    #train-discount-admin .tc-aside{min-width:0}#train-discount-admin .tc-preview-card{border:1px solid #ebeef5;border-radius:4px;background:#fff;margin-bottom:14px;overflow:hidden}#train-discount-admin .tc-preview-head{padding:13px 14px;border-bottom:1px solid #ebeef5;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:500}#train-discount-admin .tc-preview-stage{padding:14px;background:#f8fafc}#train-discount-admin .tc-screen{background:#fff;border:1px solid #e6e9ef;border-radius:9px;overflow:hidden}#train-discount-admin .tc-mobile-top{padding:12px 11px;font-weight:500;text-align:center;font-size:13px;border-bottom:1px solid #f1f1f1}#train-discount-admin .tc-trip{padding:13px 11px 10px;font-size:12px;color:#606266}#train-discount-admin .tc-trip strong{font-size:16px;font-weight:500;display:block;color:#303133}#train-discount-admin .tc-offer{margin:0 9px 13px;border:1px solid #fde2b8;border-radius:5px;overflow:hidden}#train-discount-admin .tc-offer-top{background:#fff6e9;color:#b66b15;padding:6px 9px;font-size:11px}#train-discount-admin .tc-offer-content{padding:12px 9px}#train-discount-admin .tc-offer-title{font-size:13px;font-weight:500;word-break:break-word}#train-discount-admin .tc-offer-amount{font-size:26px;color:#f18a24;font-weight:500;margin:6px 0}#train-discount-admin .tc-offer-amount small{font-size:12px;color:#a9a9a9;font-weight:400}#train-discount-admin .tc-offer-desc{font-size:11px;color:#909399;white-space:pre-wrap;word-break:break-word}#train-discount-admin .tc-banner-image{display:block;max-height:110px;width:100%;object-fit:contain;background:#fafafa}#train-discount-admin .tc-mobile-button{background:#ff9e32;color:#fff;text-align:center;margin:0 9px 12px;padding:8px;font-size:12px;border-radius:5px}#train-discount-admin .tc-aside-help{font-size:11px;color:#909399;padding:0 13px 13px}#train-discount-admin .tc-summary{padding:12px 14px;font-size:12px}#train-discount-admin .tc-summary-row{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}#train-discount-admin .tc-summary-row span:first-child{color:#909399}#train-discount-admin .tc-summary-row span:last-child{text-align:right;word-break:break-word}#train-discount-admin .tc-summary-row:last-child{margin-bottom:0}#train-discount-admin .tc-aside-rule{font-size:12px;color:#606266;padding:12px 14px}#train-discount-admin .tc-aside-rule p{margin:0 0 7px}#train-discount-admin .tc-aside-rule p:last-child{margin:0}#train-discount-admin .tc-tag-blue{font-size:11px;color:#409eff;background:#ecf5ff;border:1px solid #d9ecff;border-radius:3px;padding:1px 5px}
+    #train-discount-admin .tc-message{padding:11px 15px;border:1px solid #b3e19d;background:#f0f9eb;color:#67c23a;font-size:13px;border-radius:4px;margin-bottom:14px}#train-discount-admin .tc-message.tc-warning{border-color:#fbc4c4;background:#fef0f0;color:#f56c6c}#train-discount-admin .tc-confirm{margin-top:12px;padding:14px;background:#f5f7fa;border-radius:4px}#train-discount-admin .tc-confirm h3{font-size:14px;font-weight:500;margin:0 0 8px}#train-discount-admin .tc-checks{display:grid;gap:6px;color:#606266;font-size:12px}#train-discount-admin .tc-legacy{padding:14px;background:#fdf6ec;border:1px solid #faecd8;color:#b88230;border-radius:4px;font-size:12px;margin-bottom:16px}#train-discount-admin .tc-margin-top{margin-top:9px}#train-discount-admin .tc-budget-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}#train-discount-admin .tc-budget-grid label{font-size:12px;color:#909399}#train-discount-admin .tc-budget-grid input{margin-top:5px}#train-discount-admin .tc-name-id{display:flex;gap:7px}#train-discount-admin .tc-name-id input:first-child{flex:1;min-width:0}#train-discount-admin .tc-name-id input:nth-child(2){flex:1;min-width:0}
+    #train-discount-admin .tc-condition{grid-template-columns:150px minmax(0,1fr)}#train-discount-admin .tc-condition .tc-label{text-align:left;padding-top:0}#train-discount-admin .tc-condition .tc-label .tc-choice{min-height:34px}#train-discount-admin .tc-limit-off{display:inline-block;padding-top:7px;color:#b0b4bc;font-size:12px}#train-discount-admin .tc-condition .tc-inset{margin-top:0}
+    #train-discount-admin .tc-optional-controls{display:flex;align-items:center;gap:8px 20px;flex-wrap:wrap;min-height:34px}#train-discount-admin .tc-optional-controls .tc-choice{white-space:nowrap}#train-discount-admin [data-condition-row] .tc-inset{margin-top:0}
+    @media(max-width:900px){#train-discount-admin .tc-layout{grid-template-columns:minmax(0,1fr)}#train-discount-admin .tc-aside{display:grid;grid-template-columns:1fr 1fr;gap:14px}#train-discount-admin .tc-preview-card{margin-bottom:0}#train-discount-admin .tc-aside .tc-preview-card:first-child{grid-row:span 2}#train-discount-admin .tc-preview-stage{display:flex;justify-content:center}#train-discount-admin .tc-screen{width:230px}#train-discount-admin .tc-channels{grid-template-columns:repeat(4,minmax(0,1fr))}}
+    @media(max-width:590px){#train-discount-admin .tc-layout{padding:10px}#train-discount-admin .tc-top{padding:16px 14px 0}#train-discount-admin .tc-topline{padding-right:65px}#train-discount-admin .tc-row,#train-discount-admin .tc-condition{grid-template-columns:1fr;gap:5px}#train-discount-admin .tc-label{text-align:left;padding:0}#train-discount-admin .tc-body{padding:15px 14px 5px}#train-discount-admin .tc-channels{grid-template-columns:repeat(2,minmax(0,1fr))}#train-discount-admin .tc-aside{display:block}#train-discount-admin .tc-preview-card{margin-bottom:12px}#train-discount-admin .tc-node-options{gap:6px}#train-discount-admin .tc-node{padding:8px}#train-discount-admin .tc-nav{gap:18px}#train-discount-admin .tc-name-id{flex-wrap:wrap}#train-discount-admin .tc-name-id input{flex-basis:40%!important}#train-discount-admin .tc-grid2{grid-template-columns:1fr}#train-discount-admin .tc-amount-types{gap:6px}#train-discount-admin .tc-amount-types label{border-radius:4px!important;margin:0}#train-discount-admin .tc-action-group{flex-wrap:wrap}}
+  &lt;/style&gt;
+
+  &lt;div class=&quot;tc-crumb&quot;&gt;营销活动管理 &lt;span&gt;›&lt;/span&gt; 营销活动配置 &lt;span&gt;›&lt;/span&gt; &lt;b&gt;新建&lt;/b&gt;&lt;/div&gt;
+  &lt;header class=&quot;tc-top&quot;&gt;
+    &lt;div class=&quot;tc-topline&quot;&gt;&lt;h1&gt;新建营销活动&lt;/h1&gt;&lt;span class=&quot;tc-draft&quot; id=&quot;tc-draft&quot;&gt;未保存&lt;/span&gt;&lt;/div&gt;
+    &lt;p class=&quot;tc-subtitle&quot;&gt;火车票活动 · 立减工具&lt;/p&gt;
+    &lt;nav class=&quot;tc-nav&quot; aria-label=&quot;表单分区&quot;&gt;&lt;a href=&quot;#tc-basic&quot;&gt;基本信息&lt;/a&gt;&lt;a href=&quot;#tc-display&quot;&gt;外显配置&lt;/a&gt;&lt;a href=&quot;#tc-limits&quot;&gt;立减条件&lt;/a&gt;&lt;a href=&quot;#tc-amounts&quot;&gt;金额配置&lt;/a&gt;&lt;a href=&quot;#tc-issue&quot;&gt;发放规则&lt;/a&gt;&lt;/nav&gt;
+  &lt;/header&gt;
+  &lt;div class=&quot;tc-layout&quot;&gt;
+    &lt;form class=&quot;tc-main&quot; id=&quot;tc-form&quot; novalidate&gt;
+      &lt;div id=&quot;tc-message&quot; class=&quot;tc-message&quot; role=&quot;status&quot; hidden&gt;&lt;/div&gt;
+      &lt;section class=&quot;tc-section&quot; id=&quot;tc-basic&quot;&gt;
+        &lt;div class=&quot;tc-section-head&quot;&gt;&lt;span class=&quot;tc-dot&quot;&gt;&lt;/span&gt;活动基本信息&lt;/div&gt;
+        &lt;div class=&quot;tc-body&quot;&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label tc-required&quot; for=&quot;tc-code&quot;&gt;活动编号&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;input id=&quot;tc-code&quot; class=&quot;tc-input tc-short&quot; value=&quot;TRAIN_LJ_20261028_001&quot; readonly&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label tc-required&quot; for=&quot;tc-name&quot;&gt;活动名称&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;input id=&quot;tc-name&quot; data-save class=&quot;tc-input&quot; value=&quot;火车票辅营立减 · B15&quot; placeholder=&quot;请输入活动名称&quot; maxlength=&quot;60&quot;&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-name&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;div class=&quot;tc-label tc-required&quot;&gt;活动时间&lt;/div&gt;&lt;div class=&quot;tc-field tc-grid2&quot;&gt;&lt;div&gt;&lt;div class=&quot;tc-minilabel&quot;&gt;开始时间&lt;/div&gt;&lt;input id=&quot;tc-start&quot; data-save class=&quot;tc-input&quot; type=&quot;datetime-local&quot; aria-label=&quot;活动开始时间&quot; value=&quot;2026-10-28T00:00&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;div class=&quot;tc-minilabel&quot;&gt;结束时间&lt;/div&gt;&lt;input id=&quot;tc-end&quot; data-save class=&quot;tc-input&quot; type=&quot;datetime-local&quot; aria-label=&quot;活动结束时间&quot; value=&quot;2026-11-30T23:59&quot;&gt;&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-end&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;div class=&quot;tc-label tc-required&quot;&gt;活动类型&lt;/div&gt;&lt;div class=&quot;tc-inline&quot;&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; checked name=&quot;business&quot; value=&quot;train&quot;&gt;火车票活动&lt;/label&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;div class=&quot;tc-label tc-required&quot;&gt;渠道体系&lt;/div&gt;&lt;div class=&quot;tc-inline&quot;&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; checked name=&quot;system&quot; value=&quot;normal&quot;&gt;普通渠道&lt;/label&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;div class=&quot;tc-label tc-required&quot;&gt;活动渠道&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div class=&quot;tc-channels&quot; id=&quot;tc-channel-list&quot;&gt;&lt;/div&gt;&lt;div class=&quot;tc-tools&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;tc-link cursor-interaction&quot; id=&quot;tc-all-channels&quot;&gt;全选&lt;/button&gt;&lt;button type=&quot;button&quot; class=&quot;tc-link cursor-interaction&quot; id=&quot;tc-invert-channels&quot;&gt;反选&lt;/button&gt;&lt;button type=&quot;button&quot; class=&quot;tc-link cursor-interaction&quot; id=&quot;tc-more-channels&quot;&gt;展开更多渠道&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-channels&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label tc-required&quot; for=&quot;tc-tool&quot;&gt;营销工具&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;select id=&quot;tc-tool&quot; class=&quot;tc-select tc-short&quot;&gt;&lt;option&gt;立减&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;div class=&quot;tc-label tc-required&quot;&gt;立减类型&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div class=&quot;tc-inline&quot;&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;ljType&quot; value=&quot;exchange&quot; data-save&gt;挽留里程立减&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;ljType&quot; value=&quot;mileage&quot; data-save&gt;里程立减&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;ljType&quot; value=&quot;ancillary&quot; checked data-save&gt;辅营立减 &lt;span class=&quot;tc-new&quot;&gt;新增&lt;/span&gt;&lt;/label&gt;&lt;/div&gt;&lt;div class=&quot;tc-help&quot; id=&quot;tc-type-help&quot;&gt;优惠抵扣辅营订单，由辅营拆分至商品。&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot; id=&quot;tc-node-row&quot;&gt;&lt;div class=&quot;tc-label tc-required&quot;&gt;补贴节点 &lt;span class=&quot;tc-new&quot;&gt;新增&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div class=&quot;tc-node-options&quot;&gt;&lt;label class=&quot;tc-node&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;node&quot; value=&quot;b15&quot; checked data-save&gt;B15 页面&lt;/label&gt;&lt;label class=&quot;tc-node&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;node&quot; value=&quot;b25&quot; data-save&gt;B25 金额明细&lt;/label&gt;&lt;label class=&quot;tc-node&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;node&quot; value=&quot;retain&quot; data-save&gt;待支付 · 支付挽留&lt;/label&gt;&lt;/div&gt;&lt;div class=&quot;tc-help&quot; id=&quot;tc-node-help&quot;&gt;在 B15 查询时匹配本活动。每个节点按条件匹配金额最大的活动。&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label&quot; for=&quot;tc-resource&quot;&gt;业务资源&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;input id=&quot;tc-resource&quot; data-save class=&quot;tc-input tc-short&quot; placeholder=&quot;请选择或输入业务资源&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label&quot; for=&quot;tc-description&quot;&gt;活动说明&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;textarea id=&quot;tc-description&quot; data-save class=&quot;tc-textarea&quot; placeholder=&quot;选填，仅用于内部备注&quot;&gt;火车票辅营套餐补贴&lt;/textarea&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;div class=&quot;tc-label&quot;&gt;活动状态&lt;/div&gt;&lt;div class=&quot;tc-inline&quot;&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;status&quot; value=&quot;active&quot; checked data-save&gt;有效&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;status&quot; value=&quot;inactive&quot; data-save&gt;无效&lt;/label&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;div class=&quot;tc-label&quot;&gt;下线预警&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div class=&quot;tc-inline&quot;&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;warning&quot; value=&quot;yes&quot; checked data-save&gt;开启&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;warning&quot; value=&quot;no&quot; data-save&gt;关闭&lt;/label&gt;&lt;/div&gt;&lt;div class=&quot;tc-inline tc-margin-top&quot; id=&quot;tc-warning-settings&quot;&gt;&lt;span class=&quot;tc-unit&quot;&gt;活动结束前&lt;/span&gt;&lt;input id=&quot;tc-warning-days&quot; data-save type=&quot;number&quot; min=&quot;1&quot; max=&quot;30&quot; class=&quot;tc-input&quot; style=&quot;width:80px&quot; value=&quot;5&quot; aria-label=&quot;下线预警提前天数&quot;&gt;&lt;span class=&quot;tc-unit&quot;&gt;天&lt;/span&gt;&lt;input id=&quot;tc-notify-person&quot; data-save class=&quot;tc-input&quot; style=&quot;flex:1;min-width:100px&quot; value=&quot;当前运营人员&quot; aria-label=&quot;通知人员&quot;&gt;&lt;/div&gt;&lt;div class=&quot;tc-inline tc-margin-top&quot; id=&quot;tc-notify&quot;&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;checkbox&quot; checked id=&quot;tc-wecom&quot; data-save&gt;企业微信&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;tc-wechat&quot; data-save&gt;微信&lt;/label&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;tc-section&quot; id=&quot;tc-display&quot;&gt;&lt;div class=&quot;tc-section-head&quot;&gt;&lt;span class=&quot;tc-dot&quot;&gt;&lt;/span&gt;外显信息配置 &lt;span class=&quot;tc-new&quot;&gt;扩展&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-body&quot;&gt;
+        &lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label tc-required&quot; for=&quot;tc-title&quot;&gt;活动外显标题&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;input id=&quot;tc-title&quot; data-save class=&quot;tc-input&quot; value=&quot;套餐专享立减&quot; maxlength=&quot;20&quot; placeholder=&quot;请输入活动外显标题&quot;&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-title&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;tc-row tc-ancillary-only&quot;&gt;&lt;label class=&quot;tc-label tc-required&quot; for=&quot;tc-rule&quot;&gt;规则文案 &lt;span class=&quot;tc-new&quot;&gt;新增&lt;/span&gt;&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;textarea id=&quot;tc-rule&quot; data-save class=&quot;tc-textarea&quot; maxlength=&quot;200&quot;&gt;购买指定辅营产品，每人立减{立减金额}元，具体优惠以订单展示为准。&lt;/textarea&gt;&lt;div class=&quot;tc-counter&quot; id=&quot;tc-rule-count&quot;&gt;0 / 200&lt;/div&gt;&lt;div class=&quot;tc-help&quot;&gt;可使用 &lt;button type=&quot;button&quot; class=&quot;tc-link cursor-interaction&quot; id=&quot;tc-insert-amount&quot;&gt;{立减金额}&lt;/button&gt; 展示营销计算后的每人金额。&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-rule&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;tc-row tc-ancillary-only&quot;&gt;&lt;div class=&quot;tc-label&quot;&gt;活动图片 &lt;span class=&quot;tc-new&quot;&gt;新增&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div class=&quot;tc-upload&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;tc-upload-btn cursor-interaction&quot; id=&quot;tc-upload-trigger&quot;&gt;&lt;i aria-hidden=&quot;true&quot;&gt;＋&lt;/i&gt;&lt;span&gt;上传图片&lt;/span&gt;&lt;/button&gt;&lt;input id=&quot;tc-image-file&quot; type=&quot;file&quot; accept=&quot;image/png,image/jpeg,image/webp&quot; hidden&gt;&lt;img id=&quot;tc-image-thumb&quot; class=&quot;tc-thumbnail&quot; alt=&quot;已上传的活动图片&quot; hidden&gt;&lt;button type=&quot;button&quot; id=&quot;tc-image-remove&quot; class=&quot;tc-link cursor-interaction&quot; hidden&gt;移除&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;tc-help&quot;&gt;支持 JPG、PNG、WebP，大小不超过 2 MB。&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-image&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;&lt;/section&gt;
+
+      &lt;section class=&quot;tc-section&quot; id=&quot;tc-limits&quot;&gt;
+        &lt;div class=&quot;tc-section-head&quot;&gt;&lt;span class=&quot;tc-dot&quot;&gt;&lt;/span&gt;火车票立减限制条件&lt;/div&gt;
+        &lt;div class=&quot;tc-body&quot;&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label&quot; for=&quot;tc-member&quot;&gt;可参与会员限制&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div id=&quot;tc-member-config&quot;&gt;&lt;select id=&quot;tc-member&quot; class=&quot;tc-select tc-short&quot; data-save&gt;&lt;option value=&quot;all&quot;&gt;不限&lt;/option&gt;&lt;option value=&quot;new&quot;&gt;新会员&lt;/option&gt;&lt;option value=&quot;old&quot;&gt;老会员&lt;/option&gt;&lt;option value=&quot;tags&quot;&gt;如来人群标签&lt;/option&gt;&lt;/select&gt;&lt;div class=&quot;tc-inset&quot; id=&quot;tc-tags-panel&quot; hidden&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;tagMode&quot; value=&quot;include&quot; checked data-save&gt;命中任一标签&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;tagMode&quot; value=&quot;exclude&quot; data-save&gt;排除命中标签&lt;/label&gt;&lt;input id=&quot;tc-tags&quot; class=&quot;tc-input tc-margin-top&quot; data-save placeholder=&quot;输入如来标签编码，多个用逗号分隔&quot;&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-tags&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;div class=&quot;tc-label&quot;&gt;会员参与次数&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div id=&quot;tc-count-config&quot;&gt;&lt;div class=&quot;tc-inline&quot;&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;countLimit&quot; value=&quot;unlimited&quot; checked data-save&gt;不限&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;countLimit&quot; value=&quot;limited&quot; data-save&gt;限制次数&lt;/label&gt;&lt;input id=&quot;tc-count&quot; class=&quot;tc-input&quot; type=&quot;number&quot; min=&quot;1&quot; step=&quot;1&quot; value=&quot;1&quot; style=&quot;width:78px&quot; aria-label=&quot;每位会员最多参与次数&quot; data-save&gt;&lt;span class=&quot;tc-unit&quot;&gt;次 / 会员&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-help&quot;&gt;活动有效期内，每位会员最多可参与的次数。&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-count&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-policy tc-ancillary-only&quot;&gt;&lt;b&gt;参与次数规则&lt;/b&gt;&lt;p&gt;创单参与成功即占用次数，未支付期间继续占用；收到订单取消消息后取消参与，返还次数。&lt;/p&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label&quot; for=&quot;tc-day-count&quot;&gt;日参与总量限制&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div id=&quot;tc-day-count-config&quot;&gt;&lt;div class=&quot;tc-inline&quot;&gt;&lt;input id=&quot;tc-day-count&quot; data-save class=&quot;tc-input&quot; type=&quot;number&quot; min=&quot;0&quot; step=&quot;1&quot; value=&quot;0&quot; style=&quot;width:110px&quot;&gt;&lt;span class=&quot;tc-unit&quot;&gt;次 / 天&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-help&quot;&gt;活动每日可参与的总次数，0 表示不限。&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-day-count&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div id=&quot;tc-ancillary-conditions&quot;&gt;
+            &lt;div class=&quot;tc-row&quot;&gt;&lt;div class=&quot;tc-label&quot;&gt;条件配置&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div class=&quot;tc-optional-controls&quot; role=&quot;group&quot; aria-label=&quot;可选限制条件&quot;&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;tc-enable-routes&quot; data-save&gt;通道类型&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;tc-enable-products&quot; data-save&gt;辅营产品&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;tc-enable-fare&quot; data-save&gt;票面价区间&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;tc-enable-order&quot; data-save&gt;辅营订单价格&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;tc-enable-seats&quot; data-save&gt;坐席&lt;/label&gt;&lt;/div&gt;&lt;div class=&quot;tc-help&quot;&gt;勾选后展开对应配置；未勾选的条件不限制。&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;tc-row&quot; data-condition-row=&quot;routes&quot; hidden&gt;&lt;div class=&quot;tc-label&quot;&gt;通道类型&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div id=&quot;tc-routes-panel&quot; class=&quot;tc-inset&quot;&gt;&lt;div class=&quot;tc-chips&quot; id=&quot;tc-route-chips&quot;&gt;&lt;/div&gt;&lt;div class=&quot;tc-inline&quot;&gt;&lt;input id=&quot;tc-route-entry&quot; class=&quot;tc-input&quot; style=&quot;flex:1;min-width:100px&quot; placeholder=&quot;输入通道类型名称或编码&quot; aria-label=&quot;通道类型名称或编码&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;tc-button cursor-interaction&quot; id=&quot;tc-add-route&quot;&gt;添加&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;tc-help&quot;&gt;可添加多个通道类型；命中其中任意一个即可。&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-routes&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;tc-row&quot; data-condition-row=&quot;products&quot; hidden&gt;&lt;div class=&quot;tc-label&quot;&gt;辅营产品&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div id=&quot;tc-products-panel&quot; class=&quot;tc-inset&quot;&gt;&lt;div class=&quot;tc-chips&quot; id=&quot;tc-product-chips&quot;&gt;&lt;/div&gt;&lt;div class=&quot;tc-name-id&quot;&gt;&lt;input id=&quot;tc-product-name&quot; class=&quot;tc-input&quot; placeholder=&quot;产品名称&quot; aria-label=&quot;辅营产品名称&quot;&gt;&lt;input id=&quot;tc-product-id&quot; class=&quot;tc-input&quot; placeholder=&quot;产品 ID&quot; aria-label=&quot;辅营产品 ID&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;tc-button cursor-interaction&quot; id=&quot;tc-add-product&quot;&gt;添加&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;tc-help&quot;&gt;可添加多个产品，按产品 ID 匹配。&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-products&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;tc-row&quot; data-condition-row=&quot;fare&quot; hidden&gt;&lt;div class=&quot;tc-label&quot;&gt;票面价区间&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div id=&quot;tc-fare-config&quot;&gt;&lt;div id=&quot;tc-fare-panel&quot; class=&quot;tc-range&quot;&gt;&lt;input id=&quot;tc-fare-min&quot; data-save class=&quot;tc-input&quot; type=&quot;number&quot; min=&quot;0&quot; placeholder=&quot;最低票面价&quot; aria-label=&quot;最低票面价&quot;&gt;&lt;span class=&quot;tc-unit&quot;&gt;至&lt;/span&gt;&lt;input id=&quot;tc-fare-max&quot; data-save class=&quot;tc-input&quot; type=&quot;number&quot; min=&quot;0&quot; placeholder=&quot;最高票面价&quot; aria-label=&quot;最高票面价&quot;&gt;&lt;span class=&quot;tc-unit&quot;&gt;元&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-help&quot;&gt;按单人火车票票面价匹配。&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-fare&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;tc-row&quot; data-condition-row=&quot;order&quot; hidden&gt;&lt;div class=&quot;tc-label&quot;&gt;辅营订单价格&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div id=&quot;tc-order-config&quot;&gt;&lt;div id=&quot;tc-order-panel&quot; class=&quot;tc-range&quot;&gt;&lt;input id=&quot;tc-order-min&quot; data-save class=&quot;tc-input&quot; type=&quot;number&quot; min=&quot;0&quot; placeholder=&quot;最低订单价格&quot; aria-label=&quot;最低辅营订单价格&quot;&gt;&lt;span class=&quot;tc-unit&quot;&gt;至&lt;/span&gt;&lt;input id=&quot;tc-order-max&quot; data-save class=&quot;tc-input&quot; type=&quot;number&quot; min=&quot;0&quot; placeholder=&quot;最高订单价格&quot; aria-label=&quot;最高辅营订单价格&quot;&gt;&lt;span class=&quot;tc-unit&quot;&gt;元&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-help&quot;&gt;按辅营查询时传入的订单价格匹配。&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-order&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;tc-row&quot; data-condition-row=&quot;seats&quot; hidden&gt;&lt;div class=&quot;tc-label&quot;&gt;坐席&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div id=&quot;tc-seats-panel&quot; class=&quot;tc-inset&quot;&gt;&lt;div class=&quot;tc-seats&quot; id=&quot;tc-seat-list&quot;&gt;&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-seats&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div id=&quot;tc-legacy-config&quot; hidden&gt;&lt;div class=&quot;tc-legacy&quot;&gt;当前为原有里程立减类型，沿用原配置。选择「辅营立减」查看新增配置。&lt;/div&gt;&lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label tc-required&quot; for=&quot;tc-exchange-rate&quot;&gt;金额兑换里程比例&lt;/label&gt;&lt;div class=&quot;tc-inline&quot;&gt;&lt;span&gt;1 :&lt;/span&gt;&lt;input id=&quot;tc-exchange-rate&quot; data-save class=&quot;tc-input&quot; style=&quot;width:100px&quot; type=&quot;number&quot; min=&quot;1&quot; value=&quot;1&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label&quot; for=&quot;tc-mileage-id&quot;&gt;里程活动 ID&lt;/label&gt;&lt;input id=&quot;tc-mileage-id&quot; data-save class=&quot;tc-input&quot; placeholder=&quot;请输入里程活动 ID&quot;&gt;&lt;/div&gt;&lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label&quot; for=&quot;tc-mileage-token&quot;&gt;里程活动 Token&lt;/label&gt;&lt;input id=&quot;tc-mileage-token&quot; class=&quot;tc-input&quot; type=&quot;password&quot; placeholder=&quot;请输入里程活动 Token&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;tc-section&quot; id=&quot;tc-amounts&quot;&gt;&lt;div class=&quot;tc-section-head&quot;&gt;&lt;span class=&quot;tc-dot&quot;&gt;&lt;/span&gt;下单立减金额配置 &lt;span class=&quot;tc-new tc-ancillary-only&quot;&gt;扩展&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-body&quot;&gt;
+        &lt;div class=&quot;tc-row&quot;&gt;&lt;div class=&quot;tc-label tc-required&quot;&gt;立减方式&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div class=&quot;tc-amount-types&quot;&gt;&lt;label&gt;&lt;input type=&quot;radio&quot; name=&quot;amountType&quot; value=&quot;fixed&quot; data-save&gt;固定金额&lt;/label&gt;&lt;label class=&quot;tc-ancillary-only&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;amountType&quot; value=&quot;fare&quot; checked data-save&gt;按票面价比例&lt;/label&gt;&lt;label class=&quot;tc-ancillary-only&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;amountType&quot; value=&quot;order&quot; data-save&gt;按订单金额比例&lt;/label&gt;&lt;/div&gt;&lt;div class=&quot;tc-input-unit tc-short&quot;&gt;&lt;input id=&quot;tc-amount&quot; data-save class=&quot;tc-input&quot; type=&quot;number&quot; min=&quot;0.01&quot; step=&quot;0.01&quot; value=&quot;5&quot; aria-label=&quot;立减金额或比例&quot;&gt;&lt;span id=&quot;tc-amount-unit&quot;&gt;元 / 人&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-help&quot; id=&quot;tc-amount-help&quot;&gt;营销返回每人立减金额，由辅营按购买份数计算并拆分。&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-amount&quot; hidden&gt;&lt;/div&gt;&lt;div class=&quot;tc-readout&quot; id=&quot;tc-formula&quot;&gt;每人立减 &lt;strong&gt;5.00 元&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div id=&quot;tc-rounding-config&quot; hidden&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label tc-required&quot; for=&quot;tc-amount-cap&quot;&gt;立减金额上限 &lt;span class=&quot;tc-new&quot;&gt;新增&lt;/span&gt;&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div class=&quot;tc-input-unit tc-short&quot;&gt;&lt;input id=&quot;tc-amount-cap&quot; data-save class=&quot;tc-input&quot; type=&quot;number&quot; min=&quot;0.01&quot; step=&quot;0.01&quot; value=&quot;10&quot; placeholder=&quot;请输入每人立减上限&quot; aria-label=&quot;每人立减金额上限&quot;&gt;&lt;span&gt;元 / 人&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-help&quot;&gt;比例计算、进位后的每人立减金额，不超过此上限。上限精度须符合保留位数。&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-amount-cap&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label tc-required&quot; for=&quot;tc-rounding&quot;&gt;进位规则 &lt;span class=&quot;tc-new&quot;&gt;新增&lt;/span&gt;&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;select id=&quot;tc-rounding&quot; data-save class=&quot;tc-select tc-short&quot;&gt;&lt;option value=&quot;halfUp&quot;&gt;四舍五入&lt;/option&gt;&lt;option value=&quot;ceil&quot;&gt;向上进位&lt;/option&gt;&lt;option value=&quot;floor&quot; selected&gt;向下舍去&lt;/option&gt;&lt;/select&gt;&lt;div class=&quot;tc-help&quot; id=&quot;tc-rounding-help&quot;&gt;按配置的小数位数，对比例计算后的每人立减金额进行四舍五入。&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label tc-required&quot; for=&quot;tc-precision&quot;&gt;保留位数 &lt;span class=&quot;tc-new&quot;&gt;新增&lt;/span&gt;&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;select id=&quot;tc-precision&quot; data-save class=&quot;tc-select tc-short&quot;&gt;&lt;option value=&quot;0&quot;&gt;0 位小数（整数元）&lt;/option&gt;&lt;option value=&quot;1&quot; selected&gt;1 位小数（角）&lt;/option&gt;&lt;option value=&quot;2&quot;&gt;2 位小数（分）&lt;/option&gt;&lt;/select&gt;&lt;div class=&quot;tc-readout&quot; id=&quot;tc-rounding-example&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;tc-row&quot;&gt;&lt;div class=&quot;tc-label tc-required&quot;&gt;活动预算&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div class=&quot;tc-budget-grid&quot;&gt;&lt;label&gt;总金额（元）&lt;input id=&quot;tc-budget&quot; data-save class=&quot;tc-input&quot; type=&quot;number&quot; min=&quot;0.01&quot; value=&quot;10000&quot; step=&quot;0.01&quot;&gt;&lt;/label&gt;&lt;label&gt;已补贴金额（元）&lt;input class=&quot;tc-input&quot; readonly value=&quot;0.00&quot; aria-label=&quot;已补贴金额&quot;&gt;&lt;/label&gt;&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-budget&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;&lt;/section&gt;
+
+
+      &lt;section class=&quot;tc-section&quot; id=&quot;tc-issue&quot;&gt;&lt;div class=&quot;tc-section-head&quot;&gt;&lt;span class=&quot;tc-dot&quot;&gt;&lt;/span&gt;发放规则&lt;/div&gt;&lt;div class=&quot;tc-body&quot;&gt;
+        &lt;div class=&quot;tc-row&quot;&gt;&lt;div class=&quot;tc-label tc-required&quot;&gt;发放限制&lt;/div&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div class=&quot;tc-inline&quot;&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;issue&quot; value=&quot;none&quot; checked data-save&gt;不限&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;issue&quot; value=&quot;hour&quot; data-save&gt;按小时&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;issue&quot; value=&quot;day&quot; data-save&gt;按天&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;issue&quot; value=&quot;week&quot; data-save&gt;按周&lt;/label&gt;&lt;label class=&quot;tc-choice&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;issue&quot; value=&quot;month&quot; data-save&gt;按月&lt;/label&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;tc-row&quot; id=&quot;tc-issue-cap-row&quot; hidden&gt;&lt;label class=&quot;tc-label tc-required&quot; for=&quot;tc-issue-cap&quot;&gt;发放上限&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div class=&quot;tc-input-unit tc-short&quot;&gt;&lt;input id=&quot;tc-issue-cap&quot; data-save class=&quot;tc-input&quot; type=&quot;number&quot; min=&quot;0.01&quot; value=&quot;1000&quot;&gt;&lt;span id=&quot;tc-issue-cap-unit&quot;&gt;元 / 小时&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-error&quot; data-error=&quot;tc-issue-cap&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;tc-row&quot;&gt;&lt;label class=&quot;tc-label&quot; for=&quot;tc-issue-warning&quot;&gt;发放预警值&lt;/label&gt;&lt;div class=&quot;tc-field&quot;&gt;&lt;div class=&quot;tc-input-unit tc-short&quot;&gt;&lt;input id=&quot;tc-issue-warning&quot; data-save class=&quot;tc-input&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;100&quot;&gt;&lt;span&gt;元&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;&lt;/section&gt;
+
+      &lt;div class=&quot;tc-actions&quot;&gt;&lt;span class=&quot;tc-save-state&quot; id=&quot;tc-save-state&quot;&gt;填写完成后可预览或保存配置&lt;/span&gt;&lt;div class=&quot;tc-action-group&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;tc-button cursor-interaction&quot; id=&quot;tc-review&quot;&gt;检查配置&lt;/button&gt;&lt;button type=&quot;button&quot; class=&quot;tc-button cursor-interaction&quot; id=&quot;tc-save-draft&quot;&gt;保存草稿&lt;/button&gt;&lt;button type=&quot;button&quot; id=&quot;tc-submit&quot; class=&quot;tc-button tc-primary cursor-interaction&quot;&gt;确定&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div id=&quot;tc-confirm&quot; class=&quot;tc-confirm&quot; hidden&gt;&lt;h3&gt;配置检查通过&lt;/h3&gt;&lt;div id=&quot;tc-confirm-details&quot; class=&quot;tc-checks&quot;&gt;&lt;/div&gt;&lt;div class=&quot;tc-inline tc-margin-top&quot;&gt;&lt;button type=&quot;button&quot; id=&quot;tc-confirm-save&quot; class=&quot;tc-button tc-primary cursor-interaction&quot;&gt;确认保存&lt;/button&gt;&lt;button type=&quot;button&quot; id=&quot;tc-cancel-save&quot; class=&quot;tc-button cursor-interaction&quot;&gt;返回修改&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;/form&gt;
+
+    &lt;aside class=&quot;tc-aside&quot; aria-label=&quot;活动效果预览&quot;&gt;
+      &lt;section class=&quot;tc-preview-card&quot;&gt;&lt;div class=&quot;tc-preview-head&quot;&gt;外显预览 &lt;span id=&quot;tc-preview-node&quot; class=&quot;tc-tag-blue&quot;&gt;B15 页面&lt;/span&gt;&lt;/div&gt;&lt;div id=&quot;tc-preview-sample&quot; style=&quot;padding:10px 14px;border-bottom:1px solid #ebeef5&quot; hidden&gt;&lt;label for=&quot;tc-sample-fare&quot; id=&quot;tc-sample-fare-label&quot; class=&quot;tc-help&quot;&gt;预览示例 · 单人票面价（元）&lt;/label&gt;&lt;input id=&quot;tc-sample-fare&quot; class=&quot;tc-input&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;200&quot; data-preview&gt;&lt;label for=&quot;tc-sample-order&quot; id=&quot;tc-sample-order-label&quot; class=&quot;tc-help&quot; hidden&gt;预览示例 · 查询传入的订单金额（元）&lt;/label&gt;&lt;input id=&quot;tc-sample-order&quot; class=&quot;tc-input&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;30&quot; data-preview hidden&gt;&lt;/div&gt;&lt;div class=&quot;tc-preview-stage&quot;&gt;&lt;div class=&quot;tc-screen&quot;&gt;&lt;div class=&quot;tc-mobile-top&quot; id=&quot;tc-mobile-top&quot;&gt;选择购票通道&lt;/div&gt;&lt;div class=&quot;tc-trip&quot;&gt;&lt;strong&gt;上海虹桥 → 北京南&lt;/strong&gt;&lt;span&gt;火车票 · 辅营套餐&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-offer&quot;&gt;&lt;div class=&quot;tc-offer-top&quot; id=&quot;tc-offer-top&quot;&gt;套餐专属优惠&lt;/div&gt;&lt;img id=&quot;tc-preview-image&quot; class=&quot;tc-banner-image&quot; alt=&quot;活动图片预览&quot; hidden&gt;&lt;div class=&quot;tc-offer-content&quot;&gt;&lt;div class=&quot;tc-offer-title&quot; id=&quot;tc-preview-title&quot;&gt;套餐专享立减&lt;/div&gt;&lt;div class=&quot;tc-offer-amount&quot; id=&quot;tc-preview-amount&quot;&gt;¥5.00 &lt;small&gt;/ 人&lt;/small&gt;&lt;/div&gt;&lt;div class=&quot;tc-offer-desc&quot; id=&quot;tc-preview-rule&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;tc-mobile-button&quot; id=&quot;tc-mobile-button&quot;&gt;选择此套餐&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;tc-aside-help&quot; id=&quot;tc-preview-caption&quot;&gt;内容随配置实时更新，示意前端外显。&lt;/div&gt;&lt;/section&gt;
+      &lt;section class=&quot;tc-preview-card&quot;&gt;&lt;div class=&quot;tc-preview-head&quot;&gt;当前配置&lt;/div&gt;&lt;div class=&quot;tc-summary&quot; aria-live=&quot;polite&quot;&gt;&lt;div class=&quot;tc-summary-row&quot;&gt;&lt;span&gt;立减类型&lt;/span&gt;&lt;span id=&quot;tc-summary-type&quot;&gt;辅营立减&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-summary-row tc-ancillary-only&quot;&gt;&lt;span&gt;补贴节点&lt;/span&gt;&lt;span id=&quot;tc-summary-node&quot;&gt;B15 页面&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-summary-row&quot;&gt;&lt;span&gt;金额方式&lt;/span&gt;&lt;span id=&quot;tc-summary-amount&quot;&gt;固定金额&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-summary-row&quot; id=&quot;tc-summary-cap-row&quot; hidden&gt;&lt;span&gt;立减金额上限&lt;/span&gt;&lt;span id=&quot;tc-summary-cap&quot;&gt;10 元 / 人&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-summary-row&quot;&gt;&lt;span&gt;参与次数&lt;/span&gt;&lt;span id=&quot;tc-summary-count&quot;&gt;每位会员 1 次&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-summary-row&quot;&gt;&lt;span&gt;匹配条件&lt;/span&gt;&lt;span id=&quot;tc-summary-limits&quot;&gt;不限&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;tc-summary-row&quot;&gt;&lt;span&gt;活动渠道&lt;/span&gt;&lt;span id=&quot;tc-summary-channels&quot;&gt;3 个渠道&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;
+      &lt;section class=&quot;tc-preview-card tc-ancillary-only&quot;&gt;&lt;div class=&quot;tc-preview-head&quot;&gt;生效口径&lt;/div&gt;&lt;div class=&quot;tc-aside-rule&quot;&gt;&lt;p&gt;每个节点匹配金额最大的活动。&lt;/p&gt;&lt;p&gt;一个辅营订单最多参与三个节点的活动。&lt;/p&gt;&lt;p&gt;营销返回每人金额，辅营按购买份数拆分。&lt;/p&gt;&lt;p&gt;未支付仍占用次数，订单取消后返还。&lt;/p&gt;&lt;/div&gt;&lt;/section&gt;
+    &lt;/aside&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+  (()=&gt;{
+    const root=document.getElementById(&#x27;train-discount-admin&#x27;);
+    const $=id=&gt;root.querySelector(&#x27;#&#x27;+id), radio=name=&gt;root.querySelector(&#x27;input[name=&quot;&#x27;+name+&#x27;&quot;]:checked&#x27;)?.value;
+    const state={routes:[],products:[],image:null};
+    const nodes={b15:[&#x27;B15 页面&#x27;,&#x27;选择购票通道&#x27;,&#x27;选择此套餐&#x27;,&#x27;在 B15 查询时匹配本活动。每个节点按条件匹配金额最大的活动。&#x27;],b25:[&#x27;B25 金额明细&#x27;,&#x27;费用明细&#x27;,&#x27;确认订单&#x27;,&#x27;在 B25 金额明细查询时匹配本活动，独立于其他节点。&#x27;],retain:[&#x27;待支付 · 支付挽留&#x27;,&#x27;订单支付&#x27;,&#x27;保留优惠，继续支付&#x27;,&#x27;用户在待支付页点击取消或回退时查询；对原辅营订单再次创单时参与。&#x27;]};
+    const channels=[[&#x27;微信小程序&#x27;,&#x27;502&#x27;],[&#x27;微信 H5&#x27;,&#x27;501&#x27;],[&#x27;同程小程序&#x27;,&#x27;852&#x27;],[&#x27;同程 iOS&#x27;,&#x27;433&#x27;],[&#x27;同程 Android&#x27;,&#x27;434&#x27;],[&#x27;同程 touch&#x27;,&#x27;432&#x27;],[&#x27;艺龙 iOS&#x27;,&#x27;463&#x27;],[&#x27;艺龙 Android&#x27;,&#x27;464&#x27;],[&#x27;百度小程序&#x27;,&#x27;1051&#x27;],[&#x27;支付宝小程序&#x27;,&#x27;10088&#x27;],[&#x27;华为小程序&#x27;,&#x27;10172&#x27;],[&#x27;抖音小程序&#x27;,&#x27;10069&#x27;],[&#x27;快应用&#x27;,&#x27;1046&#x27;],[&#x27;城市通&#x27;,&#x27;1443&#x27;],[&#x27;校园通&#x27;,&#x27;10167&#x27;],[&#x27;马达出行 Android&#x27;,&#x27;10177&#x27;],[&#x27;马达出行 iOS&#x27;,&#x27;10178&#x27;],[&#x27;停车场小程序&#x27;,&#x27;10184&#x27;],[&#x27;腾讯出行小程序-新&#x27;,&#x27;10210&#x27;],[&#x27;滴滴出行 APP&#x27;,&#x27;10217&#x27;],[&#x27;滴滴微信小程序&#x27;,&#x27;10222&#x27;],[&#x27;滴滴支付宝小程序&#x27;,&#x27;10223&#x27;],[&#x27;城市通 iOS&#x27;,&#x27;10254&#x27;],[&#x27;城市通 Android&#x27;,&#x27;10255&#x27;],[&#x27;中信银行 APP&#x27;,&#x27;10522&#x27;],[&#x27;光大银行 APP&#x27;,&#x27;10251&#x27;],[&#x27;鸿蒙 APP&#x27;,&#x27;10212&#x27;],[&#x27;鸿蒙元服务&#x27;,&#x27;10253&#x27;],[&#x27;分销站&#x27;,&#x27;10060&#x27;],[&#x27;云闪付 APP&#x27;,&#x27;10103&#x27;],[&#x27;马达福利小程序&#x27;,&#x27;10303&#x27;],[&#x27;机票独立小程序&#x27;,&#x27;10309&#x27;],[&#x27;火车票独立小程序&#x27;,&#x27;10308&#x27;],[&#x27;小红书机票小程序&#x27;,&#x27;10301&#x27;],[&#x27;钉钉渠道&#x27;,&#x27;10314&#x27;],[&#x27;乘车码小程序&#x27;,&#x27;1425&#x27;],[&#x27;腾讯出行小程序&#x27;,&#x27;1343&#x27;],[&#x27;微信国际站&#x27;,&#x27;982&#x27;],[&#x27;国际 PC 站&#x27;,&#x27;984&#x27;],[&#x27;国际 M 站&#x27;,&#x27;985&#x27;]];
+    channels.forEach(([name,code],i)=&gt;{const label=document.createElement(&#x27;label&#x27;);label.className=&#x27;tc-choice&#x27;;if(i&gt;=12){label.dataset.extraChannel=&#x27;&#x27;;label.hidden=true;}const input=document.createElement(&#x27;input&#x27;);input.type=&#x27;checkbox&#x27;;input.name=&#x27;channels&#x27;;input.value=code;input.checked=i===0||i===3||i===4;input.dataset.save=&#x27;&#x27;;label.append(input,document.createTextNode(name+&#x27; (&#x27;+code+&#x27;)&#x27;));$(&#x27;tc-channel-list&#x27;).append(label);});
+    [&#x27;二等座&#x27;,&#x27;一等座&#x27;,&#x27;商务座&#x27;,&#x27;特等座&#x27;,&#x27;硬座&#x27;,&#x27;软座&#x27;,&#x27;硬卧&#x27;,&#x27;软卧&#x27;,&#x27;无座&#x27;].forEach(name=&gt;{const label=document.createElement(&#x27;label&#x27;);label.className=&#x27;tc-choice&#x27;;const input=document.createElement(&#x27;input&#x27;);input.type=&#x27;checkbox&#x27;;input.name=&#x27;seats&#x27;;input.value=name;input.dataset.save=&#x27;&#x27;;label.append(input,document.createTextNode(name));$(&#x27;tc-seat-list&#x27;).append(label);});
+    const show=(id,on)=&gt;$(id).hidden=!on;
+    const enabled=key=&gt;key===&#x27;member&#x27;?$(&#x27;tc-member&#x27;).value!==&#x27;all&#x27;:key===&#x27;count&#x27;?radio(&#x27;countLimit&#x27;)===&#x27;limited&#x27;:key===&#x27;day-count&#x27;?Number($(&#x27;tc-day-count&#x27;).value)&gt;0:$(&#x27;tc-enable-&#x27;+key).checked;
+    const limitConfigs=[[&#x27;routes&#x27;,&#x27;tc-routes-panel&#x27;,&#x27;通道&#x27;],[&#x27;products&#x27;,&#x27;tc-products-panel&#x27;,&#x27;产品&#x27;],[&#x27;fare&#x27;,&#x27;tc-fare-config&#x27;,&#x27;票面价&#x27;],[&#x27;order&#x27;,&#x27;tc-order-config&#x27;,&#x27;订单价格&#x27;],[&#x27;seats&#x27;,&#x27;tc-seats-panel&#x27;,&#x27;坐席&#x27;]];
+    const roundingLabels={halfUp:&#x27;四舍五入&#x27;,ceil:&#x27;向上进位&#x27;,floor:&#x27;向下舍去&#x27;};
+    function decimalFraction(value){const match=String(value).trim().match(/^(\d+)(?:\.(\d*))?$/);if(!match)return [0n,1n];const tail=match[2]||&#x27;&#x27;;return [BigInt(match[1]+tail),10n**BigInt(tail.length)];}
+    function formatUnits(units,digits){const value=units.toString().padStart(digits+1,&#x27;0&#x27;);return digits?value.slice(0,-digits)+&#x27;.&#x27;+value.slice(-digits):value;}
+    function roundPercent(price,percent,mode,digits){const [pn,pd]=decimalFraction(price),[rn,rd]=decimalFraction(percent),numerator=pn*rn,denominator=pd*rd*100n;const scaled=numerator*10n**BigInt(digits);let units=scaled/denominator;const remainder=scaled%denominator;if(mode===&#x27;ceil&#x27;&amp;&amp;remainder&gt;0n||mode===&#x27;halfUp&#x27;&amp;&amp;remainder*2n&gt;=denominator)units+=1n;return {amount:formatUnits(units,digits),raw:formatUnits(numerator*1000000n/denominator,6).replace(/\.?0+$/,&#x27;&#x27;)||&#x27;0&#x27;};}
+    function applyCap(amount,cap,digits){const [cn,cd]=decimalFraction(cap),scale=10n**BigInt(digits),scaled=cn*scale;if(cn&lt;=0n||scaled%cd!==0n)return {valid:false,amount:&#x27;—&#x27;,capped:false};const capUnits=scaled/cd,units=BigInt(amount.replace(&#x27;.&#x27;,&#x27;&#x27;));return {valid:true,amount:formatUnits(units&gt;capUnits?capUnits:units,digits),capped:units&gt;capUnits};}
+    function chips(){[[&#x27;tc-route-chips&#x27;,state.routes,&#x27;routes&#x27;],[&#x27;tc-product-chips&#x27;,state.products,&#x27;products&#x27;]].forEach(([id,values,key])=&gt;{const box=$(id);box.replaceChildren();values.forEach((v,i)=&gt;{const chip=document.createElement(&#x27;span&#x27;);chip.className=&#x27;tc-chip&#x27;;chip.append(document.createTextNode(typeof v===&#x27;string&#x27;?v:v.name+&#x27; · &#x27;+v.id));const b=document.createElement(&#x27;button&#x27;);b.type=&#x27;button&#x27;;b.className=&#x27;cursor-interaction&#x27;;b.textContent=&#x27;×&#x27;;b.setAttribute(&#x27;aria-label&#x27;,&#x27;移除 &#x27;+(v.name||v));b.onclick=()=&gt;{state[key].splice(i,1);chips();changed();};chip.append(b);box.append(chip);});});}
+    function render(){
+      const ancillary=radio(&#x27;ljType&#x27;)===&#x27;ancillary&#x27;, node=nodes[radio(&#x27;node&#x27;)], type=radio(&#x27;amountType&#x27;), n=Number($(&#x27;tc-amount&#x27;).value)||0;
+      root.querySelectorAll(&#x27;.tc-ancillary-only&#x27;).forEach(e=&gt;e.hidden=!ancillary);show(&#x27;tc-node-row&#x27;,ancillary);show(&#x27;tc-ancillary-conditions&#x27;,ancillary);show(&#x27;tc-legacy-config&#x27;,!ancillary);
+      $(&#x27;tc-type-help&#x27;).textContent=ancillary?&#x27;优惠抵扣辅营订单，由辅营拆分至商品。&#x27;:&#x27;沿用火车票原有里程立减配置。&#x27;;
+      limitConfigs.forEach(([key,panel])=&gt;{const on=ancillary&amp;&amp;enabled(key);show(panel,on);root.querySelector(&#x27;[data-condition-row=&quot;&#x27;+key+&#x27;&quot;]&#x27;).hidden=!on;$(panel).querySelectorAll(&#x27;input,select,button&#x27;).forEach(control=&gt;control.disabled=!on);if(!on)$(panel).querySelectorAll(&#x27;[data-error]&#x27;).forEach(e=&gt;e.hidden=true);});
+      if(!$(&#x27;tc-member&#x27;).value)$(&#x27;tc-member&#x27;).value=&#x27;all&#x27;;$(&#x27;tc-count&#x27;).disabled=!enabled(&#x27;count&#x27;);$(&#x27;tc-count&#x27;).style.opacity=enabled(&#x27;count&#x27;)?&#x27;1&#x27;:&#x27;.45&#x27;;if(!enabled(&#x27;count&#x27;))root.querySelector(&#x27;[data-error=&quot;tc-count&quot;]&#x27;).hidden=true;
+      [[&#x27;tc-tags-panel&#x27;,enabled(&#x27;member&#x27;)&amp;&amp;$(&#x27;tc-member&#x27;).value===&#x27;tags&#x27;],[&#x27;tc-warning-settings&#x27;,radio(&#x27;warning&#x27;)===&#x27;yes&#x27;],[&#x27;tc-notify&#x27;,radio(&#x27;warning&#x27;)===&#x27;yes&#x27;],[&#x27;tc-issue-cap-row&#x27;,radio(&#x27;issue&#x27;)!==&#x27;none&#x27;],[&#x27;tc-rounding-config&#x27;,ancillary&amp;&amp;type!==&#x27;fixed&#x27;]].forEach(([id,on])=&gt;show(id,on));
+      $(&#x27;tc-rounding&#x27;).disabled=!ancillary||type===&#x27;fixed&#x27;;$(&#x27;tc-precision&#x27;).disabled=!ancillary||type===&#x27;fixed&#x27;;$(&#x27;tc-amount-cap&#x27;).disabled=!ancillary||type===&#x27;fixed&#x27;;
+      $(&#x27;tc-node-help&#x27;).textContent=node[3];$(&#x27;tc-preview-node&#x27;).textContent=ancillary?node[0]:&#x27;里程立减&#x27;;$(&#x27;tc-mobile-top&#x27;).textContent=ancillary?node[1]:&#x27;订单优惠&#x27;;$(&#x27;tc-mobile-button&#x27;).textContent=ancillary?node[2]:&#x27;确认订单&#x27;;$(&#x27;tc-offer-top&#x27;).textContent=ancillary&amp;&amp;radio(&#x27;node&#x27;)===&#x27;retain&#x27;?&#x27;专属优惠为你保留&#x27;:&#x27;套餐专属优惠&#x27;;
+      const amountLabels={fixed:&#x27;固定金额&#x27;,fare:&#x27;按票面价比例&#x27;,order:&#x27;按订单金额比例&#x27;};
+      $(&#x27;tc-amount-unit&#x27;).textContent=type===&#x27;fixed&#x27;?&#x27;元 / 人&#x27;:&#x27;%&#x27;;$(&#x27;tc-amount&#x27;).max=type===&#x27;fixed&#x27;?&#x27;100000000&#x27;:&#x27;100&#x27;;
+      $(&#x27;tc-amount-help&#x27;).textContent=type===&#x27;fixed&#x27;?&#x27;营销返回每人立减金额，由辅营按购买份数计算并拆分。&#x27;:type===&#x27;fare&#x27;?&#x27;按单人火车票票面价计算每人立减金额。&#x27;:&#x27;按查询传入的辅营订单金额计算，返回每人立减金额。&#x27;;
+      $(&#x27;tc-formula&#x27;).replaceChildren(document.createTextNode(type===&#x27;fixed&#x27;?&#x27;每人立减 &#x27;:type===&#x27;fare&#x27;?&#x27;每人立减金额 = 单人票面价 × &#x27;:&#x27;每人立减金额 = 辅营订单金额 × &#x27;));const strong=document.createElement(&#x27;strong&#x27;);strong.textContent=type===&#x27;fixed&#x27;?n.toFixed(2)+&#x27; 元&#x27;:n+&#x27;%&#x27;;$(&#x27;tc-formula&#x27;).append(strong);
+      $(&#x27;tc-preview-title&#x27;).textContent=$(&#x27;tc-title&#x27;).value||&#x27;活动标题&#x27;;$(&#x27;tc-preview-amount&#x27;).replaceChildren(document.createTextNode(type===&#x27;fixed&#x27;?&#x27;¥&#x27;+n.toFixed(2):n+&#x27;%&#x27;));const small=document.createElement(&#x27;small&#x27;);small.textContent=type===&#x27;fixed&#x27;?&#x27; / 人&#x27;:type===&#x27;fare&#x27;?&#x27; 票面价比例&#x27;:&#x27; 订单金额比例&#x27;;$(&#x27;tc-preview-amount&#x27;).append(small);
+      show(&#x27;tc-preview-sample&#x27;,type!==&#x27;fixed&#x27;);show(&#x27;tc-sample-fare&#x27;,type===&#x27;fare&#x27;);show(&#x27;tc-sample-fare-label&#x27;,type===&#x27;fare&#x27;);show(&#x27;tc-sample-order&#x27;,type===&#x27;order&#x27;);show(&#x27;tc-sample-order-label&#x27;,type===&#x27;order&#x27;);
+      const samplePrice=$(type===&#x27;fare&#x27;?&#x27;tc-sample-fare&#x27;:&#x27;tc-sample-order&#x27;).value,mode=$(&#x27;tc-rounding&#x27;).value,digits=Number($(&#x27;tc-precision&#x27;).value);const rounded=roundPercent(samplePrice,$(&#x27;tc-amount&#x27;).value,mode,digits),capped=applyCap(rounded.amount,$(&#x27;tc-amount-cap&#x27;).value,digits);const displayAmount=type===&#x27;fixed&#x27;?n.toFixed(2):capped.amount;
+      $(&#x27;tc-amount-cap&#x27;).step=String(10**-digits);$(&#x27;tc-amount-cap&#x27;).min=String(10**-digits);
+      $(&#x27;tc-rounding-help&#x27;).textContent=&#x27;按配置的小数位数，对比例计算后的每人立减金额进行&#x27;+roundingLabels[mode]+&#x27;。&#x27;;$(&#x27;tc-rounding-example&#x27;).textContent=&#x27;预览示例：&#x27;+samplePrice+&#x27; × &#x27;+n+&#x27;% = &#x27;+rounded.raw+&#x27; 元 → &#x27;+roundingLabels[mode]+&#x27;，保留 &#x27;+digits+&#x27; 位小数 → &#x27;+rounded.amount+&#x27; 元；&#x27;+(capped.valid?(capped.capped?&#x27;超过上限，最终立减 &#x27;:&#x27;未超过上限，最终立减 &#x27;)+capped.amount+&#x27; 元 / 人&#x27;:&#x27;请填写符合保留位数的每人金额上限。&#x27;);
+      $(&#x27;tc-preview-amount&#x27;).replaceChildren(document.createTextNode(displayAmount===&#x27;—&#x27;?&#x27;—&#x27;:&#x27;¥&#x27;+displayAmount));const perPerson=document.createElement(&#x27;small&#x27;);perPerson.textContent=&#x27; / 人&#x27;;$(&#x27;tc-preview-amount&#x27;).append(perPerson);const rule=$(&#x27;tc-rule&#x27;).value;$(&#x27;tc-preview-rule&#x27;).textContent=rule.replaceAll(&#x27;{立减金额}&#x27;,displayAmount);$(&#x27;tc-rule-count&#x27;).textContent=rule.length+&#x27; / 200&#x27;;$(&#x27;tc-preview-caption&#x27;).textContent=type===&#x27;fixed&#x27;?&#x27;内容随配置实时更新，示意前端外显。&#x27;:capped.valid?&#x27;按示例计算并进位，每人最高立减 &#x27;+$(&#x27;tc-amount-cap&#x27;).value+&#x27; 元。&#x27;:&#x27;请先配置有效的每人立减金额上限。&#x27;;
+      $(&#x27;tc-summary-type&#x27;).textContent=ancillary?&#x27;辅营立减&#x27;:radio(&#x27;ljType&#x27;)===&#x27;exchange&#x27;?&#x27;挽留里程立减&#x27;:&#x27;里程立减&#x27;;$(&#x27;tc-summary-node&#x27;).textContent=node[0];$(&#x27;tc-summary-amount&#x27;).textContent=amountLabels[type]+(type===&#x27;fixed&#x27;?&#x27;&#x27;:&#x27; · &#x27;+roundingLabels[mode]+&#x27; / &#x27;+digits+&#x27; 位&#x27;);$(&#x27;tc-summary-count&#x27;).textContent=enabled(&#x27;count&#x27;)?&#x27;每位会员 &#x27;+$(&#x27;tc-count&#x27;).value+&#x27; 次&#x27;:&#x27;不限&#x27;;$(&#x27;tc-summary-channels&#x27;).textContent=root.querySelectorAll(&#x27;input[name=channels]:checked&#x27;).length+&#x27; 个渠道&#x27;;
+      const active=[];if(enabled(&#x27;member&#x27;))active.push(&#x27;会员&#x27;);if(enabled(&#x27;count&#x27;))active.push(&#x27;参与次数&#x27;);if(enabled(&#x27;day-count&#x27;))active.push(&#x27;日参与总量&#x27;);if(ancillary)active.push(...limitConfigs.filter(([key])=&gt;enabled(key)).map(([, ,label])=&gt;label));$(&#x27;tc-summary-limits&#x27;).textContent=active.join(&#x27;、&#x27;)||&#x27;不限&#x27;;show(&#x27;tc-summary-cap-row&#x27;,ancillary&amp;&amp;type!==&#x27;fixed&#x27;);$(&#x27;tc-summary-cap&#x27;).textContent=capped.valid?$(&#x27;tc-amount-cap&#x27;).value+&#x27; 元 / 人&#x27;:&#x27;待配置&#x27;;
+      const period={hour:&#x27;小时&#x27;,day:&#x27;天&#x27;,week:&#x27;周&#x27;,month:&#x27;月&#x27;}[radio(&#x27;issue&#x27;)];$(&#x27;tc-issue-cap-unit&#x27;).textContent=&#x27;元 / &#x27;+(period||&#x27;小时&#x27;);
+    }
+    function snapshot(){const fields={};root.querySelectorAll(&#x27;[data-save]&#x27;).forEach((e,i)=&gt;{if(e.type===&#x27;password&#x27;)return;fields[e.id||e.name+&#x27;_&#x27;+e.value||&#x27;field_&#x27;+i]=e.type===&#x27;radio&#x27;||e.type===&#x27;checkbox&#x27;?e.checked:e.value;});return {fields,routes:state.routes,products:state.products};}
+    function persist(){if(window.openai?.setWidgetState)window.openai.setWidgetState({modelContent:{activityName:$(&#x27;tc-name&#x27;).value,type:radio(&#x27;ljType&#x27;),node:radio(&#x27;node&#x27;),amountType:radio(&#x27;amountType&#x27;),amount:$(&#x27;tc-amount&#x27;).value,rounding:radio(&#x27;amountType&#x27;)===&#x27;fixed&#x27;?null:$(&#x27;tc-rounding&#x27;).value,precision:radio(&#x27;amountType&#x27;)===&#x27;fixed&#x27;?null:Number($(&#x27;tc-precision&#x27;).value),amountCap:radio(&#x27;amountType&#x27;)===&#x27;fixed&#x27;?null:$(&#x27;tc-amount-cap&#x27;).value,activeLimits:[&#x27;member&#x27;,&#x27;count&#x27;,&#x27;day-count&#x27;,...limitConfigs.map(([key])=&gt;key)].filter(enabled)},privateContent:snapshot()}).catch(()=&gt;{});}
+    function changed(){show(&#x27;tc-message&#x27;,false);render();$(&#x27;tc-draft&#x27;).textContent=&#x27;未保存&#x27;;$(&#x27;tc-save-state&#x27;).textContent=&#x27;配置已修改&#x27;;show(&#x27;tc-confirm&#x27;,false);persist();}
+    root.addEventListener(&#x27;input&#x27;,e=&gt;{if(e.target.matches(&#x27;[data-save]&#x27;))changed();else if(e.target.matches(&#x27;[data-preview]&#x27;))render();});root.addEventListener(&#x27;change&#x27;,e=&gt;{if(e.target.name===&#x27;ljType&#x27;&amp;&amp;radio(&#x27;ljType&#x27;)!==&#x27;ancillary&#x27;){root.querySelector(&#x27;input[name=amountType][value=fixed]&#x27;).checked=true;}if(e.target.matches(&#x27;[data-save]&#x27;))changed();});
+    $(&#x27;tc-all-channels&#x27;).onclick=()=&gt;{root.querySelectorAll(&#x27;[name=channels]&#x27;).forEach(e=&gt;e.checked=true);changed();};$(&#x27;tc-more-channels&#x27;).onclick=()=&gt;{const more=root.querySelectorAll(&#x27;[data-extra-channel]&#x27;);const expand=more[0].hidden;more.forEach(e=&gt;e.hidden=!expand);$(&#x27;tc-more-channels&#x27;).textContent=expand?&#x27;收起更多渠道&#x27;:&#x27;展开更多渠道&#x27;;};$(&#x27;tc-invert-channels&#x27;).onclick=()=&gt;{root.querySelectorAll(&#x27;[name=channels]&#x27;).forEach(e=&gt;e.checked=!e.checked);changed();};
+    $(&#x27;tc-add-route&#x27;).onclick=()=&gt;{const value=$(&#x27;tc-route-entry&#x27;).value.trim();if(value&amp;&amp;!state.routes.includes(value)){state.routes.push(value);$(&#x27;tc-route-entry&#x27;).value=&#x27;&#x27;;chips();changed();}};$(&#x27;tc-route-entry&#x27;).onkeydown=e=&gt;{if(e.key===&#x27;Enter&#x27;){e.preventDefault();$(&#x27;tc-add-route&#x27;).click();}};
+    $(&#x27;tc-add-product&#x27;).onclick=()=&gt;{const name=$(&#x27;tc-product-name&#x27;).value.trim(),id=$(&#x27;tc-product-id&#x27;).value.trim();if(!name||!id){error(&#x27;tc-products&#x27;,&#x27;请填写产品名称和产品 ID。&#x27;);return;}if(!state.products.some(v=&gt;v.id===id)){state.products.push({name,id});$(&#x27;tc-product-name&#x27;).value=&#x27;&#x27;;$(&#x27;tc-product-id&#x27;).value=&#x27;&#x27;;chips();changed();}};
+    $(&#x27;tc-insert-amount&#x27;).onclick=()=&gt;{const field=$(&#x27;tc-rule&#x27;),start=field.selectionStart,end=field.selectionEnd;field.value=field.value.slice(0,start)+&#x27;{立减金额}&#x27;+field.value.slice(end);field.focus();changed();};
+    $(&#x27;tc-upload-trigger&#x27;).onclick=()=&gt;$(&#x27;tc-image-file&#x27;).click();
+    $(&#x27;tc-image-file&#x27;).onchange=()=&gt;{const file=$(&#x27;tc-image-file&#x27;).files[0];if(!file)return;if(![&#x27;image/png&#x27;,&#x27;image/jpeg&#x27;,&#x27;image/webp&#x27;].includes(file.type)||file.size&gt;2*1024*1024){error(&#x27;tc-image&#x27;,&#x27;请选择不超过 2 MB 的 JPG、PNG 或 WebP 图片。&#x27;);return;}const reader=new FileReader();reader.onload=()=&gt;{state.image=String(reader.result);[&#x27;tc-image-thumb&#x27;,&#x27;tc-preview-image&#x27;].forEach(id=&gt;{$(id).src=state.image;show(id,true);});show(&#x27;tc-image-remove&#x27;,true);root.querySelector(&#x27;[data-error=&quot;tc-image&quot;]&#x27;).hidden=true;changed();};reader.readAsDataURL(file);};
+    $(&#x27;tc-image-remove&#x27;).onclick=()=&gt;{state.image=null;[&#x27;tc-image-thumb&#x27;,&#x27;tc-preview-image&#x27;].forEach(id=&gt;{$(id).removeAttribute(&#x27;src&#x27;);show(id,false);});show(&#x27;tc-image-remove&#x27;,false);$(&#x27;tc-image-file&#x27;).value=&#x27;&#x27;;changed();};
+    function error(key,message){const el=root.querySelector(&#x27;[data-error=&quot;&#x27;+key+&#x27;&quot;]&#x27;);if(el){el.textContent=message;el.hidden=false;}const input=$(key);if(input)input.classList.add(&#x27;tc-invalid&#x27;);}
+    function validate(){root.querySelectorAll(&#x27;[data-error]&#x27;).forEach(e=&gt;e.hidden=true);root.querySelectorAll(&#x27;.tc-invalid&#x27;).forEach(e=&gt;e.classList.remove(&#x27;tc-invalid&#x27;));let count=0;const fail=(key,message)=&gt;{count++;error(key,message);};
+      if(!$(&#x27;tc-name&#x27;).value.trim())fail(&#x27;tc-name&#x27;,&#x27;请输入活动名称。&#x27;);if(!$(&#x27;tc-start&#x27;).value||!$(&#x27;tc-end&#x27;).value||$(&#x27;tc-end&#x27;).value&lt;=$(&#x27;tc-start&#x27;).value)fail(&#x27;tc-end&#x27;,&#x27;结束时间须晚于开始时间。&#x27;);if(!root.querySelector(&#x27;input[name=channels]:checked&#x27;))fail(&#x27;tc-channels&#x27;,&#x27;请至少选择一个活动渠道。&#x27;);if(!$(&#x27;tc-title&#x27;).value.trim())fail(&#x27;tc-title&#x27;,&#x27;请输入活动外显标题。&#x27;);
+      if(!(Number($(&#x27;tc-amount&#x27;).value)&gt;0)||radio(&#x27;amountType&#x27;)!==&#x27;fixed&#x27;&amp;&amp;Number($(&#x27;tc-amount&#x27;).value)&gt;100)fail(&#x27;tc-amount&#x27;,radio(&#x27;amountType&#x27;)===&#x27;fixed&#x27;?&#x27;立减金额须大于 0。&#x27;:&#x27;立减比例须大于 0 且不超过 100%。&#x27;);if(!(Number($(&#x27;tc-budget&#x27;).value)&gt;0))fail(&#x27;tc-budget&#x27;,&#x27;活动预算须大于 0。&#x27;);if(enabled(&#x27;count&#x27;)&amp;&amp;(!Number.isInteger(Number($(&#x27;tc-count&#x27;).value))||Number($(&#x27;tc-count&#x27;).value)&lt;1))fail(&#x27;tc-count&#x27;,&#x27;参与次数须为大于 0 的整数。&#x27;);if($(&#x27;tc-day-count&#x27;).value===&#x27;&#x27;||!Number.isInteger(Number($(&#x27;tc-day-count&#x27;).value))||Number($(&#x27;tc-day-count&#x27;).value)&lt;0)fail(&#x27;tc-day-count&#x27;,&#x27;日参与总量须为非负整数，0 表示不限。&#x27;);if(enabled(&#x27;member&#x27;)&amp;&amp;$(&#x27;tc-member&#x27;).value===&#x27;tags&#x27;&amp;&amp;!$(&#x27;tc-tags&#x27;).value.trim())fail(&#x27;tc-tags&#x27;,&#x27;请输入如来人群标签。&#x27;);
+      if(radio(&#x27;ljType&#x27;)===&#x27;ancillary&#x27;&amp;&amp;radio(&#x27;amountType&#x27;)!==&#x27;fixed&#x27;){const cap=$(&#x27;tc-amount-cap&#x27;).value,digits=Number($(&#x27;tc-precision&#x27;).value);if(!applyCap(formatUnits(0n,digits),cap,digits).valid)fail(&#x27;tc-amount-cap&#x27;,&#x27;请填写大于 0 的金额上限，最多保留 &#x27;+digits+&#x27; 位小数。&#x27;);}
+      if(radio(&#x27;ljType&#x27;)===&#x27;ancillary&#x27;){if(!$(&#x27;tc-rule&#x27;).value.trim())fail(&#x27;tc-rule&#x27;,&#x27;请输入规则文案。&#x27;);if(enabled(&#x27;routes&#x27;)&amp;&amp;!state.routes.length)fail(&#x27;tc-routes&#x27;,&#x27;请至少添加一个通道类型。&#x27;);if(enabled(&#x27;products&#x27;)&amp;&amp;!state.products.length)fail(&#x27;tc-products&#x27;,&#x27;请至少添加一个辅营产品。&#x27;);if(enabled(&#x27;seats&#x27;)&amp;&amp;!root.querySelector(&#x27;[name=seats]:checked&#x27;))fail(&#x27;tc-seats&#x27;,&#x27;请至少选择一种坐席。&#x27;);[[&#x27;fare&#x27;,&#x27;票面价&#x27;],[&#x27;order&#x27;,&#x27;辅营订单价格&#x27;]].forEach(([key,label])=&gt;{if(enabled(key)){const min=$(&#x27;tc-&#x27;+key+&#x27;-min&#x27;).value,max=$(&#x27;tc-&#x27;+key+&#x27;-max&#x27;).value;if(min===&#x27;&#x27;||max===&#x27;&#x27;||Number(min)&lt;0||Number(max)&lt;Number(min))fail(&#x27;tc-&#x27;+key,&#x27;请填写有效的&#x27;+label+&#x27;区间，最高值不得低于最低值。&#x27;);}});}
+      if(radio(&#x27;issue&#x27;)!==&#x27;none&#x27;&amp;&amp;!(Number($(&#x27;tc-issue-cap&#x27;).value)&gt;0))fail(&#x27;tc-issue-cap&#x27;,&#x27;发放上限须大于 0。&#x27;);
+      if(count){message(&#x27;还有 &#x27;+count+&#x27; 项配置需要完善，请查看对应字段。&#x27;,true);const first=Array.from(root.querySelectorAll(&#x27;[data-error]&#x27;)).find(e=&gt;!e.hidden);first?.scrollIntoView({block:&#x27;center&#x27;,behavior:&#x27;smooth&#x27;});}return !count;
+    }
+    function message(text,warning=false){$(&#x27;tc-message&#x27;).textContent=text;$(&#x27;tc-message&#x27;).className=&#x27;tc-message&#x27;+(warning?&#x27; tc-warning&#x27;:&#x27;&#x27;);show(&#x27;tc-message&#x27;,true);}
+    $(&#x27;tc-review&#x27;).onclick=()=&gt;{if(validate())message(&#x27;配置检查通过，可以保存。&#x27;);};
+    $(&#x27;tc-save-draft&#x27;).onclick=()=&gt;{persist();$(&#x27;tc-draft&#x27;).textContent=&#x27;草稿已保存&#x27;;$(&#x27;tc-save-state&#x27;).textContent=&#x27;草稿已保存在当前原型中&#x27;;message(&#x27;草稿已保存，可继续修改。&#x27;);};
+    function prepareSave(){if(!validate())return;const detail=$(&#x27;tc-confirm-details&#x27;);detail.replaceChildren();const lines=[$(&#x27;tc-name&#x27;).value,$(&#x27;tc-summary-type&#x27;).textContent+&#x27; · &#x27;+(radio(&#x27;ljType&#x27;)===&#x27;ancillary&#x27;?nodes[radio(&#x27;node&#x27;)][0]:&#x27;原有里程配置&#x27;),$(&#x27;tc-summary-amount&#x27;).textContent+&#x27;：&#x27;+$(&#x27;tc-amount&#x27;).value+(radio(&#x27;amountType&#x27;)===&#x27;fixed&#x27;?&#x27; 元 / 人&#x27;:&#x27;%&#x27;),$(&#x27;tc-summary-count&#x27;).textContent];if(radio(&#x27;ljType&#x27;)===&#x27;ancillary&#x27;&amp;&amp;radio(&#x27;amountType&#x27;)!==&#x27;fixed&#x27;)lines.push(&#x27;每人立减金额上限：&#x27;+$(&#x27;tc-amount-cap&#x27;).value+&#x27; 元&#x27;);lines.forEach(text=&gt;{const row=document.createElement(&#x27;div&#x27;);row.textContent=text;detail.append(row);});show(&#x27;tc-confirm&#x27;,true);$(&#x27;tc-confirm&#x27;).scrollIntoView({block:&#x27;center&#x27;,behavior:&#x27;smooth&#x27;});} $(&#x27;tc-submit&#x27;).onclick=prepareSave;$(&#x27;tc-form&#x27;).onsubmit=e=&gt;{e.preventDefault();prepareSave();};
+    $(&#x27;tc-confirm-save&#x27;).onclick=()=&gt;{persist();$(&#x27;tc-draft&#x27;).textContent=&#x27;配置已保存&#x27;;$(&#x27;tc-save-state&#x27;).textContent=&#x27;已保存至当前原型&#x27;;show(&#x27;tc-confirm&#x27;,false);message(&#x27;活动配置已保存至当前原型。&#x27;);$(&#x27;tc-message&#x27;).scrollIntoView({block:&#x27;center&#x27;,behavior:&#x27;smooth&#x27;});};$(&#x27;tc-cancel-save&#x27;).onclick=()=&gt;show(&#x27;tc-confirm&#x27;,false);
+    function restore(saved){if(!saved?.fields)return;state.routes=Array.isArray(saved.routes)?saved.routes:[];state.products=Array.isArray(saved.products)?saved.products:[];root.querySelectorAll(&#x27;[data-save]&#x27;).forEach((e,i)=&gt;{const key=e.id||e.name+&#x27;_&#x27;+e.value||&#x27;field_&#x27;+i;if(Object.hasOwn(saved.fields,key)){if(e.type===&#x27;radio&#x27;||e.type===&#x27;checkbox&#x27;)e.checked=!!saved.fields[key];else e.value=saved.fields[key];}});if(Object.hasOwn(saved.fields,&#x27;tc-enable-member&#x27;)&amp;&amp;!saved.fields[&#x27;tc-enable-member&#x27;])$(&#x27;tc-member&#x27;).value=&#x27;all&#x27;;if(Object.hasOwn(saved.fields,&#x27;tc-enable-count&#x27;)){root.querySelector(&#x27;[name=countLimit][value=limited]&#x27;).checked=!!saved.fields[&#x27;tc-enable-count&#x27;];root.querySelector(&#x27;[name=countLimit][value=unlimited]&#x27;).checked=!saved.fields[&#x27;tc-enable-count&#x27;];}if(Object.hasOwn(saved.fields,&#x27;tc-enable-day-count&#x27;)&amp;&amp;!saved.fields[&#x27;tc-enable-day-count&#x27;])$(&#x27;tc-day-count&#x27;).value=&#x27;0&#x27;;chips();render();}
+    render();restore(window.openai?.widgetState?.privateContent);window.addEventListener(&#x27;openai:set_globals&#x27;,e=&gt;restore(e.detail?.globals?.widgetState?.privateContent));
+    const design={density:&#x27;舒适&#x27;};if(globalThis.Tweak){const tweak=new Tweak({container:root,onChange:()=&gt;{root.querySelectorAll(&#x27;.tc-row&#x27;).forEach(row=&gt;row.style.marginBottom=design.density===&#x27;紧凑&#x27;?&#x27;13px&#x27;:&#x27;19px&#x27;);}});tweak.addSelect(design,&#x27;density&#x27;,{label:&#x27;表单密度&#x27;,options:[&#x27;舒适&#x27;,&#x27;紧凑&#x27;]});}
+  })();
+  &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+  let lastPointerWasTouch = false;
+  let pinnedByTouch = false;
+
+  const getTrigger = (event) =&gt; {
+    for (const target of event.composedPath()) {
+      if (target?.nodeType === Node.ELEMENT_NODE) {
+        const trigger = target.closest(&quot;[data-tooltip]&quot;);
+        if (trigger) return trigger;
+      }
+    }
+    return null;
+  };
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    pinnedByTouch = false;
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handlePointer = (event) =&gt; {
+    lastPointerWasTouch =
+      event.type === &quot;pointerdown&quot; &amp;&amp; event.pointerType === &quot;touch&quot;;
+  };
+  const handleTouchClick = (event) =&gt; {
+    const isTouch = event.pointerType === &quot;touch&quot; || lastPointerWasTouch;
+    lastPointerWasTouch = false;
+    if (!isTouch || event.detail === 0) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (
+      trigger == null ||
+      !trigger.isConnected ||
+      getContent(trigger).length === 0 ||
+      (pinnedByTouch &amp;&amp; activeTrigger === trigger)
+    ) {
+      if (pinnedByTouch) {
+        closeTooltip();
+      }
+      return;
+    }
+    openTooltip(trigger);
+    pinnedByTouch = activeTrigger === trigger;
+    window.setTimeout(() =&gt; {
+      if (activeTrigger === trigger &amp;&amp; !trigger.isConnected) {
+        closeTooltip(false);
+      }
+    }, 0);
+  };
+  const handleLeave = (event) =&gt; {
+    if (pinnedByTouch) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    lastPointerWasTouch = false;
+    const trigger = getTrigger(event);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handlers = {
+    pointerover: handlePointerOpen,
+    pointerdown: handlePointer,
+    pointercancel: handlePointer,
+    click: handleTouchClick,
+    pointerout: handleLeave,
+    focusin: handleFocusIn,
+    focusout: handleLeave,
+    keydown: handleKeyDown,
+    contextmenu: handleContextMenu,
+  };
+  const roots = new Map();
+  const handledEvents = new WeakSet();
+  const handleEvent = (event) =&gt; {
+    if (handledEvents.has(event)) return;
+    handledEvents.add(event);
+    handlers[event.type](event);
+  };
+  const discoverRoots = (node) =&gt; {
+    if (node.shadowRoot) listen(node.shadowRoot);
+    for (const element of node.querySelectorAll(&quot;*&quot;)) {
+      if (element.shadowRoot) listen(element.shadowRoot);
+    }
+  };
+  const listen = (root) =&gt; {
+    if (roots.has(root)) return;
+    for (const type of Object.keys(handlers)) root.addEventListener(type, handleEvent);
+    const observer = new window.MutationObserver((records) =&gt; {
+      for (const { addedNodes } of records) {
+        for (const node of addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE) discoverRoots(node);
+        }
+      }
+      for (const [root, cleanup] of roots) {
+        if (root.host &amp;&amp; !root.host.isConnected) {
+          cleanup();
+          roots.delete(root);
+        }
+      }
+      if (activeTrigger &amp;&amp; !activeTrigger.isConnected) closeTooltip(false);
+    });
+    observer.observe(root, { childList: true, subtree: true });
+    roots.set(root, () =&gt; {
+      observer.disconnect();
+      for (const type of Object.keys(handlers)) root.removeEventListener(type, handleEvent);
+    });
+    discoverRoots(root);
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    lastPointerWasTouch = false;
+    for (const cleanup of roots.values()) cleanup();
+    roots.clear();
+    tooltip = null;
+  };
+
+  // Events between children of one shadow root never reach the document.
+  listen(document);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-tabs&quot;&gt;
+(() =&gt; {
+  const selector = &#x27;.nav[role=&quot;tablist&quot;] [role=&quot;tab&quot;]&#x27;;
+  const disabled = &#x27;:disabled,[aria-disabled=&quot;true&quot;]&#x27;;
+  const selectTab = (selected) =&gt; {
+    const panelId = selected.getAttribute(&quot;aria-controls&quot;);
+    for (const tab of selected.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;)) {
+      const active = tab === selected;
+      tab.classList.toggle(&quot;active&quot;, active);
+      tab.setAttribute(&quot;aria-selected&quot;, String(active));
+      const id = tab.getAttribute(&quot;aria-controls&quot;);
+      const panel = id &amp;&amp; document.getElementById(id);
+      if (panel != null) {
+        panel.hidden = id !== panelId;
+        if (!panel.hidden &amp;&amp; selected.id) {
+          panel.setAttribute(&quot;aria-labelledby&quot;, selected.id);
+        }
+      }
+    }
+  };
+  const interact = (event) =&gt; {
+    const tab = event.target?.closest?.(selector);
+    if (event.defaultPrevented || tab == null || tab.matches(disabled)) {
+      return;
+    }
+    if (event.type === &quot;click&quot;) {
+      selectTab(tab);
+      return;
+    }
+    const tabs = Array.from(
+      tab.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;),
+    ).filter((candidate) =&gt; !candidate.matches(disabled));
+    const current = tabs.indexOf(tab);
+    let next;
+    if (event.key === &quot;ArrowRight&quot; || event.key === &quot;ArrowDown&quot;) {
+      next = (current + 1) % tabs.length;
+    } else if (event.key === &quot;ArrowLeft&quot; || event.key === &quot;ArrowUp&quot;) {
+      next = (current + tabs.length - 1) % tabs.length;
+    } else if (event.key === &quot;Home&quot;) {
+      next = 0;
+    } else if (event.key === &quot;End&quot;) {
+      next = tabs.length - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    tabs[next].focus();
+    selectTab(tabs[next]);
+  };
+
+  for (const list of document.querySelectorAll(&#x27;.nav[role=&quot;tablist&quot;]&#x27;)) {
+    const selected =
+      list.querySelector(&#x27;[role=&quot;tab&quot;][aria-selected=&quot;true&quot;]&#x27;) ??
+      list.querySelector(&#x27;[role=&quot;tab&quot;].active&#x27;) ??
+      list.querySelector(&#x27;[role=&quot;tab&quot;]&#x27;);
+    if (selected != null) {
+      selectTab(selected);
+    }
+  }
+  document.addEventListener(&quot;click&quot;, interact);
+  document.addEventListener(&quot;keydown&quot;, interact);
+  window.addEventListener(&quot;pagehide&quot;, () =&gt; {
+    document.removeEventListener(&quot;click&quot;, interact);
+    document.removeEventListener(&quot;keydown&quot;, interact);
+  }, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-carousel&quot;&gt;
+  (() =&gt; {
+    for (const root of document.querySelectorAll(&quot;.viz-carousel&quot;)) {
+      const panels = Array.from(
+        root.querySelectorAll(&quot;:scope &gt; [data-variant]&quot;),
+      );
+      if (panels.length === 0) {
+        continue;
+      }
+      root.setAttribute(&quot;role&quot;, &quot;group&quot;);
+      panels.forEach((panel, index) =&gt; {
+        panel.hidden = index !== 0;
+        panel.setAttribute(&quot;role&quot;, &quot;group&quot;);
+        if (!panel.hasAttribute(&quot;aria-label&quot;)) {
+          panel.setAttribute(&quot;aria-label&quot;, panel.dataset.variant);
+        }
+      });
+      root.dataset.activeVariant = panels[0].dataset.variant;
+      if (panels.length === 1) {
+        continue;
+      }
+
+      const controls = document.createElement(&quot;div&quot;);
+      controls.className = &quot;viz-carousel-controls&quot;;
+      // Portable copy of the settings dropdown&#x27;s legacy glyph; no 14px icon-package preset matches it.
+      // https://github.com/openai/openai/blob/master/codex/codex-apps/webview/src/icons/chevron.svg
+      controls.innerHTML = `
+      &lt;button type=&quot;button&quot; class=&quot;viz-carousel-previous cursor-interaction&quot;&gt;&lt;i data-lucide=&quot;chevron-left&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+      &lt;details class=&quot;viz-carousel-picker&quot;&gt;
+        &lt;summary class=&quot;cursor-interaction&quot;&gt;
+          &lt;span class=&quot;viz-carousel-count tabular-nums&quot;&gt;&lt;/span&gt;
+          &lt;span class=&quot;viz-carousel-name&quot;&gt;&lt;/span&gt;
+          &lt;svg class=&quot;viz-carousel-caret&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 20 21&quot; fill=&quot;none&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;
+            &lt;path d=&quot;M15.2793 7.71101C15.539 7.45131 15.961 7.45131 16.2207 7.71101C16.4804 7.97071 16.4804 8.39272 16.2207 8.65242L10.4707 14.4024C10.211 14.6621 9.78902 14.6621 9.52932 14.4024L3.77932 8.65242L3.69436 8.54792C3.52385 8.28979 3.55205 7.93828 3.77932 7.71101C4.00659 7.48374 4.3581 7.45554 4.61623 7.62605L4.72073 7.71101L10 12.9903L15.2793 7.71101Z&quot; fill=&quot;currentColor&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;0.6&quot; /&gt;
+          &lt;/svg&gt;
+        &lt;/summary&gt;
+        &lt;div class=&quot;viz-carousel-options&quot;&gt;&lt;/div&gt;
+      &lt;/details&gt;
+      &lt;button type=&quot;button&quot; class=&quot;viz-carousel-next cursor-interaction&quot;&gt;&lt;i data-lucide=&quot;chevron-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;`;
+      const previous = controls.querySelector(&quot;.viz-carousel-previous&quot;);
+      const next = controls.querySelector(&quot;.viz-carousel-next&quot;);
+      const picker = controls.querySelector(&quot;.viz-carousel-picker&quot;);
+      const summary = picker.querySelector(&quot;summary&quot;);
+      const count = controls.querySelector(&quot;.viz-carousel-count&quot;);
+      const name = controls.querySelector(&quot;.viz-carousel-name&quot;);
+      const options = controls.querySelector(&quot;.viz-carousel-options&quot;);
+      const status = document.createElement(&quot;span&quot;);
+      status.className = &quot;sr-only&quot;;
+      status.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      status.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      status.setAttribute(&quot;aria-atomic&quot;, &quot;true&quot;);
+      previous.setAttribute(
+        &quot;aria-label&quot;,
+        root.dataset.previousLabel ?? &quot;Previous variant&quot;,
+      );
+      next.setAttribute(&quot;aria-label&quot;, root.dataset.nextLabel ?? &quot;Next variant&quot;);
+
+      let active = 0;
+      let mousePointerId = null;
+      let summaryPointerHandled = false;
+      summary.addEventListener(&quot;pointerdown&quot;, (event) =&gt; {
+        summaryPointerHandled =
+          event.pointerType === &quot;mouse&quot; &amp;&amp; event.button === 0 &amp;&amp; !event.ctrlKey;
+        if (!summaryPointerHandled) {
+          return;
+        }
+        event.preventDefault();
+        summary.focus({ preventScroll: true });
+        picker.open = !picker.open;
+        mousePointerId = picker.open ? event.pointerId : null;
+      });
+      summary.addEventListener(&quot;click&quot;, (event) =&gt; {
+        if (summaryPointerHandled &amp;&amp; event.detail &gt; 0) {
+          event.preventDefault();
+        }
+      });
+      const choices = panels.map((panel, index) =&gt; {
+        const choice = document.createElement(&quot;button&quot;);
+        choice.type = &quot;button&quot;;
+        choice.className = &quot;cursor-interaction&quot;;
+        choice.textContent = panel.dataset.variant;
+        choice.addEventListener(&quot;click&quot;, () =&gt; {
+          select(index);
+          summary.focus();
+        });
+        choice.addEventListener(&quot;pointerup&quot;, (event) =&gt; {
+          if (
+            picker.open &amp;&amp;
+            event.pointerType === &quot;mouse&quot; &amp;&amp;
+            event.button === 0 &amp;&amp;
+            event.pointerId === mousePointerId
+          ) {
+            choice.click();
+          }
+        });
+        options.appendChild(choice);
+        return choice;
+      });
+      const select = (index) =&gt; {
+        const changed = active !== index;
+        active = index;
+        panels.forEach((panel, position) =&gt; {
+          panel.hidden = position !== active;
+          choices[position].setAttribute(
+            &quot;aria-current&quot;,
+            String(position === active),
+          );
+        });
+        root.dataset.activeVariant = panels[active].dataset.variant;
+        count.textContent = `${active + 1} / ${panels.length}`;
+        name.textContent = panels[active].dataset.variant;
+        picker.open = false;
+        mousePointerId = null;
+        if (changed) {
+          status.textContent = `${count.textContent}: ${name.textContent}`;
+        }
+      };
+      previous.addEventListener(&quot;click&quot;, () =&gt;
+        select((active + panels.length - 1) % panels.length),
+      );
+      next.addEventListener(&quot;click&quot;, () =&gt;
+        select((active + 1) % panels.length),
+      );
+      picker.addEventListener(&quot;keydown&quot;, (event) =&gt; {
+        if (event.key === &quot;Escape&quot; &amp;&amp; picker.open) {
+          event.preventDefault();
+          picker.open = false;
+          mousePointerId = null;
+          summary.focus();
+          return;
+        }
+        if (event.altKey || event.ctrlKey || event.metaKey) {
+          return;
+        }
+        const index = choices.indexOf(document.activeElement);
+        let nextIndex;
+        if (event.key === &quot;ArrowDown&quot;) {
+          nextIndex = index &lt; 0 ? active : (index + 1) % choices.length;
+        } else if (event.key === &quot;ArrowUp&quot;) {
+          nextIndex = index &lt; 0 ? active : (index + choices.length - 1) % choices.length;
+        } else if (picker.open &amp;&amp; event.key === &quot;Home&quot;) {
+          nextIndex = 0;
+        } else if (picker.open &amp;&amp; event.key === &quot;End&quot;) {
+          nextIndex = choices.length - 1;
+        } else {
+          return;
+        }
+        event.preventDefault();
+        picker.open = true;
+        choices[nextIndex].focus();
+      });
+      picker.addEventListener(&quot;focusout&quot;, (event) =&gt; {
+        if (!picker.contains(event.relatedTarget)) {
+          picker.open = false;
+          mousePointerId = null;
+        }
+      });
+      const dismiss = (event) =&gt; {
+        if (!summary.contains(event.target)) {
+          mousePointerId = null;
+        }
+        if (!picker.contains(event.target)) {
+          picker.open = false;
+        }
+      };
+      const endPointerSelection = () =&gt; {
+        mousePointerId = null;
+      };
+      const sizePicker = () =&gt; {
+        root.style.setProperty(
+          &quot;--viz-carousel-picker-height&quot;,
+          `${picker.open ? options.offsetHeight : 0}px`,
+        );
+      };
+      picker.addEventListener(&quot;toggle&quot;, sizePicker);
+      window.addEventListener(&quot;resize&quot;, sizePicker);
+      document.addEventListener(&quot;pointerdown&quot;, dismiss);
+      document.addEventListener(&quot;pointerup&quot;, endPointerSelection);
+      document.addEventListener(&quot;pointercancel&quot;, endPointerSelection);
+      window.addEventListener(&quot;blur&quot;, endPointerSelection);
+      window.addEventListener(
+        &quot;pagehide&quot;,
+        () =&gt; {
+          document.removeEventListener(&quot;pointerdown&quot;, dismiss);
+          document.removeEventListener(&quot;pointerup&quot;, endPointerSelection);
+          document.removeEventListener(&quot;pointercancel&quot;, endPointerSelection);
+          window.removeEventListener(&quot;blur&quot;, endPointerSelection);
+          window.removeEventListener(&quot;resize&quot;, sizePicker);
+        },
+        { once: true },
+      );
+      root.append(controls, status);
+      select(0);
+    }
+  })();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+
+<script>(() => {
+  const frame = document.getElementById("codex-visualization");
+  if (!(frame instanceof HTMLIFrameElement)) {
+    return;
+  }
+  const isShare = document.documentElement.classList.contains(
+    "visualization-share-root",
+  );
+  let viewportHeight = globalThis.innerHeight;
+  let sizeFingerprint = null;
+  let sizeWriteTimeout;
+  let lastSize = null;
+  let pendingSize = null;
+  const storageKey = `codex:visualization-widget-state-v2:${JSON.stringify([
+    globalThis.location.pathname,
+    globalThis.location.search,
+  ])}`;
+  const sizeStorageKey = `${storageKey}:share-size-v1`;
+  const parseState = (serializedState) => {
+    if (
+      typeof serializedState !== "string" ||
+      new TextEncoder().encode(serializedState).length > 16 * 1024
+    ) {
+      throw new TypeError(
+        "Widget state must be a JSON object of at most 16 KiB",
+      );
+    }
+    /** @type {unknown} */
+    const state = JSON.parse(serializedState);
+    if (
+      state == null ||
+      typeof state !== "object" ||
+      Array.isArray(state) ||
+      ("imageIds" in state &&
+        (!Array.isArray(state.imageIds) || state.imageIds.length > 0))
+    ) {
+      throw new TypeError("Widget state must be a JSON object");
+    }
+    const storedState = { modelContent: null, privateContent: null, ...state };
+    const canonicalState = JSON.stringify(
+      storedState,
+      (_key, /** @type {unknown} */ value) => {
+        if (typeof value === "number" && !Number.isFinite(value)) {
+          throw new TypeError("Widget state must contain finite numbers");
+        }
+        return value;
+      },
+    );
+    if (new TextEncoder().encode(canonicalState).length > 16 * 1024) {
+      throw new TypeError(
+        "Widget state must be a JSON object of at most 16 KiB",
+      );
+    }
+    return storedState;
+  };
+  let storage = null;
+  let state = null;
+  try {
+    const localStorage = globalThis.localStorage;
+    const probeKey = `${storageKey}:probe`;
+    localStorage.setItem(probeKey, "1");
+    localStorage.removeItem(probeKey);
+    storage = localStorage;
+    const savedState = storage.getItem(storageKey);
+    if (savedState != null) {
+      try {
+        state = parseState(savedState);
+      } catch {
+        // Invalid saved state does not disable future writes.
+      }
+    }
+  } catch {
+    storage = null;
+  }
+  const persistSize = () => {
+    globalThis.clearTimeout(sizeWriteTimeout);
+    if (pendingSize == null) {
+      return;
+    }
+    try {
+      storage?.setItem(sizeStorageKey, pendingSize);
+    } catch {
+      // A denied or full cache must not affect the visualization.
+    }
+    pendingSize = null;
+  };
+  if (isShare) {
+    globalThis.addEventListener("pagehide", persistSize);
+  }
+  const initialGlobals = {
+    widgetState: state,
+    statePersistence: storage == null ? "none" : "local",
+  };
+
+  const channel = new MessageChannel();
+  channel.port1.addEventListener("message", (event) => {
+    const data = event.data;
+    if (typeof data !== "object" || data == null) {
+      return;
+    }
+    if (data.type === "widget-state-write") {
+      if (!Number.isSafeInteger(data.id) || data.id <= 0) {
+        return;
+      }
+      let ok = false;
+      try {
+        if (storage != null) {
+          const state = parseState(data.state);
+          storage.setItem(storageKey, JSON.stringify(state));
+          ok = true;
+        }
+      } catch {
+        // Storage denial, quota limits, and invalid state return a failed receipt.
+      }
+      channel.port1.postMessage({
+        type: "widget-state-result",
+        id: data.id,
+        ok,
+      });
+      return;
+    }
+    if (data.type === "height") {
+      const height = data.height;
+      if (
+        typeof height !== "number" ||
+        !Number.isFinite(height) ||
+        height < 0
+      ) {
+        return;
+      }
+      if (height <= 10_000) {
+        const width = isShare && storage != null ? frame.clientWidth : null;
+        frame.style.height = Math.ceil(height) + "px";
+        if (isShare && storage != null) {
+          const size = JSON.stringify({
+            fingerprint: sizeFingerprint,
+            width,
+            viewportHeight: globalThis.innerHeight,
+            dark: globalThis.matchMedia("(prefers-color-scheme: dark)").matches,
+            scale: globalThis.devicePixelRatio,
+            height: Math.ceil(height),
+          });
+          if (size !== lastSize) {
+            lastSize = size;
+            pendingSize = size;
+            globalThis.clearTimeout(sizeWriteTimeout);
+            sizeWriteTimeout = globalThis.setTimeout(persistSize, 100);
+          }
+        }
+      }
+      if (isShare) {
+        // Keep unusually tall content accessible without accepting an unbounded height.
+        if (height > 10_000 && Number.parseFloat(frame.style.height) === 0) {
+          frame.style.removeProperty("height");
+        }
+        frame.scrolling = height > 10_000 ? "auto" : "no";
+        document.documentElement.classList.add("visualization-share-ready");
+      }
+      return;
+    }
+    if (data.type === "scroll-to") {
+      const top = data.top;
+      if (
+        typeof top === "number" &&
+        Number.isFinite(top) &&
+        top >= 0 &&
+        globalThis.navigator.userActivation?.isActive === true
+      ) {
+        globalThis.scrollTo({
+          top: Math.ceil(
+            globalThis.scrollY + frame.getBoundingClientRect().top + top,
+          ),
+        });
+      }
+      return;
+    }
+    if (data.type === "open-external") {
+      const rawHref = data.href;
+      if (typeof rawHref !== "string") {
+        return;
+      }
+      let href;
+      try {
+        const url = new URL(rawHref, document.baseURI);
+        if (url.protocol !== "https:") {
+          return;
+        }
+        href = url.href;
+      } catch {
+        return;
+      }
+      if (globalThis.navigator.userActivation?.isActive === true) {
+        const anchor = document.createElement("a");
+        anchor.href = href;
+        anchor.rel = "noopener noreferrer";
+        anchor.target = "_blank";
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+      }
+      return;
+    }
+    if (data.type === "follow-up") {
+      const prompt = data.prompt;
+      if (
+        typeof prompt !== "string" ||
+        globalThis.navigator.userActivation?.isActive !== true
+      ) {
+        return;
+      }
+      const title = data.title;
+      globalThis.prompt(typeof title === "string" ? title : prompt, prompt);
+    }
+  });
+  channel.port1.start();
+  const srcdoc = frame.dataset.srcdoc;
+  if (srcdoc == null) {
+    return;
+  }
+  globalThis.addEventListener("resize", () => {
+    const height = Number.parseFloat(frame.style.height);
+    if (!isShare && (!Number.isFinite(height) || height <= viewportHeight)) {
+      frame.style.removeProperty("height");
+    }
+    viewportHeight = globalThis.innerHeight;
+    channel.port1.postMessage({ type: "measure" });
+  });
+  frame.addEventListener(
+    "load",
+    () => {
+      frame.contentWindow?.postMessage(
+        { type: "codex-visualization-initialize" },
+        "*",
+        [channel.port2],
+      );
+    },
+    { once: true },
+  );
+  // Match the trusted bootstrap element, not the same text in an authored title.
+  const frameHtml = srcdoc.replace(
+    '<script type="application/json" id="codex-visualization-widget-state">__CODEX_VISUALIZATION_WIDGET_STATE__<\/script>',
+    () =>
+      '<script type="application/json" id="codex-visualization-widget-state">' +
+      JSON.stringify(initialGlobals).replaceAll("<", "\\u003c") +
+      "<\/script>",
+  );
+  if (isShare && storage != null) {
+    // Fingerprint the rendered document, including restored widget state, without
+    // storing its content. This is a layout cache, not a security identity.
+    let hash = 5381;
+    for (let index = 0; index < frameHtml.length; index += 1) {
+      hash = (hash * 33 + frameHtml.charCodeAt(index)) % 4_294_967_296;
+    }
+    sizeFingerprint = hash.toString(36);
+    try {
+      const size = JSON.parse(storage.getItem(sizeStorageKey) ?? "null");
+      if (
+        size?.fingerprint === sizeFingerprint &&
+        size.width === frame.clientWidth &&
+        size.viewportHeight === globalThis.innerHeight &&
+        size.dark ===
+          globalThis.matchMedia("(prefers-color-scheme: dark)").matches &&
+        size.scale === globalThis.devicePixelRatio &&
+        typeof size.height === "number" &&
+        Number.isFinite(size.height) &&
+        size.height >= 0 &&
+        size.height <= 10_000
+      ) {
+        frame.style.height = size.height + "px";
+      }
+    } catch {
+      // Ignore missing or invalid cache entries and measure the live frame.
+    }
+  }
+  frame.srcdoc = frameHtml;
+  delete frame.dataset.srcdoc;
+})();
+</script>
+</body>
+</html>
