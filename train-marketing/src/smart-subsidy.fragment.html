@@ -1,0 +1,922 @@
+<div id="rail-config" lang="zh-CN">
+  <nav class="workspace-tabs" aria-label="后台页签">
+    <button type="button" data-page="list" class="cursor-interaction">主页</button>
+    <button type="button" data-page="list" class="cursor-interaction">智能补贴策略 <span aria-hidden="true">×</span></button>
+    <button type="button" data-page="edit" class="active cursor-interaction">● 智能补贴策略-新增 <span aria-hidden="true">×</span></button>
+    <button type="button" data-page="exclusions" class="cursor-interaction">辅营商品不可抵扣规则 <span aria-hidden="true">×</span></button>
+  </nav>
+  <main>
+    <div class="breadcrumbs"><span id="rc-crumb-parent">智能补贴</span><span aria-hidden="true">›</span><span id="rc-crumb">智能补贴策略</span></div>
+    <section id="rc-list" class="box" hidden>
+      <header class="box-heading list-heading"><h2>智能补贴策略</h2><button class="solid cursor-interaction" type="button" id="rc-new">新增策略</button></header>
+      <div class="list-scroll"><table><thead><tr><th>策略名称</th><th>业务类型</th><th>补贴节点</th><th>状态</th><th>操作</th></tr></thead><tbody id="rc-records"></tbody></table></div>
+    </section>
+    <section id="rc-exclusions" aria-label="辅营商品不可抵扣规则" hidden>
+      <p class="exclusion-intro">按辅营商品分类四字码配置不参与火车票辅营通用券抵扣的商品，规则实时生效，未配置商品默认可抵扣</p>
+      <div class="exclusion-filters" role="search" aria-label="查询不可抵扣规则">
+        <label>分类四字码<input id="rc-filter-code" class="control" maxlength="4" placeholder="如 9001"></label>
+        <label>规则状态<select id="rc-filter-status" class="control"><option value="">全部</option><option>生效中</option><option>已停用</option></select></label>
+        <div class="filter-actions">
+          <button type="button" id="rc-search-exclusion" class="tinted cursor-interaction">查询</button>
+          <button type="button" id="rc-reset-exclusion" class="plain cursor-interaction">重置</button>
+          <button type="button" id="rc-add-exclusion" class="tinted cursor-interaction">新增不可抵扣商品</button>
+        </div>
+      </div>
+      <div class="list-scroll">
+        <table class="exclusion-table">
+          <colgroup><col class="col-index"><col class="col-code"><col class="col-name"><col class="col-reason"><col class="col-updated"><col class="col-owner"><col class="col-state"><col class="col-action"></colgroup>
+          <thead><tr><th scope="col">序号</th><th scope="col">分类四字码</th><th scope="col">分类名称</th><th scope="col">不可抵扣原因</th><th scope="col">更新时间</th><th scope="col">更新人</th><th scope="col">状态</th><th scope="col">操作</th></tr></thead>
+          <tbody id="rc-exclusion-rows"></tbody>
+        </table>
+      </div>
+      <div class="exclusion-pages" aria-label="规则分页">
+        <span id="rc-exclusion-count" role="status"></span>
+        <select id="rc-page-size" class="control" aria-label="每页条数"><option value="10">10条/页</option><option value="20">20条/页</option><option value="50">50条/页</option></select>
+        <div class="page-buttons">
+          <button type="button" id="rc-prev-page" class="page-control cursor-interaction" aria-label="上一页">‹</button>
+          <span id="rc-current-page" aria-current="page">1</span>
+          <button type="button" id="rc-next-page" class="page-control cursor-interaction" aria-label="下一页">›</button>
+        </div>
+        <label>前往 <input type="number" id="rc-page-number" class="control" min="1" value="1" aria-label="前往页码"> 页</label>
+      </div>
+    </section>
+    <dialog id="rc-exclusion-dialog" class="exclusion-dialog" aria-labelledby="rc-exclusion-title">
+      <header><h2 id="rc-exclusion-title">新增不可抵扣商品</h2><button type="button" data-close-exclusion class="close-modal cursor-interaction" aria-label="关闭弹窗">×</button></header>
+      <div class="dialog-body">
+        <div class="row"><label for="rc-exclusion-code"><b>*</b> 分类四字码</label><input id="rc-exclusion-code" class="control" maxlength="4" required></div>
+        <div class="row"><label for="rc-exclusion-name"><b>*</b> 分类名称</label><input id="rc-exclusion-name" class="control" required></div>
+        <div class="row"><label for="rc-exclusion-reason"><b>*</b> 不可抵扣原因</label><textarea id="rc-exclusion-reason" class="control" rows="4" required></textarea></div>
+        <div class="row"><span class="label">规则状态</span><div class="choices" role="group" aria-label="规则状态">
+          <label><input type="radio" name="exclusionState" value="生效中" checked><span>生效中</span></label>
+          <label><input type="radio" name="exclusionState" value="已停用"><span>已停用</span></label>
+        </div></div>
+        <p id="rc-exclusion-error" class="modal-error" role="alert"></p>
+      </div>
+      <footer><button type="button" data-close-exclusion class="plain cursor-interaction">取消</button><button type="button" id="rc-save-exclusion" class="solid cursor-interaction">保存</button></footer>
+    </dialog>
+    <dialog id="rc-exclusion-logs" class="exclusion-dialog" aria-labelledby="rc-log-title">
+      <header><h2 id="rc-log-title">操作日志</h2><button type="button" id="rc-close-logs" class="close-modal cursor-interaction" aria-label="关闭日志">×</button></header>
+      <div class="dialog-body">
+        <p id="rc-log-rule"></p>
+        <div class="list-scroll"><table class="log-table"><thead><tr><th scope="col">更新时间</th><th scope="col">更新人</th><th scope="col">操作</th><th scope="col">规则状态</th></tr></thead><tbody id="rc-log-rows"></tbody></table></div>
+      </div>
+    </dialog>
+    <form id="rc-editor" novalidate>
+      <section class="box">
+        <header class="box-heading"><h2>基础信息</h2></header>
+        <div class="box-body">
+          <div class="row"><label for="rc-id">策略ID：</label><div><input id="rc-id" name="id" class="control medium" value="DEMO-RAIL-001" readonly></div></div>
+          <div class="row"><label for="rc-start"><b>*</b> 有效期：</label><div class="range date-range"><input class="control" id="rc-start" name="start" type="date" aria-label="开始日期" required value="2026-11-05"><span>至</span><input class="control" name="end" type="date" aria-label="结束日期" required value="2026-11-30"></div></div>
+          <div class="row"><label for="rc-name"><b>*</b> 策略名称：</label><div><input class="control medium" id="rc-name" name="name" placeholder="请输入" required value="火车票 · B15 加购补贴"></div></div>
+          <div class="row"><span class="label"><b>*</b> 投放渠道：</span><div class="choices" role="group" aria-label="投放渠道">
+            <label><input type="checkbox" name="channel" value="微信小程序" checked><span>微信小程序</span></label>
+            <label><input type="checkbox" name="channel" value="同程APP-ios"><span>同程APP-ios</span></label>
+            <label><input type="checkbox" name="channel" value="同程APP-android"><span>同程APP-android</span></label>
+          </div></div>
+          <div class="row"><span class="label">业务类型：</span><div class="choices" role="group" aria-label="业务类型">
+            <label><input type="radio" name="business" value="国内机票"><span>国内机票</span></label>
+            <label><input type="radio" name="business" value="国际机票"><span>国际机票</span></label>
+            <label><input type="radio" name="business" value="火车票" checked><span>火车票</span></label>
+          </div></div>
+          <div class="row" data-business="air"><span class="label">策略类型：</span><div class="choices" role="group" aria-label="机票策略类型">
+            <label><input type="radio" name="airType" value="人工策略" checked><span>人工策略</span></label>
+            <label><input type="radio" name="airType" value="实时算法策略"><span>实时算法策略</span></label>
+          </div></div>
+          <div class="row" data-business="rail"><span class="label">策略类型：</span><div class="choices" role="group" aria-label="火车票策略类型">
+            <label><input type="radio" name="railType" value="人工策略"><span>人工策略</span></label>
+            <label><input type="radio" checked name="railType" value="实时算法策略"><span>实时算法策略</span></label>
+          </div></div>
+          <div class="row" data-business="air"><span class="label">补贴节点：</span><div class="choices" role="group" aria-label="机票补贴节点">
+            <label><input type="radio" name="airNode" value="查询补贴" checked><span>查询补贴</span></label>
+            <label><input type="radio" name="airNode" value="支付补贴"><span>支付补贴</span></label>
+          </div></div>
+          <div class="row" data-business="rail"><span class="label"><b>*</b> 补贴节点：</span><div><div class="choices" role="group" aria-label="火车票补贴节点">
+            <label><input type="radio" name="railNode" value="B1"><span>B1 车次列表</span></label>
+            <label><input type="radio" name="railNode" value="B15" checked><span>B15 车次详情</span></label>
+            <label><input type="radio" name="railNode" value="B25"><span>B25 辅营加购</span></label>
+            <label><input type="radio" name="railNode" value="B3"><span>B3 支付挽留</span></label>
+          </div><p class="tip" id="rc-node-hint" aria-live="polite"></p></div></div>
+          <div class="row"><span class="label">补贴策略类型：</span><div class="choices"><label><input type="radio" name="dimension" checked value="订单维度"><span>订单维度</span></label></div></div>
+          <div class="row"><span class="label">黄牛风控：</span><div><label class="toggle"><span>不风控</span><input type="checkbox" name="risk" role="switch" aria-label="黄牛风控"><span>风控</span></label><p class="tip">ⓘ 开启后查询风控服务，命中的用户不可参与活动</p></div></div>
+        </div>
+      </section>
+      <section class="box">
+        <header class="box-heading"><h2>策略规则</h2></header>
+        <div class="box-body">
+          <div class="row" data-business="rail"><span class="label">行程类型：</span><div class="choices"><label><input type="radio" name="railTrip" value="直达" checked><span>直达</span></label></div></div>
+          <div class="row" data-business="air"><span class="label">行程类型：</span><div class="choices"><label><input type="radio" name="airTrip" value="单程" checked><span>单程</span></label><label><input type="radio" name="airTrip" value="联程"><span>联程</span></label></div></div>
+          <div class="row" data-business="air"><label for="rc-airline">航司限制(剔除)：</label><textarea class="control" id="rc-airline" name="airline" placeholder="请输入航司二字码，多个航司以英文逗号分隔"></textarea></div>
+          <div class="row" data-business="air"><label for="rc-route">航线限制(剔除)：</label><textarea class="control" id="rc-route" name="airRoute" placeholder="请输入机场三字码对，多条航线以英文逗号分隔"></textarea></div>
+          <div class="row"><label for="rc-audience">人群限制：</label><div><select class="control medium" id="rc-audience" name="audience"><option>不限制</option><option>指定人群</option></select><input class="control medium inline-extra" id="rc-audience-tag" name="audienceTag" aria-label="人群标签" placeholder="请输入人群标签" hidden></div></div>
+          <div class="row"><span class="label"><b>*</b> 周期补贴：</span><div class="choices days" id="rc-days" role="group" aria-label="周期补贴"></div></div>
+          <div class="row"><span class="label"><b>*</b> 补贴时间(多段)：</span><div><button type="button" id="rc-add-time" class="solid cursor-interaction">添加时间段</button><p class="tip">ⓘ 开始时间须早于结束时间，各时间段不可交叉</p><div id="rc-times"></div></div></div>
+          <div class="row"><label for="rc-cycles">周期内补贴次数：</label><div class="range"><input class="control medium" id="rc-cycles" name="cycles" type="number" min="1" placeholder="不填代表不限"><select class="control short" name="cycleUnit" aria-label="次数周期"><option>不限</option><option>每天</option><option>每周</option></select></div></div>
+          <div id="rc-rules"></div>
+        </div>
+      </section>
+      <section class="box">
+        <header class="box-heading"><h2>补贴规则</h2></header>
+        <div class="box-body" id="rc-budget"></div>
+      </section>
+      <section class="box">
+        <header class="box-heading"><h2>外显配置</h2></header>
+        <div class="box-body">
+          <div class="row"><span class="label"><b>*</b> 前台样式：</span><div class="choices" id="rc-styles" role="group" aria-label="前台样式"></div></div>
+          <div class="row"><span class="label"><b>*</b> 拆分金额前台样式：</span><div class="choices" id="rc-split" role="group" aria-label="拆分金额前台样式"></div></div>
+          <div class="row" id="rc-copy-row"><label for="rc-copy">标签文案：</label><input id="rc-copy" name="displayCopy" class="control medium" value="惊喜优惠" placeholder="请输入展示文案"></div>
+          <div class="row" id="rc-image-row" hidden><label for="rc-image">样式图片：</label><div><label class="upload cursor-interaction"><input id="rc-image" type="file" accept="image/*"><span aria-hidden="true">＋</span><span>选择图片</span></label><p class="tip" id="rc-image-name"></p></div></div>
+          <div class="row"><span class="label">是否可弹窗：</span><div><label class="toggle"><span>否</span><input type="checkbox" name="popup" role="switch" aria-label="是否可弹窗"><span>是</span></label></div></div>
+          <div class="row"><span class="label">是否强显智能补贴：</span><div><label class="toggle"><span>不强显</span><input type="checkbox" name="highlight" role="switch" aria-label="是否强显智能补贴"><span>强显</span></label><p class="tip">ⓘ 强显时返回补贴有效期，供前端显示倒计时</p></div></div>
+          <div class="row" data-business="rail"><label for="rc-order">优惠标签顺序：</label><input class="control wide" id="rc-order" name="displayOrder" value="本单立减、出行必返、省钱任务返现"></div>
+          <div class="row" id="rc-b3-preview" hidden><span class="label">挽留弹窗预览：</span><div class="receipt" aria-label="支付挽留整单优惠示例">
+            <div><strong>¥3</strong><span>本单立减</span></div><b>＋</b><div><strong>¥8</strong><span>出行必返</span></div><b>＝</b><div><strong>¥11</strong><span>总计省</span></div>
+          </div></div>
+          <div class="row"><label for="rc-description">策略规则文案：</label><div class="editor"><div class="editor-tools" aria-hidden="true">H　 B　 I　 U　 ≡</div><textarea id="rc-description" name="description" placeholder="请输入策略规则"></textarea></div></div>
+          <div class="row"><label for="rc-ad-link">弹屏广告链接：</label><input class="control medium" id="rc-ad-link" name="adLink" type="url" placeholder="请输入"></div>
+        </div>
+      </section>
+      <footer class="actions"><span id="rc-status" role="status">示例策略 · 原型草稿</span><button type="button" data-page="list" class="plain cursor-interaction">取消</button><button type="button" id="rc-save" class="solid cursor-interaction">保存草稿</button></footer>
+    </form>
+  </main>
+</div>
+<style>
+  #rail-config {
+    color-scheme: light;
+    --rc-page: #fafafa;
+    --rc-panel: #fff;
+    --rc-text: #606266;
+    --rc-strong: #303133;
+    --rc-blue: #409eff;
+    --rc-blue-deep: #1890ff;
+    --rc-border: #dcdfe6;
+    --rc-divider: #ebeef5;
+    --rc-disabled: #f5f7fa;
+    --rc-placeholder: #a9aeb9;
+    --rc-danger: #f56c6c;
+    --rc-shadow: 0 3px 10px #0000000c;
+    --rc-label: clamp(124px, 15vw, 172px);
+    color: var(--rc-text); background: var(--rc-page);
+    font: 14px/1.48 "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  #rail-config * { box-sizing: border-box; }
+  #rail-config [hidden] { display: none !important; }
+  #rail-config :is(p,h2,h3) { margin: 0; }
+  #rail-config button, #rail-config input, #rail-config textarea, #rail-config select { font: inherit; }
+  #rail-config button { min-height: 29px; }
+  #rail-config .workspace-tabs { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; padding: 6px 7px; background: var(--rc-panel); border-bottom: 1px solid var(--rc-border); }
+  #rail-config .workspace-tabs button { border: 1px solid var(--rc-border); padding: 3px 8px; color: var(--rc-text); background: var(--rc-panel); border-radius: 0; font-size: 12px; }
+  #rail-config .workspace-tabs button.active { background: var(--rc-blue-deep); border-color: var(--rc-blue-deep); color: #fff; }
+  #rail-config .workspace-tabs button span { margin-left: 5px; opacity: .75; }
+  #rail-config main { padding: 0 10px 15px; }
+  #rail-config .breadcrumbs { display: flex; gap: 10px; align-items: center; padding: 11px 0 14px; }
+  #rail-config .breadcrumbs span:nth-child(2) { color: #b5bdca; font-size: 19px; line-height: 1; }
+  #rail-config .box { border: 1px solid var(--rc-divider); border-radius: 4px; background: var(--rc-panel); box-shadow: var(--rc-shadow); margin-bottom: 20px; }
+  #rail-config .box-heading { padding: 14px 16px; border-bottom: 1px solid var(--rc-divider); }
+  #rail-config .box-heading h2 { font-size: 15px; color: var(--rc-strong); font-weight: 500; }
+  #rail-config .box-body { padding: 14px 15px 18px; }
+  #rail-config .row { display: grid; grid-template-columns: var(--rc-label) minmax(0, 1fr); gap: 12px; align-items: start; margin-bottom: 13px; }
+  #rail-config .row:last-child { margin-bottom: 0; }
+  #rail-config .row > :is(label,.label) { text-align: right; padding-top: 6px; }
+  #rail-config .row > :is(label,.label) b { color: var(--rc-danger); font-weight: 500; }
+  #rail-config .row > div { min-width: 0; }
+  #rail-config .control { border: 1px solid var(--rc-border); color: var(--rc-text); background: var(--rc-panel); border-radius: 4px; min-height: 32px; padding: 4px 9px; width: 100%; min-width: 0; }
+  #rail-config .control:focus { border-color: var(--rc-blue); outline-color: var(--rc-blue); }
+  #rail-config .control::placeholder, #rail-config .control[readonly] { color: var(--rc-placeholder); }
+  #rail-config .control:is([readonly],:disabled) { background: var(--rc-disabled); border-color: var(--rc-divider); }
+  #rail-config .control.medium { width: min(100%, 270px); }
+  #rail-config .control.wide { width: min(100%, 510px); }
+  #rail-config .control.short { width: min(100%, 120px); }
+  #rail-config .number { text-align: center; }
+  #rail-config textarea.control { resize: vertical; min-height: 48px; }
+  #rail-config .range { display: flex; align-items: center; gap: 7px; max-width: 400px; }
+  #rail-config .date-range { border: 1px solid var(--rc-border); border-radius: 4px; padding: 0 3px; }
+  #rail-config .date-range .control { border: 0; background: transparent; text-align: center; }
+  #rail-config .choices { display: flex; align-items: center; gap: 7px 21px; flex-wrap: wrap; min-height: 32px; }
+  #rail-config .choices label { display: inline-flex; align-items: center; gap: 7px; min-height: 26px; }
+  #rail-config .choices label:has(input:checked) { color: #2376cc; }
+  #rail-config .choices label:has(input:disabled) { color: var(--rc-placeholder); }
+  #rail-config .choices input { accent-color: var(--rc-blue); width: 14px; height: 14px; margin: 0; flex: 0 0 auto; }
+  #rail-config .choices input:is([type="radio"],[type="checkbox"]) { appearance: none; border: 1px solid var(--rc-border); background: var(--rc-panel); display: inline-grid; place-items: center; }
+  #rail-config .choices input[type="radio"] { border-radius: 50%; }
+  #rail-config .choices input[type="checkbox"] { border-radius: 2px; }
+  #rail-config .choices input:checked { background: var(--rc-blue); border-color: var(--rc-blue); }
+  #rail-config .choices input[type="radio"]:checked::after { content: ""; width: 4px; height: 4px; border-radius: 50%; background: #fff; }
+  #rail-config .choices input[type="checkbox"]:checked::after { content: ""; width: 6px; height: 3px; border: solid #fff; border-width: 0 0 1.5px 1.5px; transform: translateY(-1px) rotate(-45deg); }
+  #rail-config .choices input:disabled { background: var(--rc-disabled); border-color: var(--rc-divider); }
+  #rail-config .toggle { display: inline-flex; gap: 8px; min-height: 32px; align-items: center; }
+  #rail-config .toggle input { appearance: none; width: 38px; height: 20px; border-radius: 12px; border: 1px solid var(--rc-border); background: var(--rc-border); margin: 0; position: relative; }
+  #rail-config .toggle input::before { content: ""; position: absolute; width: 14px; height: 14px; border-radius: 50%; background: white; top: 2px; left: 2px; }
+  #rail-config .toggle input:checked { background: var(--rc-blue); border-color: var(--rc-blue); }
+  #rail-config .toggle input:checked::before { left: 20px; }
+  #rail-config .toggle:has(input:not(:checked)) span:first-child, #rail-config .toggle:has(input:checked) span:last-child { color: #2376cc; }
+  #rail-config .tip { color: #62666c; font-size: 12px; margin-top: 4px; }
+  #rail-config .inline-extra { margin: 4px 0 0 5px; }
+  #rail-config :is(.solid,.plain,.link) { border-radius: 4px; padding: 4px 10px; font-size: 12px; border: 1px solid var(--rc-border); background: var(--rc-panel); color: var(--rc-text); }
+  #rail-config .solid { background: #328bea; border-color: #328bea; color: #fff; }
+  #rail-config .solid:hover { background: #257fdb; }
+  #rail-config .plain:hover { border-color: #a0cfff; color: #2376cc; }
+  #rail-config .link { background: transparent; border-color: transparent; color: #2376cc; padding-inline: 4px; }
+  #rail-config .time-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  #rail-config .time-row input { width: min(100%, 130px); }
+  #rail-config .module { border: 1px solid var(--rc-divider); border-radius: 4px; box-shadow: var(--rc-shadow); margin-top: 14px; }
+  #rail-config .module-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 11px 14px; border-bottom: 1px solid var(--rc-divider); }
+  #rail-config .module-head h3 { color: var(--rc-strong); font-size: 14px; font-weight: 500; margin-right: 8px; }
+  #rail-config .module-content { padding: 12px 13px 15px; }
+  #rail-config .module-content .row { margin-bottom: 9px; }
+  #rail-config .module-content .row:last-child { margin-bottom: 0; }
+  #rail-config .condition-panel, #rail-config .offer-panel { border: 1px solid var(--rc-divider); background: #f7f8fa; border-radius: 4px; padding: 11px 12px; }
+  #rail-config .condition-panel .choices { min-height: auto; }
+  #rail-config .chip-select { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; border: 1px solid var(--rc-border); border-radius: 4px; background: var(--rc-panel); padding: 3px 6px; }
+  #rail-config .chip-select select { border: 0; min-height: 26px; flex: 1 1 110px; width: auto; }
+  #rail-config .chip { display: inline-flex; align-items: center; gap: 5px; padding: 0 5px 0 7px; border: 1px solid #d9ecff; border-radius: 3px; color: #2376cc; background: #ecf5ff; font-size: 12px; }
+  #rail-config .chip button { min-height: 24px; border: 0; background: transparent; color: #2376cc; padding: 0 2px; }
+  #rail-config .price-range { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr) auto; align-items: center; gap: 6px; }
+  #rail-config .tier-list { display: grid; gap: 8px; }
+  #rail-config .tier { display: grid; grid-template-columns: minmax(0,1.7fr) minmax(0,1fr) 46px; align-items: center; gap: 10px; }
+  #rail-config .tier-amount { display: flex; align-items: center; gap: 5px; }
+  #rail-config .tier-amount label, #rail-config .offer-fields label { white-space: nowrap; }
+  #rail-config .tier-amount .control { flex: 1; width: 100%; }
+  #rail-config .danger { border: 1px solid #ef6565; background: #f56c6c; border-radius: 4px; padding: 4px 9px; color: #fff; font-size: 12px; }
+  #rail-config .tier-actions { margin-top: 8px; }
+  #rail-config .offer-panel { margin-top: 9px; }
+  #rail-config .offer-panel h4 { margin: 0 0 8px; color: var(--rc-strong); font-size: 14px; font-weight: 500; }
+  #rail-config .offer-basis { display: inline-block; margin-left: 8px; padding: 0 6px; border: 1px solid #d9ecff; border-radius: 3px; background: #ecf5ff; color: #2376cc; font-size: 12px; }
+  #rail-config .offer-fields + .offer-amounts { margin-top: 9px; padding-top: 9px; border-top: 1px solid var(--rc-divider); }
+  #rail-config .offer-fields { display: flex; align-items: center; flex-wrap: wrap; gap: 7px 14px; }
+  #rail-config .offer-fields label { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  #rail-config .offer-fields .face-value { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+  #rail-config .face-value output { display: inline-grid; place-items: center; min-width: 62px; min-height: 32px; padding: 4px 7px; border: 1px solid var(--rc-divider); border-radius: 4px; background: var(--rc-disabled); font-variant-numeric: tabular-nums; }
+  #rail-config .offer-fields .control { width: 74px; }
+  #rail-config .offer-fields select.control { width: min(100%, 190px); }
+  #rail-config .offer-fields .activity { flex: 1 1 235px; min-width: 0; }
+  #rail-config .offer-fields:has(.face-value) .activity { flex: 0 1 300px; }
+  #rail-config .offer-fields:has(.face-value) .activity select { width: auto; flex: 1 1 0; }
+  #rail-config .money { display: flex; align-items: center; gap: 7px; }
+  #rail-config .money small { white-space: nowrap; font-size: 12px; }
+  #rail-config .editor { border: 1px solid var(--rc-border); }
+  #rail-config .editor-tools { background: #f1f1f1; color: #6d6d6d; border-bottom: 1px solid var(--rc-border); padding: 5px 9px; font-weight: 600; }
+  #rail-config .editor textarea { display: block; border: 0; min-height: 95px; resize: vertical; width: 100%; padding: 7px 9px; color: var(--rc-text); background: var(--rc-panel); }
+  #rail-config .upload { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; width: 110px; min-height: 85px; border: 1px dashed var(--rc-border); position: relative; border-radius: 4px; font-size: 12px; }
+  #rail-config .upload input { position: absolute; inset: 0; opacity: 0; width: 100%; }
+  #rail-config .upload span:first-of-type { font-size: 22px; line-height: 1.3; }
+  #rail-config .receipt { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  #rail-config .receipt div { display: grid; gap: 2px; text-align: center; background: #fff2e3; color: #ad4300; border-radius: 5px; padding: 6px 8px; min-width: 70px; font-size: 12px; }
+  #rail-config .receipt div:last-child { background: #ffebed; color: #ac2041; }
+  #rail-config .receipt strong { font-size: 19px; }
+  #rail-config .actions { display: flex; flex-wrap: wrap; justify-content: end; align-items: center; gap: 7px; padding: 2px 0 5px; }
+  #rail-config .actions span { margin-right: auto; font-size: 12px; }
+  #rail-config .actions [data-error] { color: #b73939; }
+  #rail-config [aria-invalid="true"] { border-color: var(--rc-danger); }
+  #rail-config .field-error { grid-column: 2; color: #b73939; font-size: 12px; margin-top: -7px; }
+  #rail-config .list-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  #rail-config .list-scroll { overflow-x: auto; }
+  #rail-config table { width: 100%; border-collapse: collapse; text-align: left; }
+  #rail-config th, #rail-config td { padding: 8px 12px; border-bottom: 1px solid var(--rc-divider); }
+  #rail-config th { color: #73777f; background: #fafafa; font-weight: 500; }
+  #rail-config td small { display: block; }
+  #rail-config:has(#rc-exclusions:not([hidden])) { background: var(--rc-panel); }
+  #rail-config:has(#rc-exclusions:not([hidden])) .breadcrumbs { padding-bottom: 0; }
+  #rail-config #rc-exclusions { min-height: 335px; padding-bottom: 12px; }
+  #rail-config .exclusion-intro { color: #242830; margin: 1px 0 15px; }
+  #rail-config .exclusion-filters, #rail-config .filter-actions, #rail-config .exclusion-pages, #rail-config .page-buttons { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+  #rail-config .exclusion-filters { gap: 10px 15px; margin-bottom: 14px; padding-left: 9px; }
+  #rail-config .exclusion-filters label, #rail-config .exclusion-pages label { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+  #rail-config .exclusion-filters .control { width: 126px; }
+  #rail-config .tinted { border: 1px solid #b3d8ff; border-radius: 4px; padding: 4px 10px; background: #ecf5ff; color: #2376cc; font-size: 12px; }
+  #rail-config .tinted:hover { background: #d9ecff; }
+  #rail-config :is(.exclusion-table,.log-table) { border: 1px solid var(--rc-divider); }
+  #rail-config .exclusion-table { min-width: 845px; table-layout: fixed; }
+  #rail-config .exclusion-table :is(th,td), #rail-config .log-table :is(th,td) { border-right: 1px solid var(--rc-divider); }
+  #rail-config .exclusion-table :is(th,td) { padding: 9px 8px; }
+  #rail-config .exclusion-table td { color: #252931; overflow-wrap: anywhere; }
+  #rail-config .exclusion-table .col-index { width: 46px; }
+  #rail-config .exclusion-table .col-code { width: 10%; }
+  #rail-config .exclusion-table .col-name { width: 15%; }
+  #rail-config .exclusion-table .col-reason { width: 21%; }
+  #rail-config .exclusion-table .col-updated { width: 17%; }
+  #rail-config .exclusion-table .col-owner { width: 12%; }
+  #rail-config .exclusion-table .col-state { width: 9%; }
+  #rail-config .exclusion-table td:last-child { white-space: nowrap; }
+  #rail-config .exclusion-table .empty-row { text-align: center; color: #73777f; padding: 20px; }
+  #rail-config .rule-state { display: inline-block; border-radius: 4px; border: 1px solid #e1f3d8; color: #3b8319; background: #f0f9eb; padding: 0 5px; font-size: 12px; white-space: nowrap; }
+  #rail-config .rule-state.stopped { border-color: #e9e9eb; color: #64676d; background: #f4f4f5; }
+  #rail-config .exclusion-pages { gap: 8px 13px; margin-top: 8px; padding-left: 4px; }
+  #rail-config #rc-page-size { width: 89px; }
+  #rail-config #rc-page-number { width: 48px; text-align: center; }
+  #rail-config .page-buttons { gap: 4px; }
+  #rail-config .page-control, #rail-config #rc-current-page { display: inline-grid; place-items: center; border: 0; border-radius: 3px; min-width: 23px; min-height: 25px; background: #f3f4f6; color: #606266; }
+  #rail-config #rc-current-page { background: var(--rc-blue); color: #fff; }
+  #rail-config .page-control:disabled { color: #a9aeb9; }
+  #rail-config .exclusion-dialog { width: min(590px, calc(100% - 24px)); max-height: calc(100% - 20px); overflow: auto; padding: 0; border: 1px solid #e6e7eb; border-radius: 4px; background: var(--rc-panel); color: var(--rc-text); box-shadow: 0 3px 12px #0003; }
+  #rail-config .exclusion-dialog::backdrop { background: #0007; }
+  #rail-config .exclusion-dialog header { display: flex; justify-content: space-between; align-items: center; padding: 12px 17px; border-bottom: 1px solid var(--rc-divider); }
+  #rail-config .exclusion-dialog h2 { color: var(--rc-strong); font-size: 17px; font-weight: 500; }
+  #rail-config .close-modal { border: 0; background: transparent; padding: 0 4px; color: #7c8290; font-size: 20px; }
+  #rail-config .dialog-body { padding: 23px 18px 17px; }
+  #rail-config .dialog-body .row { grid-template-columns: 108px minmax(0,1fr); }
+  #rail-config .dialog-body textarea { min-height: 78px; }
+  #rail-config .exclusion-dialog footer { display: flex; justify-content: end; gap: 8px; padding: 10px 17px 13px; border-top: 1px solid var(--rc-divider); }
+  #rail-config .modal-error { min-height: 18px; padding-left: 120px; color: #b73939; font-size: 12px; }
+  #rail-config #rc-log-rule { margin-bottom: 9px; }
+  @media(max-width:600px) {
+    #rail-config { --rc-label: 100px; }
+    #rail-config .row { gap: 7px; }
+    #rail-config .box-body { padding-inline: 10px; }
+    #rail-config .choices { gap: 2px 10px; }
+    #rail-config .tier { grid-template-columns: minmax(0,1fr) 46px; }
+    #rail-config .tier .price-range { grid-column: 1 / -1; }
+  }
+  @media(max-width:425px) {
+    #rail-config .row { grid-template-columns: minmax(0,1fr); gap: 3px; }
+    #rail-config .row > :is(label,.label) { text-align: left; }
+    #rail-config .field-error { grid-column: 1; margin-top: 0; }
+    #rail-config .module-content { padding-inline: 9px; }
+    #rail-config th, #rail-config td { padding-inline: 5px; }
+    #rail-config .dialog-body .row { grid-template-columns: minmax(0,1fr); }
+    #rail-config .modal-error { padding-left: 0; }
+  }
+  @media(pointer:coarse) {
+    #rail-config :is(button,.choices label,.toggle) { min-height: 44px; }
+    #rail-config :is(input,select,textarea).control { font-size: 16px; min-height: 44px; }
+  }
+</style>
+<script>
+(() => {
+  const root = document.getElementById('rail-config');
+  const find = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const editor = find('#rc-editor');
+  const status = find('#rc-status');
+  const rules = find('#rc-rules');
+  const times = find('#rc-times');
+  const railForms = ['立减', '辅营立减券', '返现', '返现券'];
+  const couponActivities = {
+    辅营立减券: { '火车票辅营立减券活动': 20, '火车票辅营立减券活动（备选）': 30 },
+    返现券: { '火车票返现券活动': 10, '火车票返现券活动（备选）': 15 }
+  };
+  const airForms = ['立减', '券', '返现', '里程抵扣上限'];
+  const railConditions = ['通道类型', '辅营产品', '票面价区间', '辅营订单价格', '坐席', '货架'];
+  const channels = ['便捷购票', '12306购票', '优享购票'];
+  const products = ['SKU10001-出行保障礼包', 'SKU10002-便捷服务包', 'SKU10003-优享服务包'];
+  const multiSelectConditions = {
+    通道类型: { entries: channels, tip: '数据源：辅营（模拟数据），命中任一通道即可。' },
+    辅营产品: { entries: products, tip: '数据源：辅营（模拟数据），按 skuCode 匹配。' },
+    货架: { entries: ['HJ823993', 'HJ824107', 'HJ825246', 'HJ826508', 'HJ827615'], tip: '示例货架编号，可多选。' }
+  };
+  const seats = ['二等座', '一等座', '商务座', '特等座', '硬座', '软座', '硬卧', '软卧', '无座'];
+  const airConditions = ['出发机场', '抵达机场', '机场', '航线限制（机场三字码）', '起飞开始日期', '起飞结束日期', '产品号位', '航司＋仓位(剔除)', '最小提前天数', '最大提前天数', '票面价下限', '票面价上限', '航司', '航班号', '供应商', '航班起飞周期'];
+  const personOfferDefaults = {
+    mode: '固定补贴', amount: '10', fallback: '0',
+    tiers: [{ min: '0', max: '10', amount: '10' }, { min: '10', max: '20', amount: '5' }]
+  };
+  const railDefaults = {
+    id: 1,
+    offers: [...railForms],
+    offerSettings: {
+      立减: { ...structuredClone(personOfferDefaults), mode: '分层补贴' },
+      辅营立减券: { issue: '火车票辅营立减券活动' },
+      返现: { ...structuredClone(personOfferDefaults), cashback: '火车票出行返现活动' },
+      返现券: { issue: '火车票返现券活动' }
+    },
+    conditions: {
+      通道类型: channels.slice(0, 2), 辅营产品: [products[0], products[2]],
+      票面价区间: ['50', '500'], 辅营订单价格: ['15', '100'], 坐席: ['二等座']
+    }
+  };
+  const airDefaults = { id: 1, mode: '固定补贴', amount: '0', offers: ['立减'], conditions: {} };
+  let modules = { rail: [structuredClone(railDefaults)], air: [structuredClone(airDefaults)] };
+  let moduleId = 2;
+  let saved = [];
+  const originalExclusion = {
+    code: '9001', name: '保险类增值商品（示例）',
+    reason: '该示例分类不参与辅营通用券抵扣。',
+    updated: '2026-11-09 09:00:00', owner: '示例操作人', state: '生效中', logs: []
+  };
+  let exclusions = [structuredClone(originalExclusion)];
+  let exclusionFilter = { code: '', state: '' };
+  let exclusionPage = 1;
+  let editingExclusion = null;
+  const read = name => new FormData(editor).get(name) ?? '';
+  const kind = () => read('business') === '火车票' ? 'rail' : 'air';
+  const isLate = () => kind() === 'rail' && ['B25', 'B3'].includes(read('railNode'));
+
+  function make(tag, attrs = {}, children = []) {
+    const node = document.createElement(tag);
+    for (const [name, value] of Object.entries(attrs)) {
+      if (value != null) node.setAttribute(name, value);
+    }
+    node.append(...children);
+    return node;
+  }
+  function button(label, onClick, appearance = 'plain', ariaLabel) {
+    const node = make('button', { type: 'button', class: appearance + ' cursor-interaction', 'aria-label': ariaLabel }, [label]);
+    node.addEventListener('click', onClick);
+    return node;
+  }
+  function option(type, name, value, checked, onChange, disabled = false) {
+    const input = make('input', { type, name, value, checked: checked ? '' : null, disabled: disabled ? '' : null });
+    if (onChange) input.addEventListener('change', () => onChange(input.checked));
+    return make('label', { class: 'cursor-interaction' }, [input, make('span', {}, [value])]);
+  }
+  function row(label, content, required = false) {
+    const labelNode = make('span', { class: 'label' }, [required ? make('b', {}, ['* ']) : '', label + '：']);
+    return make('div', { class: 'row' }, [labelNode, content]);
+  }
+  function number(label, value, onInput, name) {
+    const input = make('input', { type: 'number', min: '0', step: '0.01', class: 'control short number', 'aria-label': label, name, placeholder: '请输入金额' });
+    input.value = value;
+    if (onInput) input.addEventListener('input', () => onInput(input.value));
+    return input;
+  }
+  function money(input, unit = '元') {
+    return make('div', { class: 'money' }, [input, make('small', {}, ['（单位：' + unit + '）'])]);
+  }
+  function dropdown(label, entries, value, onChange, placeholder = '请选择') {
+    const control = make('select', { class: 'control', 'aria-label': label }, [
+      make('option', { value: '' }, [placeholder]),
+      ...entries.map(entry => make('option', { value: entry }, [entry]))
+    ]);
+    control.value = value ?? '';
+    control.addEventListener('change', () => onChange(control.value));
+    return control;
+  }
+  function rangeControl(label, values, onChange, separator = '至', placeholders = ['最低金额', '最高金额']) {
+    const inputs = values.map((value, index) => {
+      const input = number(label + (index === 0 ? '下限' : '上限'), value, next => onChange(index, next));
+      input.className = 'control';
+      input.placeholder = placeholders[index];
+      return input;
+    });
+    return make('div', { class: 'price-range' }, [inputs[0], separator, inputs[1], '元']);
+  }
+  function railConditionRows(model, refresh) {
+    return railConditions.filter(label => Object.hasOwn(model.conditions, label)).map(label => {
+      const values = model.conditions[label];
+      if (Object.hasOwn(multiSelectConditions, label)) {
+        const { entries, tip } = multiSelectConditions[label];
+        const pending = entries.filter(entry => !values.includes(entry));
+        const chips = values.map(value => make('span', { class: 'chip' }, [value,
+          button('×', () => {
+            model.conditions[label] = values.filter(entry => entry !== value);
+            refresh();
+          }, '', '移除' + value)
+        ]));
+        const select = dropdown(label + '继续选择', pending, '', value => {
+          if (value) {
+            values.push(value);
+            refresh();
+          }
+        }, pending.length ? '继续选择' : '已全部选择');
+        select.disabled = pending.length === 0;
+        return row(label, make('div', { class: 'condition-panel' }, [make('div', { class: 'chip-select' }, [...chips, select]), make('p', { class: 'tip' }, [tip])]));
+      }
+      if (label === '坐席') {
+        const choices = make('div', { class: 'choices condition-panel', role: 'group', 'aria-label': '坐席' }, seats.map(value =>
+          option('checkbox', 'seat-' + model.id, value, values.includes(value), checked => {
+            model.conditions[label] = checked ? [...model.conditions[label], value] : model.conditions[label].filter(entry => entry !== value);
+          })
+        ));
+        return row(label, choices);
+      }
+      const ticket = label === '票面价区间';
+      const inputRange = rangeControl(label, values, (index, next) => { values[index] = next; }, '至',
+        ticket ? ['最低票面价', '最高票面价'] : ['最低订单价格', '最高订单价格']);
+      const tip = ticket ? '按单人火车票票面价匹配。' : '按辅营查询传入的订单价格匹配，计算门槛前剔除不可抵扣商品。';
+      return row(label, make('div', {}, [inputRange, make('p', { class: 'tip' }, [tip])]));
+    });
+  }
+  function railTierRows(offer, config, refresh) {
+    const fallback = row('兜底补贴金额', money(number(offer + '兜底补贴金额', config.fallback, value => { config.fallback = value; }), '元/人'));
+    const tiers = config.tiers.map((tier, index) => {
+      const label = '第' + (index + 1) + '档';
+      const interval = rangeControl(offer + label + '已有优惠金额', [tier.min, tier.max], (i, value) => { tier[i === 0 ? 'min' : 'max'] = value; }, '～');
+      const amount = make('label', { class: 'tier-amount' }, ['补贴金额', number(offer + label + '补贴金额', tier.amount, value => { tier.amount = value; }), '元/人']);
+      const remove = index === 0 ? make('span') : button('删除', () => {
+        config.tiers.splice(index, 1);
+        refresh();
+      }, 'danger', '删除' + label);
+      return make('div', { class: 'tier' }, [interval, amount, remove]);
+    });
+    const add = button('添加', () => {
+      config.tiers.push({ min: config.tiers.at(-1)?.max ?? '', max: '', amount: '' });
+      refresh();
+    }, 'solid', '添加分层区间');
+    return [fallback, row('已有优惠金额', make('div', {}, [
+      make('div', { class: 'tier-list' }, tiers), make('div', { class: 'tier-actions' }, [add]),
+      make('p', { class: 'tip' }, ['已有优惠金额用于匹配档位，未命中时使用该形式的每人兜底金额。'])
+    ]))];
+  }
+  function railOfferPanels(model, refresh) {
+    return railForms.filter(value => model.offers.includes(value)).map(value => {
+      const coupon = value.endsWith('券');
+      const config = model.offerSettings[value];
+      const fields = [];
+      if (coupon) {
+        const activities = couponActivities[value];
+        const faceValue = make('output', { 'aria-label': value + '活动券面额', 'aria-live': 'polite' });
+        const showFaceValue = () => {
+          faceValue.textContent = Object.hasOwn(activities, config.issue) ? String(activities[config.issue]) : '—';
+        };
+        const select = dropdown(value + '发券活动', Object.keys(activities), config.issue, next => {
+          config.issue = next;
+          showFaceValue();
+        });
+        fields.push(
+          make('label', { class: 'activity' }, ['发券活动：', select]),
+          make('div', { class: 'face-value' }, ['活动券面额：', faceValue, '元/单'])
+        );
+        showFaceValue();
+      }
+      if (value === '返现') fields.push(make('label', { class: 'activity' }, [
+        '返现活动：', dropdown('返现活动', ['火车票出行返现活动', '火车票出行返现活动（备选）'], config.cashback, next => { config.cashback = next; })
+      ]));
+      const panel = make('section', { class: 'offer-panel', 'aria-label': value + '配置' }, [
+        make('h4', {}, [value + '配置', make('span', { class: 'offer-basis' }, [coupon ? '按单' : '按人'])])
+      ]);
+      if (fields.length) panel.append(make('div', { class: 'offer-fields' }, fields));
+      if (coupon) {
+        panel.append(make('p', { class: 'tip' }, ['券面额读取所选发券活动。活动面额高于本单最高同类可用券时，按活动面额发券并绑定本单；小于或等于时沿用原券。']));
+        return panel;
+      }
+      const modes = make('div', { class: 'choices', role: 'group', 'aria-label': value + '补贴金额类型' }, ['固定补贴', '分层补贴'].map(mode =>
+        option('radio', 'amountMode-' + model.id + '-' + value, mode, config.mode === mode, () => { config.mode = mode; refresh(); })
+      ));
+      const amounts = make('div', { class: 'offer-amounts' }, [row('补贴金额类型', modes)]);
+      if (config.mode === '分层补贴') amounts.append(...railTierRows(value, config, refresh));
+      else amounts.append(row('每人' + value + '金额', money(number(value + '每人补贴金额', config.amount, next => { config.amount = next; }), '元/人'), true));
+      panel.append(amounts);
+      return panel;
+    });
+  }
+  function addTime(start = '', end = '') {
+    const makeTime = (label, value, name) => {
+      const input = make('input', { type: 'time', step: '1', name, class: 'control', 'aria-label': label });
+      input.value = value;
+      return input;
+    };
+    const entry = make('div', { class: 'time-row' }, [makeTime('补贴开始时间', start, 'timeFrom'), '—', makeTime('补贴结束时间', end, 'timeTo')]);
+    entry.append(button('删除', () => {
+      if (times.children.length > 1) entry.remove();
+      else entry.querySelectorAll('input').forEach(input => { input.value = ''; });
+    }, 'link', '删除该补贴时间段'));
+    times.append(entry);
+  }
+  function renderRules() {
+    const type = kind();
+    const rail = type === 'rail';
+    const late = isLate();
+    const allowed = rail ? railForms : airForms;
+    const conditions = rail ? railConditions : airConditions;
+    const models = modules[type];
+    if (late) models.forEach(model => {
+      model.offers = model.offers.filter(value => !value.endsWith('券'));
+    });
+    rules.replaceChildren(...models.map(model => {
+      const update = () => renderRules();
+      const heading = make('div', { class: 'module-head' }, [
+        make('h3', {}, ['规则模块-CLGZ' + model.id + '：']),
+        button('新增条件模块', () => {
+          const defaults = rail ? railDefaults : airDefaults;
+          const fresh = structuredClone(defaults);
+          models.push({ ...fresh, id: moduleId++, conditions: {} });
+          update();
+        }),
+        button('复制条件模块', () => { models.push({ ...structuredClone(model), id: moduleId++ }); update(); })
+      ]);
+      if (models.length > 1) heading.append(button('删除模块', () => {
+        modules[type] = models.filter(entry => entry.id !== model.id);
+        update();
+      }, 'link', '删除规则模块 CLGZ' + model.id));
+      const conditionChoices = make('div', { class: 'choices', role: 'group', 'aria-label': '规则条件' }, conditions.map(value =>
+        option('checkbox', 'condition-' + model.id, value, Object.hasOwn(model.conditions, value), checked => {
+          if (checked) model.conditions[value] = rail ? (value === '票面价区间' || value === '辅营订单价格' ? ['', ''] : []) : '';
+          else delete model.conditions[value];
+          update();
+          if (checked && !rail) rules.querySelectorAll('[data-rule-value]').forEach(input => {
+            if (input.dataset.ruleValue === model.id + '-' + value) input.focus();
+          });
+        })
+      ));
+      const conditionHelp = rail ? make('p', { class: 'tip' }, ['勾选后展开对应配置，未勾选的条件不限。']) : '';
+      const body = make('div', { class: 'module-content' }, [row(rail ? '条件配置' : '规则', make('div', {}, [conditionChoices, conditionHelp]))]);
+      if (rail) body.append(...railConditionRows(model, update));
+      else for (const [label, value] of Object.entries(model.conditions)) {
+        const input = make('input', { class: 'control medium', 'aria-label': label, 'data-rule-value': model.id + '-' + label,
+          type: /下限|上限|天数/.test(label) ? 'number' : 'text', min: '0', placeholder: '请输入' + label });
+        input.value = value;
+        input.addEventListener('input', () => { model.conditions[label] = input.value; });
+        body.append(row(label, make('div', {}, [input])));
+      }
+      if (!rail) {
+        const modes = ['固定补贴', '拆分金额', '票价尾数－补贴金额', '分层补贴', '券＋立减', '膨胀券＋立减', '锚定打包'];
+        const modeChoices = make('div', { class: 'choices' }, modes.map(value =>
+          option('radio', 'amountMode-' + model.id, value, value === model.mode, () => { model.mode = value; update(); })
+        ));
+        body.append(row('补贴金额类型', modeChoices), row('补贴金额', money(number('补贴金额', model.amount, value => { model.amount = value; })), true));
+      }
+      const choices = make('div', { class: 'choices', role: 'group', 'aria-label': '补贴形式' }, allowed.map(value =>
+        option('checkbox', 'offer-' + model.id, value, model.offers.includes(value), checked => {
+          model.offers = checked ? [...model.offers, value] : model.offers.filter(offer => offer !== value);
+          update();
+        }, late && value.endsWith('券'))
+      ));
+      const hint = rail ? (late ? 'ⓘ 立减和返现各自按人计算，符合条件的优惠均可享受。' : 'ⓘ 各形式独立计算，符合条件的优惠均可享受。立减和返现按人，两类券按单，各最多使用一张。') : '';
+      body.append(row('补贴形式', make('div', {}, [choices, hint ? make('p', { class: 'tip' }, [hint]) : '']), true));
+      if (rail) body.append(...railOfferPanels(model, update));
+      return make('section', { class: 'module', 'aria-label': '规则模块 CLGZ' + model.id }, [heading, body]);
+    }));
+  }
+  function updateDisplay() {
+    const styles = [read('style'), read('splitStyle')];
+    find('#rc-copy-row').hidden = !styles.includes('文案样式');
+    find('#rc-image-row').hidden = !styles.includes('图片样式');
+    find('#rc-b3-preview').hidden = kind() !== 'rail' || read('railNode') !== 'B3';
+  }
+  function updateBusiness() {
+    const type = kind();
+    all('[data-business]').forEach(element => { element.hidden = element.dataset.business !== type; });
+    all('[name="channel"]').forEach(input => {
+      input.disabled = type === 'rail' && input.value !== '微信小程序';
+      if (input.disabled) input.checked = false;
+    });
+    const node = read('railNode');
+    find('#rc-node-hint').textContent = node === 'B25' ? 'ⓘ 仅支持立减和返现，沿用 B2 确认的乘车人名单。'
+      : node === 'B3' ? 'ⓘ 仅支持立减和返现，沿用原订单乘车人名单。'
+      : 'ⓘ 支持立减、返现、辅营立减券和返现券。';
+    renderRules();
+    updateDisplay();
+  }
+  function renderList() {
+    find('#rc-records').replaceChildren(...saved.map(record => make('tr', {}, [
+      make('td', {}, [record.name, make('small', {}, [record.id])]),
+      make('td', {}, [record.business]), make('td', {}, [record.node]), make('td', {}, ['草稿']),
+      make('td', {}, [button('编辑', () => openRecord(record), 'link', '编辑' + record.name)])
+    ])));
+  }
+  function renderExclusions() {
+    const filtered = exclusions.filter(rule => (!exclusionFilter.code || rule.code === exclusionFilter.code)
+      && (!exclusionFilter.state || rule.state === exclusionFilter.state));
+    const size = Number(find('#rc-page-size').value);
+    const pages = Math.max(1, Math.ceil(filtered.length / size));
+    exclusionPage = Math.max(1, Math.min(exclusionPage, pages));
+    const start = (exclusionPage - 1) * size;
+    const entries = filtered.slice(start, start + size).map((item, index) => make('tr', {}, [
+      ...[start + index + 1, item.code, item.name, item.reason, item.updated, item.owner].map(value => make('td', {}, [String(value)])),
+      make('td', {}, [make('span', { class: item.state === '生效中' ? 'rule-state' : 'rule-state stopped' }, [item.state])]),
+      make('td', {}, [
+        button('编辑', () => openExclusion(item), 'link', '编辑 ' + item.code),
+        button('日志', () => openExclusionLogs(item), 'link', '日志 ' + item.code)
+      ])
+    ]));
+    if (!entries.length) entries.push(make('tr', {}, [make('td', { colspan: '8', class: 'empty-row' }, ['暂无符合条件的规则'])]));
+    find('#rc-exclusion-rows').replaceChildren(...entries);
+    find('#rc-exclusion-count').textContent = '共 ' + filtered.length + ' 条';
+    find('#rc-current-page').textContent = String(exclusionPage);
+    find('#rc-page-number').value = String(exclusionPage);
+    find('#rc-page-number').max = String(pages);
+    find('#rc-prev-page').disabled = exclusionPage === 1;
+    find('#rc-next-page').disabled = exclusionPage === pages;
+  }
+  function openExclusion(item = null) {
+    editingExclusion = item;
+    const dialog = find('#rc-exclusion-dialog');
+    find('#rc-exclusion-title').textContent = item ? '编辑不可抵扣商品' : '新增不可抵扣商品';
+    find('#rc-exclusion-code').value = item?.code ?? '';
+    find('#rc-exclusion-name').value = item?.name ?? '';
+    find('#rc-exclusion-reason').value = item?.reason ?? '';
+    all('[name="exclusionState"]').forEach(control => { control.checked = control.value === (item?.state ?? '生效中'); });
+    dialog.querySelectorAll('[aria-invalid]').forEach(input => input.removeAttribute('aria-invalid'));
+    find('#rc-exclusion-error').textContent = '';
+    dialog.showModal();
+  }
+  function openExclusionLogs(item) {
+    find('#rc-log-rule').textContent = item.code + '　' + item.name;
+    const rows = item.logs.map(entry => make('tr', {}, [entry.updated, entry.owner, entry.action, entry.state].map(value => make('td', {}, [value]))));
+    if (!rows.length) rows.push(make('tr', {}, [make('td', { colspan: '4' }, ['当前原型暂无操作记录'])]));
+    find('#rc-log-rows').replaceChildren(...rows);
+    find('#rc-exclusion-logs').showModal();
+  }
+  function saveExclusion() {
+    const code = find('#rc-exclusion-code');
+    const name = find('#rc-exclusion-name');
+    const reason = find('#rc-exclusion-reason');
+    const normalizedCode = code.value.trim().toUpperCase();
+    const state = find('[name="exclusionState"]:checked').value;
+    const fields = [
+      [code, /^[A-Z0-9]{4}$/.test(normalizedCode), '请输入 4 位字母或数字组成的分类四字码。'],
+      [code, !exclusions.some(item => item !== editingExclusion && item.code === normalizedCode), '该分类四字码已存在。'],
+      [name, Boolean(name.value.trim()), '请输入分类名称。'],
+      [reason, Boolean(reason.value.trim()), '请输入不可抵扣原因。']
+    ];
+    [code, name, reason].forEach(input => input.removeAttribute('aria-invalid'));
+    const invalid = fields.find(([, valid]) => !valid);
+    if (invalid) {
+      const [input, , message] = invalid;
+      find('#rc-exclusion-error').textContent = message;
+      input.setAttribute('aria-invalid', 'true');
+      input.focus();
+      return;
+    }
+    const updated = new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit'
+    }).format(new Date());
+    const owner = '示例操作人';
+    const action = !editingExclusion ? '新增' : editingExclusion.state === state ? '编辑' : (state === '生效中' ? '启用' : '停用');
+    const item = {
+      code: normalizedCode, name: name.value.trim(), reason: reason.value.trim(), state, updated, owner,
+      logs: [{ updated, owner, action, state }, ...(editingExclusion?.logs ?? [])]
+    };
+    exclusions = [item, ...exclusions.filter(entry => entry !== editingExclusion)];
+    find('#rc-exclusion-dialog').close();
+    renderExclusions();
+  }
+  function showPage(page, scroll = true) {
+    editor.hidden = page !== 'edit';
+    find('#rc-list').hidden = page !== 'list';
+    find('#rc-exclusions').hidden = page !== 'exclusions';
+    find('#rc-crumb-parent').textContent = page === 'exclusions' ? '商品中心' : '智能补贴';
+    find('#rc-crumb').textContent = page === 'exclusions' ? '辅营商品不可抵扣规则' : '智能补贴策略';
+    const tabs = all('.workspace-tabs button');
+    tabs.forEach((tab, index) => {
+      const active = index > 0 && tab.dataset.page === page;
+      tab.classList.toggle('active', active);
+      if (active) tab.setAttribute('aria-current', 'page');
+      else tab.removeAttribute('aria-current');
+    });
+    if (page === 'list') renderList();
+    if (page === 'exclusions') renderExclusions();
+    if (scroll) root.scrollIntoView({ block: 'start' });
+  }
+  const recordInputs = () => all('#rc-editor input[name], #rc-editor select[name], #rc-editor textarea[name]')
+    .filter(input => !input.closest('#rc-rules, #rc-times'));
+  function snapshot() {
+    const data = {};
+    for (const input of recordInputs()) {
+      if (input.type === 'checkbox' || input.type === 'radio') {
+        data[input.name] ??= [];
+        if (input.checked) data[input.name].push(input.value);
+      } else data[input.name] = input.value;
+    }
+    return {
+      id: read('id'), name: String(read('name')).trim(), business: read('business'),
+      node: read(kind() === 'rail' ? 'railNode' : 'airNode'),
+      data, modules: structuredClone(modules), moduleId,
+      periods: [...times.children].map(entry => [...entry.querySelectorAll('input')].map(input => input.value))
+    };
+  }
+  function openRecord(record) {
+    for (const input of recordInputs()) {
+      const value = record.data[input.name];
+      if (Array.isArray(value)) input.checked = value.includes(input.value);
+      else if (typeof value === 'string') input.value = value;
+    }
+    modules = structuredClone(record.modules);
+    moduleId = record.moduleId;
+    times.replaceChildren();
+    record.periods.forEach(period => addTime(...period));
+    find('#rc-audience-tag').hidden = read('audience') !== '指定人群';
+    find('#rc-image').value = '';
+    find('#rc-image-name').textContent = '';
+    status.textContent = '';
+    status.removeAttribute('data-error');
+    updateBusiness();
+    showPage('edit');
+  }
+  function showError(message, input) {
+    status.setAttribute('data-error', '');
+    status.textContent = message;
+    if (input) {
+      input.setAttribute('aria-invalid', 'true');
+      const fieldRow = input.closest('.row');
+      if (fieldRow) fieldRow.append(make('p', { class: 'field-error', role: 'alert' }, [message]));
+      input.focus();
+    }
+  }
+  function validateModule(model, rail) {
+    const validAmount = value => value !== '' && Number.isFinite(Number(value)) && Number(value) >= 0;
+    if (!model.offers.length) return '请至少选择一种补贴形式。';
+    if (!rail) return validAmount(model.amount) ? '' : '请填写有效的补贴金额。';
+    for (const label of ['票面价区间', '辅营订单价格']) {
+      const values = model.conditions[label];
+      if (!values) continue;
+      const [min,max] = values;
+      if ((!min && !max) || values.some(value => value && !validAmount(value)) || (min && max && Number(min) > Number(max))) {
+        return '请检查' + label + '的价格区间。';
+      }
+    }
+    for (const label of [...Object.keys(multiSelectConditions), '坐席']) {
+      if (model.conditions[label]?.length === 0) return '请至少选择一个' + label + '。';
+    }
+    for (const offer of model.offers) {
+      const config = model.offerSettings[offer];
+      if (Object.hasOwn(couponActivities, offer)) {
+        if (!Object.hasOwn(couponActivities[offer], config.issue)) return '请选择' + offer + '的发券活动。';
+        continue;
+      }
+      if (config.mode !== '分层补贴') {
+        if (!validAmount(config.amount)) return '请填写有效的' + offer + '金额。';
+        continue;
+      }
+      const sorted = [...config.tiers].sort((left, right) => Number(left.min) - Number(right.min));
+      if (!validAmount(config.fallback) || sorted.some((tier, index) =>
+        ![tier.min, tier.max, tier.amount].every(validAmount) ||
+        Number(tier.min) >= Number(tier.max) ||
+        (index > 0 && Number(tier.min) < Number(sorted[index - 1].max)))) {
+        return '请检查' + offer + '的兜底金额和分层区间，各档不可交叉。';
+      }
+    }
+    return '';
+  }
+  const weekdays = ['周一','周二','周三','周四','周五','周六','周日'];
+  find('#rc-days').append(...weekdays.map(value => option('checkbox', 'day', value, true)));
+  const styles = ['无样式','文案样式','图片样式'];
+  find('#rc-styles').append(...styles.map(value => option('radio', 'style', value, value === '文案样式', updateDisplay)));
+  find('#rc-split').append(...styles.map(value => option('radio', 'splitStyle', value, value === '无样式', updateDisplay)));
+  const budgets = [
+    ['库存总额', 'stock', '30000', '超过库存总额时停止补贴，策略下线。'],
+    ['库存阈值', 'threshold', '0', '总补贴剩余金额低于此值时隐藏活动，已参与的用户仍可支付。0 表示不限。'],
+    ['单日库存上限', 'daily', '0', '单日补贴达到上限后，当天停止补贴。0 表示不限。'],
+    ['单日库存阈值', 'dailyFloor', '0', '单日补贴剩余金额低于此值时隐藏活动，已参与的用户仍可支付。0 表示不限。']
+  ];
+  find('#rc-budget').append(...budgets.map(([label, name, value, help]) => {
+    const field = number(label, value, null, name);
+    const helpId = 'rc-budget-help-' + name;
+    field.required = true;
+    field.setAttribute('aria-describedby', helpId);
+    return row(label, make('div', {}, [
+      money(field), make('p', { class: 'tip', id: helpId }, ['ⓘ ' + help])
+    ]), true);
+  }));
+  addTime('00:00:00', '23:59:59');
+  updateBusiness();
+  const initial = snapshot();
+  const airSample = structuredClone(initial);
+  airSample.id = 'DEMO-AIR-001';
+  airSample.name = '国内机票 · 查询补贴示例';
+  airSample.business = '国内机票';
+  airSample.node = '查询补贴';
+  Object.assign(airSample.data, { id: airSample.id, name: airSample.name, business: ['国内机票'], style: ['无样式'] });
+  saved = [airSample];
+
+  all('[name="business"], [name="railNode"]').forEach(input => input.addEventListener('change', updateBusiness));
+  find('#rc-audience').addEventListener('change', () => { find('#rc-audience-tag').hidden = read('audience') !== '指定人群'; });
+  find('#rc-image').addEventListener('change', event => { find('#rc-image-name').textContent = event.target.files[0]?.name ?? ''; });
+  find('#rc-add-time').addEventListener('click', () => addTime());
+  all('[data-page]').forEach(tab => tab.addEventListener('click', () => showPage(tab.dataset.page)));
+  find('#rc-add-exclusion').addEventListener('click', () => openExclusion());
+  find('#rc-save-exclusion').addEventListener('click', saveExclusion);
+  all('[data-close-exclusion]').forEach(control => control.addEventListener('click', () => find('#rc-exclusion-dialog').close()));
+  find('#rc-close-logs').addEventListener('click', () => find('#rc-exclusion-logs').close());
+  function queryExclusions() {
+    exclusionFilter = { code: find('#rc-filter-code').value.trim().toUpperCase(), state: find('#rc-filter-status').value };
+    exclusionPage = 1;
+    renderExclusions();
+  }
+  find('#rc-search-exclusion').addEventListener('click', queryExclusions);
+  find('#rc-filter-code').addEventListener('keydown', event => { if (event.key === 'Enter') queryExclusions(); });
+  find('#rc-reset-exclusion').addEventListener('click', () => {
+    find('#rc-filter-code').value = '';
+    find('#rc-filter-status').value = '';
+    queryExclusions();
+  });
+  find('#rc-page-size').addEventListener('change', () => { exclusionPage = 1; renderExclusions(); });
+  find('#rc-prev-page').addEventListener('click', () => { exclusionPage -= 1; renderExclusions(); });
+  find('#rc-next-page').addEventListener('click', () => { exclusionPage += 1; renderExclusions(); });
+  find('#rc-page-number').addEventListener('change', event => {
+    exclusionPage = Math.trunc(Number(event.target.value)) || 1;
+    renderExclusions();
+  });
+  find('#rc-new').addEventListener('click', () => {
+    const fresh = structuredClone(initial);
+    fresh.id = 'DEMO-' + Date.now().toString(16).toUpperCase();
+    Object.assign(fresh.data, { id: fresh.id, name: '' });
+    openRecord(fresh);
+    find('#rc-name').focus();
+  });
+  editor.addEventListener('submit', event => event.preventDefault());
+  find('#rc-save').addEventListener('click', () => {
+    all('[aria-invalid="true"]').forEach(input => input.removeAttribute('aria-invalid'));
+    all('.field-error').forEach(message => message.remove());
+    const data = new FormData(editor);
+    if (!String(data.get('name')).trim()) return showError('请输入策略名称。', find('#rc-name'));
+    if (!data.get('start') || !data.get('end') || data.get('start') > data.get('end')) return showError('请选择正确的有效期。', find('#rc-start'));
+    if (!data.getAll('channel').length || !data.getAll('day').length) return showError('请至少选择一个投放渠道和一个补贴日。');
+    const record = snapshot();
+    const periods = [...record.periods].sort((left,right) => left[0].localeCompare(right[0]));
+    if (periods.some(([start,end],index) => !start || !end || start >= end || (index > 0 && start < periods[index-1][1]))) return showError('补贴时间须填写完整，各时段不得交叉。', times.querySelector('input'));
+    const errors = modules[kind()].map(model => validateModule(model, kind() === 'rail'));
+    const failed = errors.findIndex(Boolean);
+    if (failed !== -1) return showError(errors[failed], rules.children[failed].querySelector('[type="number"]'));
+    for (const [label,name] of budgets) {
+      const field = editor.elements.namedItem(name);
+      if (!field.value || !field.validity.valid) return showError('请填写有效的' + label + '。', field);
+    }
+    saved = [...saved.filter(entry => entry.id !== record.id), record];
+    status.removeAttribute('data-error');
+    status.textContent = '已保存草稿，可在策略列表查看。';
+  });
+  showPage('edit', false);
+})();
+</script>
