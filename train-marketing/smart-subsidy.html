@@ -2763,6 +2763,10 @@ html&gt;body{padding:0}&lt;/style&gt;
     status.textContent = &#x27;已保存草稿，可在策略列表查看。&#x27;;
   });
   showPage(&#x27;edit&#x27;, false);
+  window.addEventListener(&#x27;message&#x27;, event =&gt; {
+    if (event.source !== window.parent || event.data?.type !== &#x27;rail-prototype-open-page&#x27;) return;
+    if (event.data.page === &#x27;exclusions&#x27; || event.data.page === &#x27;edit&#x27;) showPage(event.data.page, false);
+  });
 })();
 &lt;/script&gt;
 
@@ -3629,6 +3633,12 @@ html&gt;body{padding:0}&lt;/style&gt;
       // Ignore missing or invalid cache entries and measure the live frame.
     }
   }
+  const openRequestedPage = () => {
+    const page = window.location.hash === '#exclusions' ? 'exclusions' : 'edit';
+    frame.contentWindow?.postMessage({ type: 'rail-prototype-open-page', page }, '*');
+  };
+  frame.addEventListener('load', openRequestedPage);
+  window.addEventListener('hashchange', openRequestedPage);
   frame.srcdoc = frameHtml;
   delete frame.dataset.srcdoc;
 })();

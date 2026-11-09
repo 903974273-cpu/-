@@ -918,5 +918,9 @@
     status.textContent = '已保存草稿，可在策略列表查看。';
   });
   showPage('edit', false);
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.data?.type !== 'rail-prototype-open-page') return;
+    if (event.data.page === 'exclusions' || event.data.page === 'edit') showPage(event.data.page, false);
+  });
 })();
 </script>

@@ -2,9 +2,8 @@
 
 统一入口：https://903974273-cpu.github.io/-/train-marketing/
 
-- `discount.html`：火车票辅营立减配置。
-- `cashback.html`：返现金满赠配置。
-- `smart-subsidy.html`：火车票智能补贴配置，含不可抵扣商品规则演示。
+- `smart-subsidy.html`：火车票智能补贴配置。
+- `smart-subsidy.html#exclusions`：辅营商品不可抵扣规则，直接打开商品中心页签。
 - `src/`：可继续编辑的原型源文件。
 
 原型是静态交互演示，不连接真实订单、营销或商品中心服务。检查、草稿及保存只用于本机演示。
