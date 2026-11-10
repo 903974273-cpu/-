@@ -2196,6 +2196,12 @@ html&gt;body{padding:0}&lt;/style&gt;
   const rules = find(&#x27;#rc-rules&#x27;);
   const times = find(&#x27;#rc-times&#x27;);
   const railForms = [&#x27;立减&#x27;, &#x27;辅营立减券&#x27;, &#x27;返现&#x27;, &#x27;返现券&#x27;];
+  // 模拟算法列表接口响应。
+  const railAlgorithms = [
+    { algorithmId: &#x27;ALG-RAIL-001&#x27;, algorithmName: &#x27;火车票综合补贴算法&#x27; },
+    { algorithmId: &#x27;ALG-RAIL-002&#x27;, algorithmName: &#x27;火车票辅营转化算法&#x27; },
+    { algorithmId: &#x27;ALG-RAIL-003&#x27;, algorithmName: &#x27;火车票支付挽留算法&#x27; }
+  ];
   const couponActivities = {
     辅营立减券: { &#x27;火车票辅营立减券活动&#x27;: 20, &#x27;火车票辅营立减券活动（备选）&#x27;: 30 },
     返现券: { &#x27;火车票返现券活动&#x27;: 10, &#x27;火车票返现券活动（备选）&#x27;: 15 }
@@ -2244,6 +2250,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   let editingExclusion = null;
   const read = name =&gt; new FormData(editor).get(name) ?? &#x27;&#x27;;
   const kind = () =&gt; read(&#x27;business&#x27;) === &#x27;火车票&#x27; ? &#x27;rail&#x27; : &#x27;air&#x27;;
+  const isRailAlgorithm = () =&gt; kind() === &#x27;rail&#x27; &amp;&amp; read(&#x27;railType&#x27;) === &#x27;实时算法策略&#x27;;
   const isLate = () =&gt; kind() === &#x27;rail&#x27; &amp;&amp; [&#x27;B25&#x27;, &#x27;B3&#x27;].includes(read(&#x27;railNode&#x27;));
 
   function make(tag, attrs = {}, children = []) {
@@ -2410,11 +2417,12 @@ html&gt;body{padding:0}&lt;/style&gt;
   function renderRules() {
     const type = kind();
     const rail = type === &#x27;rail&#x27;;
+    const algorithm = isRailAlgorithm();
     const late = isLate();
     const allowed = rail ? railForms : airForms;
     const conditions = rail ? railConditions : airConditions;
     const models = modules[type];
-    if (late) models.forEach(model =&gt; {
+    if (late &amp;&amp; !algorithm) models.forEach(model =&gt; {
       model.offers = model.offers.filter(value =&gt; !value.endsWith(&#x27;券&#x27;));
     });
     rules.replaceChildren(...models.map(model =&gt; {
@@ -2452,6 +2460,26 @@ html&gt;body{padding:0}&lt;/style&gt;
         input.value = value;
         input.addEventListener(&#x27;input&#x27;, () =&gt; { model.conditions[label] = input.value; });
         body.append(row(label, make(&#x27;div&#x27;, {}, [input])));
+      }
+      if (algorithm) {
+        const select = make(&#x27;select&#x27;, {
+          class: &#x27;control medium&#x27;, &#x27;aria-label&#x27;: &#x27;补贴算法&#x27;, &#x27;aria-describedby&#x27;: &#x27;rc-algorithm-tip-&#x27; + model.id,
+          required: &#x27;&#x27;
+        }, [
+          make(&#x27;option&#x27;, { value: &#x27;&#x27; }, [&#x27;请选择补贴算法&#x27;]),
+          ...railAlgorithms.map(({ algorithmId, algorithmName }) =&gt;
+            make(&#x27;option&#x27;, { value: algorithmId }, [algorithmId + &#x27; · &#x27; + algorithmName]))
+        ]);
+        select.value = model.algorithmId ?? &#x27;&#x27;;
+        select.addEventListener(&#x27;change&#x27;, () =&gt; { model.algorithmId = select.value; });
+        body.append(row(&#x27;补贴算法&#x27;, make(&#x27;div&#x27;, {}, [
+          select,
+          make(&#x27;p&#x27;, { class: &#x27;tip&#x27;, id: &#x27;rc-algorithm-tip-&#x27; + model.id }, [
+            &#x27;ⓘ 数据源：算法列表接口（模拟数据）。补贴金额和形式由算法返回。&#x27; +
+            (late ? &#x27;当前节点仅支持立减和返现。&#x27; : &#x27;&#x27;)
+          ])
+        ]), true));
+        return make(&#x27;section&#x27;, { class: &#x27;module&#x27;, &#x27;aria-label&#x27;: &#x27;规则模块 CLGZ&#x27; + model.id }, [heading, body]);
       }
       if (!rail) {
         const modes = [&#x27;固定补贴&#x27;, &#x27;拆分金额&#x27;, &#x27;票价尾数－补贴金额&#x27;, &#x27;分层补贴&#x27;, &#x27;券＋立减&#x27;, &#x27;膨胀券＋立减&#x27;, &#x27;锚定打包&#x27;];
@@ -2618,6 +2646,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       else if (typeof value === &#x27;string&#x27;) input.value = value;
     }
     modules = structuredClone(record.modules);
+    modules.rail = modules.rail.map(model =&gt; ({ ...structuredClone(railDefaults), ...model }));
     moduleId = record.moduleId;
     times.replaceChildren();
     record.periods.forEach(period =&gt; addTime(...period));
@@ -2639,10 +2668,12 @@ html&gt;body{padding:0}&lt;/style&gt;
       input.focus();
     }
   }
-  function validateModule(model, rail) {
+  function validateModule(model, rail, algorithm) {
     const validAmount = value =&gt; value !== &#x27;&#x27; &amp;&amp; Number.isFinite(Number(value)) &amp;&amp; Number(value) &gt;= 0;
-    if (!model.offers.length) return &#x27;请至少选择一种补贴形式。&#x27;;
-    if (!rail) return validAmount(model.amount) ? &#x27;&#x27; : &#x27;请填写有效的补贴金额。&#x27;;
+    if (!rail) {
+      if (!model.offers.length) return &#x27;请至少选择一种补贴形式。&#x27;;
+      return validAmount(model.amount) ? &#x27;&#x27; : &#x27;请填写有效的补贴金额。&#x27;;
+    }
     for (const label of [&#x27;票面价区间&#x27;, &#x27;辅营订单价格&#x27;]) {
       const values = model.conditions[label];
       if (!values) continue;
@@ -2654,6 +2685,8 @@ html&gt;body{padding:0}&lt;/style&gt;
     for (const label of [...Object.keys(multiSelectConditions), &#x27;坐席&#x27;]) {
       if (model.conditions[label]?.length === 0) return &#x27;请至少选择一个&#x27; + label + &#x27;。&#x27;;
     }
+    if (algorithm) return railAlgorithms.some(entry =&gt; entry.algorithmId === model.algorithmId) ? &#x27;&#x27; : &#x27;请选择补贴算法。&#x27;;
+    if (!model.offers.length) return &#x27;请至少选择一种补贴形式。&#x27;;
     for (const offer of model.offers) {
       const config = model.offerSettings[offer];
       if (Object.hasOwn(couponActivities, offer)) {
@@ -2705,7 +2738,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   Object.assign(airSample.data, { id: airSample.id, name: airSample.name, business: [&#x27;国内机票&#x27;], style: [&#x27;无样式&#x27;] });
   saved = [airSample];
 
-  all(&#x27;[name=&quot;business&quot;], [name=&quot;railNode&quot;]&#x27;).forEach(input =&gt; input.addEventListener(&#x27;change&#x27;, updateBusiness));
+  all(&#x27;[name=&quot;business&quot;], [name=&quot;railNode&quot;], [name=&quot;railType&quot;]&#x27;).forEach(input =&gt; input.addEventListener(&#x27;change&#x27;, updateBusiness));
   find(&#x27;#rc-audience&#x27;).addEventListener(&#x27;change&#x27;, () =&gt; { find(&#x27;#rc-audience-tag&#x27;).hidden = read(&#x27;audience&#x27;) !== &#x27;指定人群&#x27;; });
   find(&#x27;#rc-image&#x27;).addEventListener(&#x27;change&#x27;, event =&gt; { find(&#x27;#rc-image-name&#x27;).textContent = event.target.files[0]?.name ?? &#x27;&#x27;; });
   find(&#x27;#rc-add-time&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; addTime());
@@ -2751,13 +2784,24 @@ html&gt;body{padding:0}&lt;/style&gt;
     const record = snapshot();
     const periods = [...record.periods].sort((left,right) =&gt; left[0].localeCompare(right[0]));
     if (periods.some(([start,end],index) =&gt; !start || !end || start &gt;= end || (index &gt; 0 &amp;&amp; start &lt; periods[index-1][1]))) return showError(&#x27;补贴时间须填写完整，各时段不得交叉。&#x27;, times.querySelector(&#x27;input&#x27;));
-    const errors = modules[kind()].map(model =&gt; validateModule(model, kind() === &#x27;rail&#x27;));
+    const rail = kind() === &#x27;rail&#x27;;
+    const algorithm = isRailAlgorithm();
+    const errors = modules[kind()].map(model =&gt; validateModule(model, rail, algorithm));
     const failed = errors.findIndex(Boolean);
-    if (failed !== -1) return showError(errors[failed], rules.children[failed].querySelector(&#x27;[type=&quot;number&quot;]&#x27;));
+    if (failed !== -1) {
+      const selector = errors[failed] === &#x27;请选择补贴算法。&#x27; ? &#x27;[aria-label=&quot;补贴算法&quot;]&#x27; : &#x27;[type=&quot;number&quot;]&#x27;;
+      return showError(errors[failed], rules.children[failed].querySelector(selector));
+    }
     for (const [label,name] of budgets) {
       const field = editor.elements.namedItem(name);
       if (!field.value || !field.validity.valid) return showError(&#x27;请填写有效的&#x27; + label + &#x27;。&#x27;, field);
     }
+    if (rail) record.modules.rail.forEach(model =&gt; {
+      if (algorithm) {
+        delete model.offers;
+        delete model.offerSettings;
+      } else delete model.algorithmId;
+    });
     saved = [...saved.filter(entry =&gt; entry.id !== record.id), record];
     status.removeAttribute(&#x27;data-error&#x27;);
     status.textContent = &#x27;已保存草稿，可在策略列表查看。&#x27;;
