@@ -1941,7 +1941,7 @@ html&gt;body{padding:0}&lt;/style&gt;
             &lt;label&gt;&lt;input type=&quot;radio&quot; name=&quot;railNode&quot; value=&quot;B25&quot;&gt;&lt;span&gt;B25 辅营加购&lt;/span&gt;&lt;/label&gt;
             &lt;label&gt;&lt;input type=&quot;radio&quot; name=&quot;railNode&quot; value=&quot;B3&quot;&gt;&lt;span&gt;B3 支付挽留&lt;/span&gt;&lt;/label&gt;
           &lt;/div&gt;&lt;p class=&quot;tip&quot; id=&quot;rc-node-hint&quot; aria-live=&quot;polite&quot;&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;
-          &lt;div class=&quot;row&quot;&gt;&lt;span class=&quot;label&quot;&gt;补贴策略类型：&lt;/span&gt;&lt;div class=&quot;choices&quot;&gt;&lt;label&gt;&lt;input type=&quot;radio&quot; name=&quot;dimension&quot; checked value=&quot;订单维度&quot;&gt;&lt;span&gt;订单维度&lt;/span&gt;&lt;/label&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;row&quot; data-business=&quot;air&quot;&gt;&lt;span class=&quot;label&quot;&gt;补贴策略类型：&lt;/span&gt;&lt;div class=&quot;choices&quot;&gt;&lt;label&gt;&lt;input type=&quot;radio&quot; name=&quot;dimension&quot; checked value=&quot;订单维度&quot;&gt;&lt;span&gt;订单维度&lt;/span&gt;&lt;/label&gt;&lt;/div&gt;&lt;/div&gt;
           &lt;div class=&quot;row&quot;&gt;&lt;span class=&quot;label&quot;&gt;黄牛风控：&lt;/span&gt;&lt;div&gt;&lt;label class=&quot;toggle&quot;&gt;&lt;span&gt;不风控&lt;/span&gt;&lt;input type=&quot;checkbox&quot; name=&quot;risk&quot; role=&quot;switch&quot; aria-label=&quot;黄牛风控&quot;&gt;&lt;span&gt;风控&lt;/span&gt;&lt;/label&gt;&lt;p class=&quot;tip&quot;&gt;ⓘ 开启后查询风控服务，命中的用户不可参与活动&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;
         &lt;/div&gt;
       &lt;/section&gt;
@@ -2625,16 +2625,19 @@ html&gt;body{padding:0}&lt;/style&gt;
   const recordInputs = () =&gt; all(&#x27;#rc-editor input[name], #rc-editor select[name], #rc-editor textarea[name]&#x27;)
     .filter(input =&gt; !input.closest(&#x27;#rc-rules, #rc-times&#x27;));
   function snapshot() {
+    const business = read(&#x27;business&#x27;);
+    const rail = business === &#x27;火车票&#x27;;
     const data = {};
     for (const input of recordInputs()) {
+      if (rail &amp;&amp; input.name === &#x27;dimension&#x27;) continue;
       if (input.type === &#x27;checkbox&#x27; || input.type === &#x27;radio&#x27;) {
         data[input.name] ??= [];
         if (input.checked) data[input.name].push(input.value);
       } else data[input.name] = input.value;
     }
     return {
-      id: read(&#x27;id&#x27;), name: String(read(&#x27;name&#x27;)).trim(), business: read(&#x27;business&#x27;),
-      node: read(kind() === &#x27;rail&#x27; ? &#x27;railNode&#x27; : &#x27;airNode&#x27;),
+      id: read(&#x27;id&#x27;), name: String(read(&#x27;name&#x27;)).trim(), business,
+      node: read(rail ? &#x27;railNode&#x27; : &#x27;airNode&#x27;),
       data, modules: structuredClone(modules), moduleId,
       periods: [...times.children].map(entry =&gt; [...entry.querySelectorAll(&#x27;input&#x27;)].map(input =&gt; input.value))
     };
@@ -2735,7 +2738,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   airSample.name = &#x27;国内机票 · 查询补贴示例&#x27;;
   airSample.business = &#x27;国内机票&#x27;;
   airSample.node = &#x27;查询补贴&#x27;;
-  Object.assign(airSample.data, { id: airSample.id, name: airSample.name, business: [&#x27;国内机票&#x27;], style: [&#x27;无样式&#x27;] });
+  Object.assign(airSample.data, { id: airSample.id, name: airSample.name, business: [&#x27;国内机票&#x27;], dimension: [read(&#x27;dimension&#x27;)], style: [&#x27;无样式&#x27;] });
   saved = [airSample];
 
   all(&#x27;[name=&quot;business&quot;], [name=&quot;railNode&quot;], [name=&quot;railType&quot;]&#x27;).forEach(input =&gt; input.addEventListener(&#x27;change&#x27;, updateBusiness));

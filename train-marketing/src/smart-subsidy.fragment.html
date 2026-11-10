@@ -96,7 +96,7 @@
             <label><input type="radio" name="railNode" value="B25"><span>B25 辅营加购</span></label>
             <label><input type="radio" name="railNode" value="B3"><span>B3 支付挽留</span></label>
           </div><p class="tip" id="rc-node-hint" aria-live="polite"></p></div></div>
-          <div class="row"><span class="label">补贴策略类型：</span><div class="choices"><label><input type="radio" name="dimension" checked value="订单维度"><span>订单维度</span></label></div></div>
+          <div class="row" data-business="air"><span class="label">补贴策略类型：</span><div class="choices"><label><input type="radio" name="dimension" checked value="订单维度"><span>订单维度</span></label></div></div>
           <div class="row"><span class="label">黄牛风控：</span><div><label class="toggle"><span>不风控</span><input type="checkbox" name="risk" role="switch" aria-label="黄牛风控"><span>风控</span></label><p class="tip">ⓘ 开启后查询风控服务，命中的用户不可参与活动</p></div></div>
         </div>
       </section>
@@ -780,16 +780,19 @@
   const recordInputs = () => all('#rc-editor input[name], #rc-editor select[name], #rc-editor textarea[name]')
     .filter(input => !input.closest('#rc-rules, #rc-times'));
   function snapshot() {
+    const business = read('business');
+    const rail = business === '火车票';
     const data = {};
     for (const input of recordInputs()) {
+      if (rail && input.name === 'dimension') continue;
       if (input.type === 'checkbox' || input.type === 'radio') {
         data[input.name] ??= [];
         if (input.checked) data[input.name].push(input.value);
       } else data[input.name] = input.value;
     }
     return {
-      id: read('id'), name: String(read('name')).trim(), business: read('business'),
-      node: read(kind() === 'rail' ? 'railNode' : 'airNode'),
+      id: read('id'), name: String(read('name')).trim(), business,
+      node: read(rail ? 'railNode' : 'airNode'),
       data, modules: structuredClone(modules), moduleId,
       periods: [...times.children].map(entry => [...entry.querySelectorAll('input')].map(input => input.value))
     };
@@ -890,7 +893,7 @@
   airSample.name = '国内机票 · 查询补贴示例';
   airSample.business = '国内机票';
   airSample.node = '查询补贴';
-  Object.assign(airSample.data, { id: airSample.id, name: airSample.name, business: ['国内机票'], style: ['无样式'] });
+  Object.assign(airSample.data, { id: airSample.id, name: airSample.name, business: ['国内机票'], dimension: [read('dimension')], style: ['无样式'] });
   saved = [airSample];
 
   all('[name="business"], [name="railNode"], [name="railType"]').forEach(input => input.addEventListener('change', updateBusiness));
