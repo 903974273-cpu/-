@@ -2092,6 +2092,8 @@ html&gt;body{padding:0}&lt;/style&gt;
   #rail-config .offer-fields label { display: flex; align-items: center; gap: 6px; font-size: 12px; }
   #rail-config .offer-fields select.control { width: min(100%, 190px); }
   #rail-config .offer-fields .activity { flex: 1 1 235px; min-width: 0; }
+  #rail-config .offer-fields select[data-coupon-activity] { width: min(100%, 252px); }
+  #rail-config .offer-fields .activity b { color: var(--rc-danger); font-weight: 500; }
   #rail-config .money { display: flex; align-items: center; gap: 7px; }
   #rail-config .money small { white-space: nowrap; font-size: 12px; }
   #rail-config .editor { border: 1px solid var(--rc-border); }
@@ -2197,6 +2199,17 @@ html&gt;body{padding:0}&lt;/style&gt;
     { algorithmId: &#x27;ALG-RAIL-002&#x27;, algorithmName: &#x27;火车票辅营转化算法&#x27; },
     { algorithmId: &#x27;ALG-RAIL-003&#x27;, algorithmName: &#x27;火车票支付挽留算法&#x27; }
   ];
+  // 模拟营销平台按券种返回的动态金额发券活动。
+  const couponIssueActivities = {
+    辅营立减券: [
+      { id: &#x27;DEMO-RAIL-DISCOUNT-01&#x27;, name: &#x27;火车票辅营立减券动态发券活动&#x27; },
+      { id: &#x27;DEMO-RAIL-DISCOUNT-02&#x27;, name: &#x27;火车票辅营立减券动态发券活动（备选）&#x27; }
+    ],
+    返现券: [
+      { id: &#x27;DEMO-RAIL-CASHBACK-01&#x27;, name: &#x27;火车票返现券动态发券活动&#x27; },
+      { id: &#x27;DEMO-RAIL-CASHBACK-02&#x27;, name: &#x27;火车票返现券动态发券活动（备选）&#x27; }
+    ]
+  };
   const airForms = [&#x27;立减&#x27;, &#x27;券&#x27;, &#x27;返现&#x27;, &#x27;里程抵扣上限&#x27;];
   const railConditions = [&#x27;通道类型&#x27;, &#x27;辅营产品&#x27;, &#x27;票面价区间&#x27;, &#x27;辅营订单价格&#x27;, &#x27;坐席&#x27;, &#x27;货架&#x27;];
   const channels = [&#x27;便捷购票&#x27;, &#x27;12306购票&#x27;, &#x27;优享购票&#x27;];
@@ -2217,9 +2230,9 @@ html&gt;body{padding:0}&lt;/style&gt;
     offers: [...railForms],
     offerSettings: {
       立减: { ...structuredClone(personOfferDefaults), mode: &#x27;分层补贴&#x27; },
-      辅营立减券: { amount: &#x27;20&#x27; },
+      辅营立减券: { amount: &#x27;20&#x27;, issueActivityId: couponIssueActivities.辅营立减券[0].id },
       返现: { ...structuredClone(personOfferDefaults), cashback: &#x27;火车票出行返现活动&#x27; },
-      返现券: { amount: &#x27;10&#x27; }
+      返现券: { amount: &#x27;10&#x27;, issueActivityId: couponIssueActivities.返现券[0].id }
     },
     conditions: {
       通道类型: channels.slice(0, 2), 辅营产品: [products[0], products[2]],
@@ -2362,9 +2375,20 @@ html&gt;body{padding:0}&lt;/style&gt;
         amount.min = &#x27;0.01&#x27;;
         amount.required = true;
         amount.dataset.couponAmount = value;
+        const activity = make(&#x27;select&#x27;, {
+          class: &#x27;control&#x27;, &#x27;aria-label&#x27;: value + &#x27;发券活动&#x27;, &#x27;data-coupon-activity&#x27;: value, required: &#x27;&#x27;
+        }, [
+          make(&#x27;option&#x27;, { value: &#x27;&#x27; }, [&#x27;请选择发券活动&#x27;]),
+          ...couponIssueActivities[value].map(({ id, name }) =&gt; make(&#x27;option&#x27;, { value: id }, [name]))
+        ]);
+        activity.value = config.issueActivityId ?? &#x27;&#x27;;
+        activity.addEventListener(&#x27;change&#x27;, () =&gt; { config.issueActivityId = activity.value; });
         panel.append(row(&#x27;券面额&#x27;, make(&#x27;div&#x27;, {}, [
-          money(amount, &#x27;元/单&#x27;),
-          make(&#x27;p&#x27;, { class: &#x27;tip&#x27; }, [&#x27;策略券高于当前同类可用券时计入补贴。B2 进页按 B15 最终策略的可发券结果自动发券，券仅限本单使用。&#x27;])
+          make(&#x27;div&#x27;, { class: &#x27;offer-fields&#x27; }, [
+            money(amount, &#x27;元/单&#x27;),
+            make(&#x27;label&#x27;, { class: &#x27;activity&#x27; }, [make(&#x27;b&#x27;, {}, [&#x27;*&#x27;]), &#x27;发券活动：&#x27;, activity])
+          ]),
+          make(&#x27;p&#x27;, { class: &#x27;tip&#x27; }, [&#x27;策略券高于当前同类可用券时计入补贴。B2 进页按 B15 最终策略指定的活动及面额自动发券，券仅限本单使用。&#x27;])
         ]), true));
         return panel;
       }
@@ -2772,6 +2796,8 @@ html&gt;body{padding:0}&lt;/style&gt;
     const algorithm = isRailAlgorithm();
     const invalidCoupon = all(&#x27;#rc-rules [data-coupon-amount]&#x27;).find(input =&gt; !input.validity.valid);
     if (invalidCoupon) return showError(invalidCoupon.dataset.couponAmount + &#x27;的面额须大于 0，且最多保留两位小数。&#x27;, invalidCoupon);
+    const missingActivity = all(&#x27;#rc-rules [data-coupon-activity]&#x27;).find(select =&gt; !select.validity.valid);
+    if (missingActivity) return showError(&#x27;请选择&#x27; + missingActivity.dataset.couponActivity + &#x27;的发券活动。&#x27;, missingActivity);
     const errors = modules[kind()].map(model =&gt; validateModule(model, rail, algorithm));
     const failed = errors.findIndex(Boolean);
     if (failed !== -1) {
