@@ -100,6 +100,16 @@
           <div class="row"><span class="label">黄牛风控：</span><div><label class="toggle"><span>不风控</span><input type="checkbox" name="risk" role="switch" aria-label="黄牛风控"><span>风控</span></label><p class="tip">ⓘ 开启后查询风控服务，命中的用户不可参与活动</p></div></div>
         </div>
       </section>
+      <section class="box" id="rc-experiment" data-business="rail" aria-labelledby="rc-experiment-title">
+        <header class="box-heading"><h2 id="rc-experiment-title">实验分流</h2></header>
+        <div class="box-body">
+          <div class="row"><label for="rc-experiment-id">实验号：</label><div>
+            <div class="range"><input class="control medium" id="rc-experiment-id" placeholder="请输入实验号，如 10001"><button type="button" id="rc-query-experiment" class="solid">查询分组</button></div>
+            <p class="tip" id="rc-experiment-status" role="status">不填写实验号时，不限制实验分流。</p>
+          </div></div>
+          <div class="row"><span class="label">实验分组：</span><div id="rc-experiment-groups" class="choices" role="group" aria-label="实验分组"></div></div>
+        </div>
+      </section>
       <section class="box">
         <header class="box-heading"><h2>策略规则</h2></header>
         <div class="box-body">
@@ -190,6 +200,7 @@
   #rail-config .number { text-align: center; }
   #rail-config textarea.control { resize: vertical; min-height: 48px; }
   #rail-config .range { display: flex; align-items: center; gap: 7px; max-width: 400px; }
+  #rail-config #rc-query-experiment { flex: none; }
   #rail-config .date-range { border: 1px solid var(--rc-border); border-radius: 4px; padding: 0 3px; }
   #rail-config .date-range .control { border: 0; background: transparent; text-align: center; }
   #rail-config .choices { display: flex; align-items: center; gap: 7px 21px; flex-wrap: wrap; min-height: 32px; }
@@ -348,6 +359,15 @@
   const rules = find('#rc-rules');
   const times = find('#rc-times');
   const railForms = ['立减', '辅营立减券', '返现', '返现券'];
+  // 模拟实验平台按实验号返回的分组。
+  const experimentGroups = new Map([
+    ['10001', [['A', 'A 组（对照组）'], ['B', 'B 组（实验组）'], ['C', 'C 组（实验组）']]],
+    ['10002', [['A', 'A 组（对照组）'], ['B', 'B 组（实验组）']]]
+  ]);
+  const experimentId = find('#rc-experiment-id');
+  const experimentStatus = find('#rc-experiment-status');
+  const experimentGroup = find('#rc-experiment-groups');
+  let loadedExperimentId = '';
   // 模拟营销平台按券种返回的动态金额发券活动。
   const couponIssueActivities = {
     辅营立减券: [
@@ -668,6 +688,23 @@
     renderRules();
     updateDisplay();
   }
+  const selectedExperimentGroups = () => all('#rc-experiment-groups input:checked').map(input => input.value);
+  function renderExperimentGroups(id = '', selected = []) {
+    const groups = experimentGroups.get(id);
+    loadedExperimentId = groups ? id : '';
+    experimentGroup.replaceChildren(...(groups
+      ? groups.map(([id, name]) => make('label', { class: 'cursor-interaction' }, [
+        make('input', { type: 'checkbox', name: 'experimentGroup', value: id, checked: selected.includes(id) ? '' : null }),
+        make('span', {}, [name])
+      ]))
+      : [make('p', { class: 'tip' }, ['查询实验号后选择分组。'])]));
+  }
+  function queryExperimentGroups() {
+    const id = experimentId.value.trim();
+    renderExperimentGroups(id, id === loadedExperimentId ? selectedExperimentGroups() : []);
+    experimentStatus.textContent = loadedExperimentId ? '请选择策略适用的分组，可多选。'
+      : id ? '未找到该实验的分组，请检查实验号。' : '请输入实验号后查询分组。';
+  }
   function renderList() {
     find('#rc-records').replaceChildren(...saved.map(record => make('tr', {}, [
       make('td', {}, [record.name, make('small', {}, [record.id])]),
@@ -771,7 +808,7 @@
     if (scroll) root.scrollIntoView({ block: 'start' });
   }
   const recordInputs = () => all('#rc-editor input[name], #rc-editor select[name], #rc-editor textarea[name]')
-    .filter(input => !input.closest('#rc-rules, #rc-times'));
+    .filter(input => !input.closest('#rc-rules, #rc-times, #rc-experiment'));
   function snapshot() {
     const business = read('business');
     const rail = business === '火车票';
@@ -787,6 +824,7 @@
       id: read('id'), name: String(read('name')).trim(), business,
       node: read(rail ? 'railNode' : 'airNode'),
       data, modules: structuredClone(modules), moduleId,
+      experiment: rail && loadedExperimentId ? { id: loadedExperimentId, groups: selectedExperimentGroups() } : null,
       periods: [...times.children].map(entry => [...entry.querySelectorAll('input')].map(input => input.value))
     };
   }
@@ -800,6 +838,9 @@
     modules.rail = modules.rail.map(model => ({ ...structuredClone(railDefaults), ...model }));
     modules.railFallback ??= [structuredClone(railDefaults)];
     moduleId = record.moduleId;
+    experimentId.value = record.experiment?.id ?? '';
+    renderExperimentGroups(experimentId.value, record.experiment?.groups);
+    experimentStatus.textContent = loadedExperimentId ? '请选择策略适用的分组，可多选。' : '不填写实验号时，不限制实验分流。';
     times.replaceChildren();
     record.periods.forEach(period => addTime(...period));
     find('#rc-audience-tag').hidden = read('audience') !== '指定人群';
@@ -877,6 +918,7 @@
     ]), true);
   }));
   addTime('00:00:00', '23:59:59');
+  renderExperimentGroups();
   updateBusiness();
   const initial = snapshot();
   const airSample = structuredClone(initial);
@@ -888,6 +930,17 @@
   saved = [airSample];
 
   all('[name="business"], [name="railNode"], [name="railType"]').forEach(input => input.addEventListener('change', updateBusiness));
+  find('#rc-query-experiment').addEventListener('click', queryExperimentGroups);
+  experimentId.addEventListener('keydown', event => {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    queryExperimentGroups();
+  });
+  experimentId.addEventListener('input', () => {
+    if (experimentId.value.trim() === loadedExperimentId && loadedExperimentId) return;
+    renderExperimentGroups();
+    experimentStatus.textContent = experimentId.value.trim() ? '查询实验号后选择分组。' : '不填写实验号时，不限制实验分流。';
+  });
   find('#rc-audience').addEventListener('change', () => { find('#rc-audience-tag').hidden = read('audience') !== '指定人群'; });
   find('#rc-image').addEventListener('change', event => { find('#rc-image-name').textContent = event.target.files[0]?.name ?? ''; });
   find('#rc-add-time').addEventListener('click', () => addTime());
@@ -930,10 +983,14 @@
     if (!String(data.get('name')).trim()) return showError('请输入策略名称。', find('#rc-name'));
     if (!data.get('start') || !data.get('end') || data.get('start') > data.get('end')) return showError('请选择正确的有效期。', find('#rc-start'));
     if (!data.getAll('channel').length || !data.getAll('day').length) return showError('请至少选择一个投放渠道和一个补贴日。');
+    const rail = kind() === 'rail';
+    if (rail && experimentId.value.trim()) {
+      if (experimentId.value.trim() !== loadedExperimentId) return showError('请先查询有效的实验号。', experimentId);
+      if (!selectedExperimentGroups().length) return showError('请至少选择一个实验分组。', experimentGroup.querySelector('input'));
+    }
     const record = snapshot();
     const periods = [...record.periods].sort((left,right) => left[0].localeCompare(right[0]));
     if (periods.some(([start,end],index) => !start || !end || start >= end || (index > 0 && start < periods[index-1][1]))) return showError('补贴时间须填写完整，各时段不得交叉。', times.querySelector('input'));
-    const rail = kind() === 'rail';
     const group = ruleGroup();
     const late = isLate();
     const invalidCoupon = all('#rc-rules [data-coupon-amount]').find(input => !input.validity.valid);
