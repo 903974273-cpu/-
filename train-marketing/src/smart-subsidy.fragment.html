@@ -245,13 +245,8 @@
   #rail-config .offer-fields + .offer-amounts { margin-top: 9px; padding-top: 9px; border-top: 1px solid var(--rc-divider); }
   #rail-config .offer-fields { display: flex; align-items: center; flex-wrap: wrap; gap: 7px 14px; }
   #rail-config .offer-fields label { display: flex; align-items: center; gap: 6px; font-size: 12px; }
-  #rail-config .offer-fields .face-value { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
-  #rail-config .face-value output { display: inline-grid; place-items: center; min-width: 62px; min-height: 32px; padding: 4px 7px; border: 1px solid var(--rc-divider); border-radius: 4px; background: var(--rc-disabled); font-variant-numeric: tabular-nums; }
-  #rail-config .offer-fields .control { width: 74px; }
   #rail-config .offer-fields select.control { width: min(100%, 190px); }
   #rail-config .offer-fields .activity { flex: 1 1 235px; min-width: 0; }
-  #rail-config .offer-fields:has(.face-value) .activity { flex: 0 1 300px; }
-  #rail-config .offer-fields:has(.face-value) .activity select { width: auto; flex: 1 1 0; }
   #rail-config .money { display: flex; align-items: center; gap: 7px; }
   #rail-config .money small { white-space: nowrap; font-size: 12px; }
   #rail-config .editor { border: 1px solid var(--rc-border); }
@@ -357,10 +352,6 @@
     { algorithmId: 'ALG-RAIL-002', algorithmName: '火车票辅营转化算法' },
     { algorithmId: 'ALG-RAIL-003', algorithmName: '火车票支付挽留算法' }
   ];
-  const couponActivities = {
-    辅营立减券: { '火车票辅营立减券活动': 20, '火车票辅营立减券活动（备选）': 30 },
-    返现券: { '火车票返现券活动': 10, '火车票返现券活动（备选）': 15 }
-  };
   const airForms = ['立减', '券', '返现', '里程抵扣上限'];
   const railConditions = ['通道类型', '辅营产品', '票面价区间', '辅营订单价格', '坐席', '货架'];
   const channels = ['便捷购票', '12306购票', '优享购票'];
@@ -381,9 +372,9 @@
     offers: [...railForms],
     offerSettings: {
       立减: { ...structuredClone(personOfferDefaults), mode: '分层补贴' },
-      辅营立减券: { issue: '火车票辅营立减券活动' },
+      辅营立减券: { amount: '20' },
       返现: { ...structuredClone(personOfferDefaults), cashback: '火车票出行返现活动' },
-      返现券: { issue: '火车票返现券活动' }
+      返现券: { amount: '10' }
     },
     conditions: {
       通道类型: channels.slice(0, 2), 辅营产品: [products[0], products[2]],
@@ -518,34 +509,23 @@
     return railForms.filter(value => model.offers.includes(value)).map(value => {
       const coupon = value.endsWith('券');
       const config = model.offerSettings[value];
-      const fields = [];
-      if (coupon) {
-        const activities = couponActivities[value];
-        const faceValue = make('output', { 'aria-label': value + '活动券面额', 'aria-live': 'polite' });
-        const showFaceValue = () => {
-          faceValue.textContent = Object.hasOwn(activities, config.issue) ? String(activities[config.issue]) : '—';
-        };
-        const select = dropdown(value + '发券活动', Object.keys(activities), config.issue, next => {
-          config.issue = next;
-          showFaceValue();
-        });
-        fields.push(
-          make('label', { class: 'activity' }, ['发券活动：', select]),
-          make('div', { class: 'face-value' }, ['活动券面额：', faceValue, '元/单'])
-        );
-        showFaceValue();
-      }
-      if (value === '返现') fields.push(make('label', { class: 'activity' }, [
-        '返现活动：', dropdown('返现活动', ['火车票出行返现活动', '火车票出行返现活动（备选）'], config.cashback, next => { config.cashback = next; })
-      ]));
       const panel = make('section', { class: 'offer-panel', 'aria-label': value + '配置' }, [
         make('h4', {}, [value + '配置', make('span', { class: 'offer-basis' }, [coupon ? '按单' : '按人'])])
       ]);
-      if (fields.length) panel.append(make('div', { class: 'offer-fields' }, fields));
       if (coupon) {
-        panel.append(make('p', { class: 'tip' }, ['券面额读取所选发券活动。活动面额高于本单最高同类可用券时，按活动面额发券并绑定本单；小于或等于时沿用原券。']));
+        const amount = number(value + '面额', config.amount, next => { config.amount = next; });
+        amount.min = '0.01';
+        amount.required = true;
+        amount.dataset.couponAmount = value;
+        panel.append(row('券面额', make('div', {}, [
+          money(amount, '元/单'),
+          make('p', { class: 'tip' }, ['策略券高于当前同类可用券时计入补贴。B2 进页按 B15 最终策略的可发券结果自动发券，券仅限本单使用。'])
+        ]), true));
         return panel;
       }
+      if (value === '返现') panel.append(make('div', { class: 'offer-fields' }, [make('label', { class: 'activity' }, [
+        '返现活动：', dropdown('返现活动', ['火车票出行返现活动', '火车票出行返现活动（备选）'], config.cashback, next => { config.cashback = next; })
+      ])]));
       const modes = make('div', { class: 'choices', role: 'group', 'aria-label': value + '补贴金额类型' }, ['固定补贴', '分层补贴'].map(mode =>
         option('radio', 'amountMode-' + model.id + '-' + value, mode, config.mode === mode, () => { config.mode = mode; refresh(); })
       ));
@@ -631,7 +611,7 @@
           select,
           make('p', { class: 'tip', id: 'rc-algorithm-tip-' + model.id }, [
             'ⓘ 数据源：算法列表接口（模拟数据）。补贴金额和形式由算法返回。' +
-            (late ? '当前节点仅支持立减和返现。' : '')
+            (late ? '当前节点仅支持立减和返现。' : '命中券类形式时，按算法输出的券金额发动态金额券。')
           ])
         ]), true));
         return make('section', { class: 'module', 'aria-label': '规则模块 CLGZ' + model.id }, [heading, body]);
@@ -669,9 +649,13 @@
       if (input.disabled) input.checked = false;
     });
     const node = read('railNode');
-    find('#rc-node-hint').textContent = node === 'B25' ? 'ⓘ 仅支持立减和返现，沿用 B2 确认的乘车人名单。'
-      : node === 'B3' ? 'ⓘ 仅支持立减和返现，沿用原订单乘车人名单。'
-      : 'ⓘ 支持立减、返现、辅营立减券和返现券。';
+    const nodeHints = {
+      B1: 'ⓘ 查询时选出本节点金额最高的策略，进入 B15 后继续查询。',
+      B15: 'ⓘ 本节点有命中时与 B1 择优，只保留一条前序策略。本节点无命中时，前序补贴为空。',
+      B25: 'ⓘ 独立匹配增补，前序无命中也可参与。仅支持立减和返现，沿用 B2 确认的乘车人。',
+      B3: 'ⓘ 待支付页取消或回退时独立查询增补，用户确认后参与。仅支持立减和返现，沿用原订单乘车人。'
+    };
+    find('#rc-node-hint').textContent = nodeHints[node];
     renderRules();
     updateDisplay();
   }
@@ -847,10 +831,7 @@
     if (!model.offers.length) return '请至少选择一种补贴形式。';
     for (const offer of model.offers) {
       const config = model.offerSettings[offer];
-      if (Object.hasOwn(couponActivities, offer)) {
-        if (!Object.hasOwn(couponActivities[offer], config.issue)) return '请选择' + offer + '的发券活动。';
-        continue;
-      }
+      if (offer.endsWith('券')) continue;
       if (config.mode !== '分层补贴') {
         if (!validAmount(config.amount)) return '请填写有效的' + offer + '金额。';
         continue;
@@ -944,6 +925,8 @@
     if (periods.some(([start,end],index) => !start || !end || start >= end || (index > 0 && start < periods[index-1][1]))) return showError('补贴时间须填写完整，各时段不得交叉。', times.querySelector('input'));
     const rail = kind() === 'rail';
     const algorithm = isRailAlgorithm();
+    const invalidCoupon = all('#rc-rules [data-coupon-amount]').find(input => !input.validity.valid);
+    if (invalidCoupon) return showError(invalidCoupon.dataset.couponAmount + '的面额须大于 0，且最多保留两位小数。', invalidCoupon);
     const errors = modules[kind()].map(model => validateModule(model, rail, algorithm));
     const failed = errors.findIndex(Boolean);
     if (failed !== -1) {
