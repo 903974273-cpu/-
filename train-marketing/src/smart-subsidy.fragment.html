@@ -128,7 +128,7 @@
         <header class="box-heading"><h2>补贴规则</h2></header>
         <div class="box-body" id="rc-budget"></div>
       </section>
-      <section class="box">
+      <section class="box" id="rc-air-display" data-business="air">
         <header class="box-heading"><h2>外显配置</h2></header>
         <div class="box-body">
           <div class="row"><span class="label"><b>*</b> 前台样式：</span><div class="choices" id="rc-styles" role="group" aria-label="前台样式"></div></div>
@@ -137,12 +137,32 @@
           <div class="row" id="rc-image-row" hidden><label for="rc-image">样式图片：</label><div><label class="upload cursor-interaction"><input id="rc-image" type="file" accept="image/*"><span aria-hidden="true">＋</span><span>选择图片</span></label><p class="tip" id="rc-image-name"></p></div></div>
           <div class="row"><span class="label">是否可弹窗：</span><div><label class="toggle"><span>否</span><input type="checkbox" name="popup" role="switch" aria-label="是否可弹窗"><span>是</span></label></div></div>
           <div class="row"><span class="label">是否强显智能补贴：</span><div><label class="toggle"><span>不强显</span><input type="checkbox" name="highlight" role="switch" aria-label="是否强显智能补贴"><span>强显</span></label><p class="tip">ⓘ 强显时返回补贴有效期，供前端显示倒计时</p></div></div>
-          <div class="row" data-business="rail"><label for="rc-order">优惠标签顺序：</label><input class="control wide" id="rc-order" name="displayOrder" value="本单立减、出行必返、省钱任务返现"></div>
-          <div class="row" id="rc-b3-preview" hidden><span class="label">挽留弹窗预览：</span><div class="receipt" aria-label="支付挽留整单优惠示例">
-            <div><strong>¥3</strong><span>本单立减</span></div><b>＋</b><div><strong>¥8</strong><span>出行必返</span></div><b>＝</b><div><strong>¥11</strong><span>总计省</span></div>
-          </div></div>
           <div class="row"><label for="rc-description">策略规则文案：</label><div class="editor"><div class="editor-tools" aria-hidden="true">H　 B　 I　 U　 ≡</div><textarea id="rc-description" name="description" placeholder="请输入策略规则"></textarea></div></div>
           <div class="row"><label for="rc-ad-link">弹屏广告链接：</label><input class="control medium" id="rc-ad-link" name="adLink" type="url" placeholder="请输入"></div>
+        </div>
+      </section>
+      <section class="box" id="rc-rail-display" aria-labelledby="rc-rail-display-title" hidden>
+        <header class="box-heading"><h2 id="rc-rail-display-title">外显配置</h2></header>
+        <div class="box-body">
+          <div data-rail-display="B1" hidden>
+            <div class="row"><label for="rc-b1-label">B1 优惠标签文案：</label><div>
+              <input class="control medium" id="rc-b1-label" name="b1Label" placeholder="请输入优惠标签文案">
+              <p class="tip">配置后由 B1 聚合优惠查询接口返回。</p>
+            </div></div>
+          </div>
+          <div data-rail-display="B3" hidden>
+            <div class="row"><label for="rc-b3-image">B3 挽留图片：</label><div>
+              <label class="upload cursor-interaction"><input id="rc-b3-image" type="file" accept="image/*" aria-label="B3 挽留图片"><span aria-hidden="true">＋</span><span>选择图片</span></label>
+              <p class="tip" id="rc-b3-image-name" aria-live="polite"></p>
+              <img class="retention-image" id="rc-b3-image-preview" alt="挽留图片预览" hidden>
+              <button type="button" class="link" id="rc-remove-b3-image" hidden>移除图片</button>
+              <p class="tip">配置后由 B3 支付挽留查询接口返回。</p>
+            </div></div>
+            <div class="row"><label for="rc-b3-bubble">待支付气泡文案：</label><div>
+              <input class="control medium" id="rc-b3-bubble" name="b3Bubble" placeholder="请输入待支付气泡文案">
+              <p class="tip">配置后由 B3 支付挽留查询接口返回。</p>
+            </div></div>
+          </div>
         </div>
       </section>
       <footer class="actions"><span id="rc-status" role="status">示例策略 · 原型草稿</span><button type="button" data-page="list" class="plain cursor-interaction">取消</button><button type="button" id="rc-save" class="solid cursor-interaction">保存草稿</button></footer>
@@ -268,10 +288,7 @@
   #rail-config .upload { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; width: 110px; min-height: 85px; border: 1px dashed var(--rc-border); position: relative; border-radius: 4px; font-size: 12px; }
   #rail-config .upload input { position: absolute; inset: 0; opacity: 0; width: 100%; }
   #rail-config .upload span:first-of-type { font-size: 22px; line-height: 1.3; }
-  #rail-config .receipt { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-  #rail-config .receipt div { display: grid; gap: 2px; text-align: center; background: #fff2e3; color: #ad4300; border-radius: 5px; padding: 6px 8px; min-width: 70px; font-size: 12px; }
-  #rail-config .receipt div:last-child { background: #ffebed; color: #ac2041; }
-  #rail-config .receipt strong { font-size: 19px; }
+  #rail-config .retention-image { display: block; max-width: min(100%, 240px); max-height: 130px; margin-top: 7px; }
   #rail-config .actions { display: flex; flex-wrap: wrap; justify-content: end; align-items: center; gap: 7px; padding: 2px 0 5px; }
   #rail-config .actions span { margin-right: auto; font-size: 12px; }
   #rail-config .actions [data-error] { color: #b73939; }
@@ -380,13 +397,18 @@
     ]
   };
   const airForms = ['立减', '券', '返现', '里程抵扣上限'];
-  const railConditions = ['通道类型', '辅营产品', '票面价区间', '辅营订单价格', '坐席', '货架'];
+  const railConditions = ['通道类型', '票面价区间', '辅营订单价格', '坐席', '货架', '货架策略'];
   const channels = ['便捷购票', '12306购票', '优享购票'];
-  const products = ['SKU10001-出行保障礼包', 'SKU10002-便捷服务包', 'SKU10003-优享服务包'];
+  // 模拟辅营返回的货架策略。
+  const shelfStrategies = {
+    HJS10001: '便捷购票货架策略',
+    HJS10002: '优享服务货架策略',
+    HJS10003: '加购推荐货架策略'
+  };
   const multiSelectConditions = {
     通道类型: { entries: channels, tip: '数据源：辅营（模拟数据），命中任一通道即可。' },
-    辅营产品: { entries: products, tip: '数据源：辅营（模拟数据），按 skuCode 匹配。' },
-    货架: { entries: ['HJ823993', 'HJ824107', 'HJ825246', 'HJ826508', 'HJ827615'], tip: '示例货架编号，可多选。' }
+    货架: { entries: ['HJ823993', 'HJ824107', 'HJ825246', 'HJ826508', 'HJ827615'], tip: '示例货架编号，可多选。' },
+    货架策略: { entries: Object.keys(shelfStrategies), labels: shelfStrategies, tip: '数据源：辅营（模拟数据）。按策略 ID 匹配，可多选。' }
   };
   const seats = ['二等座', '一等座', '商务座', '特等座', '硬座', '软座', '硬卧', '软卧', '无座'];
   const airConditions = ['出发机场', '抵达机场', '机场', '航线限制（机场三字码）', '起飞开始日期', '起飞结束日期', '产品号位', '航司＋仓位(剔除)', '最小提前天数', '最大提前天数', '票面价下限', '票面价上限', '航司', '航班号', '供应商', '航班起飞周期'];
@@ -404,7 +426,7 @@
       返现券: { amount: '10', issueActivityId: couponIssueActivities.返现券[0].id }
     },
     conditions: {
-      通道类型: channels.slice(0, 2), 辅营产品: [products[0], products[2]],
+      通道类型: channels.slice(0, 2),
       票面价区间: ['50', '500'], 辅营订单价格: ['15', '100'], 坐席: ['二等座']
     }
   };
@@ -425,6 +447,8 @@
   let exclusionFilter = { code: '', state: '' };
   let exclusionPage = 1;
   let editingExclusion = null;
+  let retentionImage = null;
+  let retentionPreviewUrl = '';
   const read = name => new FormData(editor).get(name) ?? '';
   const kind = () => read('business') === '火车票' ? 'rail' : 'air';
   const isRailAlgorithm = () => kind() === 'rail' && read('railType') === '实时算法策略';
@@ -463,10 +487,10 @@
   function money(input, unit = '元') {
     return make('div', { class: 'money' }, [input, make('small', {}, ['（单位：' + unit + '）'])]);
   }
-  function dropdown(label, entries, value, onChange, placeholder = '请选择') {
+  function dropdown(label, entries, value, onChange, placeholder = '请选择', display = entry => entry) {
     const control = make('select', { class: 'control', 'aria-label': label }, [
       make('option', { value: '' }, [placeholder]),
-      ...entries.map(entry => make('option', { value: entry }, [entry]))
+      ...entries.map(entry => make('option', { value: entry }, [display(entry)]))
     ]);
     control.value = value ?? '';
     control.addEventListener('change', () => onChange(control.value));
@@ -485,9 +509,10 @@
     return railConditions.filter(label => Object.hasOwn(model.conditions, label)).map(label => {
       const values = model.conditions[label];
       if (Object.hasOwn(multiSelectConditions, label)) {
-        const { entries, tip } = multiSelectConditions[label];
+        const { entries, tip, labels } = multiSelectConditions[label];
+        const display = value => labels?.[value] ? value + '-' + labels[value] : value;
         const pending = entries.filter(entry => !values.includes(entry));
-        const chips = values.map(value => make('span', { class: 'chip' }, [value,
+        const chips = values.map(value => make('span', { class: 'chip' }, [display(value),
           button('×', () => {
             model.conditions[label] = values.filter(entry => entry !== value);
             refresh();
@@ -498,7 +523,7 @@
             values.push(value);
             refresh();
           }
-        }, pending.length ? '继续选择' : '已全部选择');
+        }, pending.length ? '继续选择' : '已全部选择', display);
         select.disabled = pending.length === 0;
         return row(label, make('div', { class: 'condition-panel' }, [make('div', { class: 'chip-select' }, [...chips, select]), make('p', { class: 'tip' }, [tip])]));
       }
@@ -668,7 +693,20 @@
     const styles = [read('style'), read('splitStyle')];
     find('#rc-copy-row').hidden = !styles.includes('文案样式');
     find('#rc-image-row').hidden = !styles.includes('图片样式');
-    find('#rc-b3-preview').hidden = kind() !== 'rail' || read('railNode') !== 'B3';
+    const railNode = kind() === 'rail' ? read('railNode') : '';
+    find('#rc-rail-display').hidden = !['B1', 'B3'].includes(railNode);
+    all('[data-rail-display]').forEach(section => { section.hidden = section.dataset.railDisplay !== railNode; });
+  }
+  function updateRetentionImage(file) {
+    if (retentionPreviewUrl) URL.revokeObjectURL(retentionPreviewUrl);
+    retentionImage = file;
+    retentionPreviewUrl = file ? URL.createObjectURL(file) : '';
+    const preview = find('#rc-b3-image-preview');
+    if (file) preview.src = retentionPreviewUrl;
+    else preview.removeAttribute('src');
+    preview.hidden = !file;
+    find('#rc-remove-b3-image').hidden = !file;
+    find('#rc-b3-image-name').textContent = file?.name ?? '';
   }
   function updateBusiness() {
     const type = kind();
@@ -685,6 +723,9 @@
       B3: 'ⓘ 待支付页取消或回退时独立查询增补，用户确认后参与。仅支持立减和返现，沿用原订单乘车人。'
     };
     find('#rc-node-hint').textContent = nodeHints[node];
+    find('#rc-budget-help-stock').textContent = type === 'rail'
+      ? 'ⓘ 校验通过后预占总库存。总库存不足时策略下线，停止查询和参与。'
+      : 'ⓘ 超过库存总额时停止补贴，策略下线。';
     renderRules();
     updateDisplay();
   }
@@ -812,9 +853,12 @@
   function snapshot() {
     const business = read('business');
     const rail = business === '火车票';
+    const node = read(rail ? 'railNode' : 'airNode');
     const data = {};
     for (const input of recordInputs()) {
-      if (rail && input.name === 'dimension') continue;
+      if (rail && (input.name === 'dimension' || input.closest('#rc-air-display'))) continue;
+      const display = input.closest('[data-rail-display]');
+      if (display && (!rail || display.dataset.railDisplay !== node)) continue;
       if (input.type === 'checkbox' || input.type === 'radio') {
         data[input.name] ??= [];
         if (input.checked) data[input.name].push(input.value);
@@ -822,8 +866,9 @@
     }
     return {
       id: read('id'), name: String(read('name')).trim(), business,
-      node: read(rail ? 'railNode' : 'airNode'),
+      node,
       data, modules: structuredClone(modules), moduleId,
+      retentionImage: rail && node === 'B3' ? retentionImage : null,
       experiment: rail && loadedExperimentId ? { id: loadedExperimentId, groups: selectedExperimentGroups() } : null,
       periods: [...times.children].map(entry => [...entry.querySelectorAll('input')].map(input => input.value))
     };
@@ -833,10 +878,12 @@
       const value = record.data[input.name];
       if (Array.isArray(value)) input.checked = value.includes(input.value);
       else if (typeof value === 'string') input.value = value;
+      else if (input.closest('[data-rail-display]')) input.value = '';
     }
     modules = structuredClone(record.modules);
     modules.rail = modules.rail.map(model => ({ ...structuredClone(railDefaults), ...model }));
     modules.railFallback ??= [structuredClone(railDefaults)];
+    for (const model of [...modules.rail, ...modules.railFallback]) delete model.conditions.辅营产品;
     moduleId = record.moduleId;
     experimentId.value = record.experiment?.id ?? '';
     renderExperimentGroups(experimentId.value, record.experiment?.groups);
@@ -846,6 +893,8 @@
     find('#rc-audience-tag').hidden = read('audience') !== '指定人群';
     find('#rc-image').value = '';
     find('#rc-image-name').textContent = '';
+    find('#rc-b3-image').value = '';
+    updateRetentionImage(record.retentionImage ?? null);
     status.textContent = '';
     status.removeAttribute('data-error');
     updateBusiness();
@@ -878,6 +927,7 @@
     for (const label of [...Object.keys(multiSelectConditions), '坐席']) {
       if (model.conditions[label]?.length === 0) return '请至少选择一个' + label + '。';
     }
+    if (model.conditions.货架策略?.some(id => !Object.hasOwn(shelfStrategies, id))) return '所选货架策略不可用，请重新选择。';
     const offers = applicableOffers(model, late);
     if (!offers.length) return '请至少选择一种补贴形式。';
     for (const offer of offers) {
@@ -943,6 +993,20 @@
   });
   find('#rc-audience').addEventListener('change', () => { find('#rc-audience-tag').hidden = read('audience') !== '指定人群'; });
   find('#rc-image').addEventListener('change', event => { find('#rc-image-name').textContent = event.target.files[0]?.name ?? ''; });
+  find('#rc-b3-image').addEventListener('change', event => {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      event.target.value = '';
+      find('#rc-b3-image-name').textContent = '请选择图片文件。';
+      return;
+    }
+    updateRetentionImage(file);
+  });
+  find('#rc-remove-b3-image').addEventListener('click', () => {
+    find('#rc-b3-image').value = '';
+    updateRetentionImage(null);
+  });
   find('#rc-add-time').addEventListener('click', () => addTime());
   all('[data-page]').forEach(tab => tab.addEventListener('click', () => showPage(tab.dataset.page)));
   find('#rc-add-exclusion').addEventListener('click', () => openExclusion());
