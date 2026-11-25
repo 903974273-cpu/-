@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>激励广告定制活动配置原型</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --line: #d9dee7;
+      --text: #182230;
+      --muted: #586579;
+      --blue: #1769e0;
+      --blue-soft: #eaf2ff;
+      --green: #138253;
+      --green-soft: #e9f7ef;
+      font: 16px/1.5 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+    * { box-sizing: border-box }
+    [hidden] { display: none !important }
+    body { margin: 0 }
+    button, input, select { font: inherit }
+    button, select { cursor: pointer }
+    :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px }
+    .shell { min-height: 100vh; display: grid; grid-template-columns: 208px minmax(0, 1fr) }
+    .sidebar { background: #142033; color: #dce5f2; padding: 20px 14px }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 8px 10px 22px; font-weight: 700 }
+    .mark { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 7px; background: #2d7ff9; color: white }
+    .nav { display: grid; gap: 6px }
+    .nav button { text-align: left; padding: 10px 12px; border: 0; border-radius: 7px; background: none; color: #c6d1df }
+    .nav button[aria-current="page"] { background: #243755; color: white; font-weight: 650 }
+    main { min-width: 0 }
+    .topbar { display: flex; align-items: center; min-height: 60px; padding: 0 24px; background: white; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .875rem }
+    .page { padding: 24px }
+    .title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px }
+    h1 { margin: 0; font-size: 1.5rem }
+    h2 { margin: 0; font-size: 1.0625rem }
+    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px }
+    .btn { min-height: 38px; padding: 6px 13px; border: 1px solid #c5ccd8; border-radius: 6px; background: white; color: var(--text); font-weight: 600; white-space: nowrap }
+    .btn:hover { background: #f0f4f8 }
+    .btn.primary { border-color: var(--blue); background: var(--blue); color: white }
+    .btn.primary:hover { background: #125bc4 }
+    .panel { background: white; border: 1px solid var(--line); border-radius: 8px; overflow: hidden }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); background: #fbfcfe }
+    .filters { display: grid; gap: 14px 16px; padding: 16px }
+    .filters { grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); align-items: end }
+    .field { display: grid; align-content: start; gap: 5px; min-width: 0 }
+    label, .field-label { font-size: .9375rem; font-weight: 650; color: #344054 }
+    .required::after { content: " *"; color: #c33228 }
+    .control { width: 100%; min-width: 0; min-height: 38px; padding: 6px 9px; border: 1px solid #c5ccd8; border-radius: 6px; background: white; color: var(--text); font-size: .9375rem }
+    select.control { appearance: none; padding-right: 30px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' stroke='%23586579' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 9px center }
+    .control:disabled, .control[readonly] { background-color: #f4f6f9; color: #536178; opacity: 1; cursor: default }
+    .table-wrap { overflow: auto }
+    table { width: 100%; min-width: 790px; border-collapse: collapse; font-size: .9375rem }
+    th, td { padding: 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line) }
+    th { background: #fbfcfe; color: #344054; white-space: nowrap }
+    tbody tr:last-child td { border-bottom: 0 }
+    .no-wrap { white-space: nowrap }
+    .tag { display: inline-flex; padding: 2px 8px; border-radius: 999px; background: #eef1f5; color: #475467; font-size: .875rem; font-weight: 650; white-space: nowrap }
+    .tag.enabled { color: var(--green); background: var(--green-soft) }
+    .tag.draft { color: var(--blue); background: var(--blue-soft) }
+    .text-btn { padding: 0; border: 0; background: none; color: var(--blue); white-space: nowrap }
+    .text-btn:hover { text-decoration: underline }
+    .row-actions { display: flex; gap: 10px }
+    .result { padding: 11px 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: .875rem }
+    .flash { margin-bottom: 14px; padding: 9px 12px; border: 1px solid #c6e4d4; border-radius: 6px; color: #176742; background: var(--green-soft) }
+    @media (max-width: 760px) {
+      .shell { grid-template-columns: 1fr }
+      .sidebar { display: none }
+      .page { padding: 16px }
+      .topbar { padding: 0 16px }
+      .title-row { flex-wrap: wrap }
+    }
+    .shell.config-view { display: block; background: #fcfcfd; color: #606266 }
+    .config-view .sidebar, .config-view .topbar { display: none }
+    .config-form { padding: 12px; font-size: 13px }
+    .form-panel { margin: 0 0 16px; border: 1px solid #e6eaf2; border-radius: 4px; background: #fff }
+    .form-title { display: flex; align-items: center; min-height: 53px; margin: 0; padding: 0 17px; border-bottom: 1px solid #e6eaf2; color: #303133; font-size: 14px; font-weight: 600 }
+    .form-body { display: grid; gap: 16px; padding: 18px 18px 34px }
+    .form-row { display: grid; grid-template-columns: 123px minmax(0, 620px); align-items: start; gap: 12px }
+    .row-label { padding-top: 5px; text-align: right; color: #606266; font-size: 13px; font-weight: 400; white-space: nowrap }
+    .config-form .required::before { content: "* "; color: #f56c6c }
+    .config-form .required::after { content: none }
+    .form-value { width: min(100%, 378px); min-width: 0 }
+    .config-form .control { display: block; min-height: 29px; height: 29px; padding: 0 12px; border-color: #d6dce8; border-radius: 3px; font-size: 12px; color: #606266 }
+    .config-form .control::placeholder, .config-form select:invalid { color: #bdc3cf }
+    .config-form .control:disabled, .config-form .control[readonly] { border-color: #dfe4ed; background-color: #f3f5f8; color: #a0a8b6 }
+    .config-form select.control { padding-right: 28px }
+    .name-control { position: relative }
+    .name-control .control { padding-right: 48px }
+    #nameCount { position: absolute; top: 6px; right: 9px; color: #909399; font-size: 11px; pointer-events: none }
+    .radio-group { display: flex; flex-wrap: wrap; align-items: center; min-height: 29px; gap: 5px 26px }
+    .radio-option { display: inline-flex; align-items: center; gap: 8px; color: #606266; font-size: 13px; font-weight: 400; cursor: pointer; white-space: nowrap }
+    .radio-option input { appearance: none; display: grid; place-items: center; width: 13px; height: 13px; margin: 0; border: 1px solid #d4dbe7; border-radius: 50%; background: #fff; cursor: inherit }
+    .radio-option input:checked { border-color: #409eff; background: #409eff }
+    .radio-option input:checked::after { content: ""; width: 4px; height: 4px; border-radius: 50%; background: #fff }
+    .radio-option input:checked + span { color: #409eff; font-weight: 600 }
+    .radio-option input:disabled { border-color: #e1e5ee; background: #f3f5f8; cursor: default }
+    .radio-option input:checked:disabled::after { background: #b8c0ce }
+    .radio-option input:disabled + span { color: #a8b0be }
+    .date-range { display: grid; grid-template-columns: 16px minmax(0,1fr) 22px minmax(0,1fr); align-items: center; width: min(100%,360px); height: 29px; padding: 0 8px; border: 1px solid #d6dce8; border-radius: 3px; text-align: center }
+    .date-range .control { border: 0; background: transparent; padding: 0; height: 26px; min-height: 0; text-align: center }
+    .date-part { position: relative; min-width: 0 }
+    .date-part input[data-empty="true"]:not(:focus)::-webkit-datetime-edit { color: transparent }
+    .date-part .date-placeholder { position: absolute; top: 4px; left: 4px; right: 12px; color: #bdc3cf; font-size: 12px; pointer-events: none }
+    .date-part input:not([data-empty="true"]) + .date-placeholder, .date-part input:focus + .date-placeholder { display: none }
+    .clock { display: grid; place-items: center; width: 11px; height: 11px; border: 1px solid #c4ccd9; border-radius: 50% }
+    .clock::after { content: ""; width: 3px; height: 3px; border-left: 1px solid #c4ccd9; border-bottom: 1px solid #c4ccd9 }
+    .step-row, .money-field { display: flex; align-items: center }
+    .step-row { gap: 10px }
+    .stepper { display: grid; grid-template-columns: 28px 58px 28px; border: 1px solid #d6dce8; border-radius: 3px; overflow: hidden }
+    .stepper .control { border: 0; border-left: 1px solid #d6dce8; border-right: 1px solid #d6dce8; border-radius: 0; text-align: center; appearance: textfield; -moz-appearance: textfield }
+    .stepper input::-webkit-inner-spin-button, .stepper input::-webkit-outer-spin-button { appearance: none; margin: 0 }
+    .stepper button, .money-unit { border: 0; background: #f3f5f8; color: #909399 }
+    .stepper button:disabled { cursor: default; color: #c7ced9 }
+    .stepper button:not(:disabled):hover { color: #409eff }
+    .money-field .control { border-top-right-radius: 0; border-bottom-right-radius: 0 }
+    .money-unit { display: grid; place-items: center; width: 49px; height: 29px; flex: none; border: 1px solid #dfe4ed; border-left: 0; border-radius: 0 3px 3px 0; font-size: 12px }
+    .form-help { margin: 5px 0 0; color: #909399; font-size: 12px; line-height: 1.65 }
+    .flight-help { width: min(100%, 620px) }
+    .form-footer { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 0 12px min(154px, 15vw) }
+    .config-form .btn { min-height: 32px; border-radius: 4px; font-size: 13px; font-weight: 500 }
+    .config-form .btn.primary { background: #409eff; border-color: #409eff }
+    @media (max-width: 540px) {
+      .form-body { padding: 15px 12px 22px }
+      .form-row { grid-template-columns: 92px minmax(0,1fr); gap: 9px }
+      .form-value { width: 100% }
+      .date-range { height: auto; grid-template-columns: minmax(0,1fr); padding: 3px 8px }
+      .date-range .clock, .date-range .date-separator { display: none }
+      .form-footer { padding-left: 0 }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="mark" aria-hidden="true">奖</span>营销配置台</div>
+      <nav class="nav" aria-label="配置导航">
+        <button id="listNav" type="button" aria-current="page">活动列表</button>
+        <button id="configNav" type="button">定制活动配置</button>
+      </nav>
+    </aside>
+    <main>
+      <header class="topbar" id="breadcrumb">营销配置台 / 定制活动 / 活动列表</header>
+      <section class="page" id="listPage" aria-labelledby="listTitle">
+        <div class="title-row">
+          <h1 id="listTitle">激励广告定制活动</h1>
+          <button class="btn primary" type="button" id="createBtn">新建活动</button>
+        </div>
+        <div class="flash" role="status" id="flash" hidden></div>
+        <section class="panel" aria-label="定制活动列表">
+          <form class="filters" id="filters">
+            <div class="field"><label for="filterId">活动编号</label><input class="control" id="filterId" placeholder="输入活动编号"></div>
+            <div class="field"><label for="filterName">活动名称</label><input class="control" id="filterName" placeholder="输入活动名称"></div>
+            <div class="field">
+              <label for="filterProject">项目</label>
+              <select class="control" id="filterProject"><option value="">全部项目</option><option value="train">火车票</option><option value="flight">国内机票</option></select>
+            </div>
+            <div class="field">
+              <label for="filterScene">场景</label>
+              <select class="control" id="filterScene"><option value="">全部场景</option><option value="pre">订前</option><option value="post">订后</option></select>
+            </div>
+            <div class="field">
+              <label for="filterStatus">活动状态</label>
+              <select class="control" id="filterStatus"><option value="">全部状态</option><option value="enabled">启用</option><option value="draft">草稿</option><option value="disabled">停用</option><option value="expired">过期</option></select>
+            </div>
+            <div class="actions"><button type="submit" class="btn primary">查询</button><button type="reset" class="btn">重置</button></div>
+          </form>
+          <div class="table-wrap" tabindex="0" aria-label="活动数据">
+            <table>
+              <thead><tr><th>活动编号</th><th>活动名称</th><th>项目</th><th>场景</th><th>活动时间</th><th>活动状态</th><th>返现领取期限</th><th>操作</th></tr></thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+          <div id="result" class="result" role="status"></div>
+        </section>
+      </section>
+      <form class="config-form" id="configPage" aria-labelledby="configTitle" hidden>
+        <section class="form-panel">
+          <h1 class="form-title" id="configTitle">活动基础信息</h1>
+          <div class="form-body">
+            <div class="form-row">
+              <label class="row-label" for="activityId">活动编号</label>
+              <div class="form-value"><input class="control" id="activityId" placeholder="系统自动生成" disabled></div>
+            </div>
+            <div class="form-row">
+              <label class="row-label required" for="activityName">活动名称</label>
+              <div class="form-value name-control">
+                <input class="control" id="activityName" required maxlength="50" aria-describedby="nameCount">
+                <span id="nameCount">0/50</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="row-label required" for="project">项目</label>
+              <div class="form-value">
+                <select class="control" id="project" required>
+                  <option value="">请选择项目</option>
+                  <option value="train">火车票</option>
+                  <option value="flight">国内机票</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <span class="row-label required" id="sceneLabel">场景</span>
+              <div>
+                <div class="radio-group" role="group" aria-labelledby="sceneLabel">
+                  <label class="radio-option"><input id="scenePre" type="radio" name="scene" value="pre" checked><span>订前场景</span></label>
+                  <label class="radio-option"><input id="scenePost" type="radio" name="scene" value="post"><span>订后场景</span></label>
+                </div>
+                <p class="form-help" id="sceneHelp" hidden>国内机票仅支持订前场景，由一起订组件承接。</p>
+              </div>
+            </div>
+            <div class="form-row">
+              <span class="row-label required" id="periodLabel">活动有效期</span>
+              <div class="date-range" role="group" aria-labelledby="periodLabel">
+                <span class="clock" aria-hidden="true"></span>
+                <span class="date-part"><input class="control" id="start" type="datetime-local" aria-label="开始时间"><span class="date-placeholder" aria-hidden="true">开始时间</span></span>
+                <span class="date-separator">至</span>
+                <span class="date-part"><input class="control" id="end" type="datetime-local" aria-label="结束时间"><span class="date-placeholder" aria-hidden="true">结束时间</span></span>
+              </div>
+            </div>
+            <div class="form-row">
+              <span class="row-label required" id="activityStatusLabel">活动状态</span>
+              <div class="radio-group" role="group" aria-labelledby="activityStatusLabel">
+                <label class="radio-option"><input id="statusValid" type="radio" name="activityStatus" checked><span>有效</span></label>
+                <label class="radio-option"><input id="statusInvalid" type="radio" name="activityStatus"><span>无效</span></label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-panel">
+          <h2 class="form-title">活动参与规则</h2>
+          <div class="form-body">
+            <div class="form-row">
+              <label class="row-label required" for="limit">每日可参与次数</label>
+              <div class="step-row">
+                <div class="stepper">
+                  <button id="limitDown" type="button" aria-label="减少每日可参与次数">−</button>
+                  <input class="control" id="limit" type="number" min="1" step="1" value="1" required>
+                  <button id="limitUp" type="button" aria-label="增加每日可参与次数">+</button>
+                </div>
+                <span>次</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-panel">
+          <h2 class="form-title">活动任务规则</h2>
+          <div class="form-body">
+            <div class="form-row">
+              <label class="row-label required" for="task">营销任务</label>
+              <div class="form-value">
+                <select class="control" id="task" required>
+                  <option value="">请选择营销任务</option>
+                  <option value="TR_VIDEO_001">TR_VIDEO_001｜通用激励视频任务</option>
+                </select>
+                <p class="form-help">关联任务中心通用视频任务</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-panel">
+          <h2 class="form-title">活动奖励规则</h2>
+          <div class="form-body">
+            <div class="form-row">
+              <label class="row-label required" for="reward">营销活动</label>
+              <div class="form-value">
+                <select class="control" id="reward" required></select>
+                <p class="form-help">选择返现金工具中已配置的营销活动</p>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="row-label" for="rewardAmount">返现金额</label>
+              <div class="form-value money-field">
+                <input class="control" id="rewardAmount" disabled><span class="money-unit">元</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <span class="row-label required" id="rewardTriggerLabel">发奖节点</span>
+              <div role="group" aria-labelledby="rewardTriggerLabel">
+                <div class="radio-group" id="fixedTrigger">
+                  <label class="radio-option"><input type="radio" name="fixedTrigger" checked disabled><span id="fixedTriggerText">订单已发车</span></label>
+                </div>
+                <div class="radio-group" id="postField" hidden>
+                  <label class="radio-option"><input id="postUsed" type="radio" name="postTrigger" value="used" checked><span>辅营商品使用后</span></label>
+                  <label class="radio-option"><input id="postWatched" type="radio" name="postTrigger" value="watched"><span>用户观看完毕</span></label>
+                </div>
+                <p class="form-help flight-help" id="flightRule" hidden>
+                  起飞时间 + 26 小时内，收到票务系统的「已使用」或「已离港」客票消息时，认定客票已结束。<br>
+                  截至该时点无消息则反查客票详情，查询为「已起飞」或「已离港」才认定结束。通过后可在一起订主动领取。
+                </p>
+              </div>
+            </div>
+            <div class="form-row" id="daysField">
+              <label class="row-label required" for="days">提现时间上限</label>
+              <div>
+                <div class="step-row">
+                  <div class="stepper">
+                    <button id="daysDown" type="button" aria-label="减少提现时间上限">−</button>
+                    <input class="control" id="days" type="number" min="1" step="1" value="7" required>
+                    <button id="daysUp" type="button" aria-label="增加提现时间上限">+</button>
+                  </div>
+                  <span>天</span>
+                </div>
+                <p class="form-help">返现后用户可提现的时间限制</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="form-footer">
+          <button type="button" class="btn" id="backBtn">返回列表</button>
+          <button type="submit" class="btn" id="saveDraftBtn" value="draft" formnovalidate>保存草稿</button>
+          <button type="submit" class="btn primary" id="saveBtn" value="save">保存</button>
+        </div>
+      </form>
+    </main>
+  </div>
+  <script>
+    const $ = id => document.getElementById(id);
+    const projects = { train: "火车票", flight: "国内机票" };
+    const scenes = { pre: "订前", post: "订后" };
+    const statuses = { enabled: "启用", draft: "草稿", disabled: "停用", expired: "过期" };
+    const rewards = {
+      train: [
+        { id: "MKT001", name: "火车票订前广告返现金", amount: 5, scene: "pre" },
+        { id: "MKT002", name: "火车票订后广告返现金", amount: 3, scene: "post" }
+      ],
+      flight: [{ id: "MKT003", name: "国内机票广告返现金", amount: 5, scene: "pre" }]
+    };
+    const example = { start: "2026-11-01T00:00", end: "2026-12-31T23:59", limit: "1", task: "TR_VIDEO_001", days: "7", postTrigger: "used" };
+    const activities = [
+      { ...example, id: "A003", name: "国内机票一起订广告返现", project: "flight", scene: "pre", status: "draft", reward: "MKT003" },
+      { ...example, id: "A002", name: "火车票订后广告返现", project: "train", scene: "post", status: "enabled", reward: "MKT002", days: "" },
+      { ...example, id: "A001", name: "火车票订前广告返现", project: "train", scene: "pre", status: "enabled", reward: "MKT001" }
+    ];
+    const editFields = ["activityName", "project", "start", "end", "limit", "task", "days"];
+    let sequence = 4;
+    let selectedId = "";
+    let readOnly = false;
+
+    function displayDate(value) {
+      return value ? value.replace("T", " ") : "—";
+    }
+
+    function cell(row, value, className = "") {
+      const td = row.insertCell();
+      td.className = className;
+      td.textContent = value;
+      return td;
+    }
+
+    function action(parent, label, handler) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "text-btn";
+      button.textContent = label;
+      button.addEventListener("click", handler);
+      parent.append(button);
+    }
+
+    function renderList() {
+      const id = $("filterId").value.trim().toLowerCase();
+      const name = $("filterName").value.trim();
+      const project = $("filterProject").value;
+      const scene = $("filterScene").value;
+      const status = $("filterStatus").value;
+      const items = activities.filter(item =>
+        item.id.toLowerCase().includes(id) && item.name.includes(name) &&
+        (!project || project === item.project) &&
+        (!scene || scene === item.scene) &&
+        (!status || status === item.status)
+      );
+      const body = $("rows");
+      body.replaceChildren();
+      for (const item of items) {
+        const row = body.insertRow();
+        cell(row, item.id, "no-wrap");
+        cell(row, item.name);
+        cell(row, projects[item.project], "no-wrap");
+        cell(row, scenes[item.scene], "no-wrap");
+        const dates = cell(row, displayDate(item.start), "no-wrap");
+        dates.append(document.createElement("br"), "至 " + displayDate(item.end));
+        const badge = document.createElement("span");
+        badge.className = "tag " + item.status;
+        badge.textContent = statuses[item.status];
+        cell(row, "").append(badge);
+        cell(row, item.scene === "pre" && item.days ? item.days + " 天" : "—", "no-wrap");
+        const links = document.createElement("div");
+        links.className = "row-actions";
+        cell(row, "").append(links);
+        action(links, "查看", () => openConfig(item, true));
+        action(links, "编辑", () => openConfig(item));
+      }
+      if (!items.length) cell(body.insertRow(), "没有符合条件的活动").colSpan = 8;
+      $("result").textContent = "共 " + items.length + " 条";
+    }
+
+    function switchPage(config) {
+      document.querySelector(".shell").classList.toggle("config-view", config);
+      $("listPage").hidden = config;
+      $("configPage").hidden = !config;
+      $("listNav").setAttribute("aria-current", config ? "false" : "page");
+      $("configNav").setAttribute("aria-current", config ? "page" : "false");
+      $("breadcrumb").textContent = "营销配置台 / 定制活动 / " + (config ? "定制活动配置" : "活动列表");
+      window.scrollTo(0, 0);
+    }
+
+    function showList(message = "") {
+      $("flash").textContent = message;
+      $("flash").hidden = !message;
+      renderList();
+      switchPage(false);
+    }
+
+    function updateNameCount() {
+      $("nameCount").textContent = $("activityName").value.length + "/50";
+    }
+
+    function updateDatePlaceholders() {
+      for (const id of ["start", "end"]) $(id).dataset.empty = String(!$(id).value);
+    }
+
+    function updateSteppers() {
+      for (const id of ["limit", "days"]) {
+        const input = $(id);
+        $(id + "Down").disabled = input.disabled || Number(input.value) <= Number(input.min);
+        $(id + "Up").disabled = input.disabled;
+      }
+    }
+
+    function syncConfig(rewardId = $("reward").value) {
+      const project = $("project").value;
+      const flight = project === "flight";
+      if (flight) {
+        $("scenePre").checked = true;
+        $("scenePost").checked = false;
+      }
+      const scene = $("scenePost").checked ? "post" : "pre";
+      const pre = scene === "pre";
+      $("scenePre").disabled = readOnly;
+      $("scenePost").disabled = readOnly || flight;
+      $("sceneHelp").hidden = !flight;
+      $("daysField").hidden = !pre;
+      $("days").disabled = readOnly || !pre;
+      $("fixedTrigger").hidden = !pre;
+      $("fixedTriggerText").textContent = flight ? "客票已结束" : "订单已发车";
+      $("postField").hidden = pre;
+      $("postUsed").disabled = readOnly || pre;
+      $("postWatched").disabled = readOnly || pre;
+      $("flightRule").hidden = !flight;
+      const options = (rewards[project] || []).filter(item => item.scene === scene);
+      $("reward").replaceChildren(new Option("请选择营销活动", ""));
+      for (const item of options) $("reward").add(new Option(item.id + "｜" + item.name, item.id));
+      const selected = options.find(item => item.id === rewardId);
+      $("reward").value = selected ? selected.id : "";
+      $("reward").disabled = readOnly || !project;
+      $("rewardAmount").value = selected ? String(selected.amount) : "";
+      updateSteppers();
+    }
+
+    function openConfig(item, view = false) {
+      readOnly = view;
+      selectedId = item?.id || "";
+      const status = item?.status || "draft";
+      $("configPage").reset();
+      $("activityId").value = selectedId;
+      const values = {
+        limit: "1",
+        days: "7",
+        ...item,
+        activityName: item?.name || ""
+      };
+      for (const id of editFields) {
+        $(id).disabled = view;
+        $(id).value = values[id] || "";
+      }
+      $("scenePre").checked = item?.scene !== "post";
+      $("scenePost").checked = item?.scene === "post";
+      const valid = item?.valid ?? (status !== "disabled" && status !== "expired");
+      $("statusValid").checked = valid;
+      $("statusInvalid").checked = !valid;
+      $("statusValid").disabled = view;
+      $("statusInvalid").disabled = view;
+      $("postUsed").checked = item?.postTrigger !== "watched";
+      $("postWatched").checked = item?.postTrigger === "watched";
+      $("saveDraftBtn").hidden = view || status !== "draft";
+      $("saveBtn").hidden = view;
+      updateNameCount();
+      updateDatePlaceholders();
+      syncConfig(item?.reward || "");
+      switchPage(true);
+    }
+
+    $("configPage").addEventListener("submit", event => {
+      event.preventDefault();
+      if (readOnly) return;
+      const existing = activities.find(item => item.id === selectedId);
+      const draft = event.submitter?.value === "draft";
+      const valid = $("statusValid").checked;
+      const status = draft ? "draft" : valid ? "enabled" : "disabled";
+      const name = $("activityName").value.trim();
+      const project = $("project").value;
+      const scene = $("scenePost").checked ? "post" : "pre";
+      const start = $("start").value;
+      const end = $("end").value;
+      const days = scene === "pre" ? $("days").value : "";
+      const limit = $("limit").value;
+      if (!name || !project) {
+        window.alert("请填写活动名称并选择项目。");
+        return;
+      }
+      if (start && end && start >= end) {
+        window.alert("活动结束时间须晚于开始时间。");
+        return;
+      }
+      if (!draft && (!start || !end || !$("task").value || !$("reward").value || !limit || (scene === "pre" && !days))) {
+        window.alert("请补齐活动有效期、参与次数、营销任务、营销活动及订前提现时间上限。");
+        return;
+      }
+      const record = {
+        id: selectedId || "A" + String(sequence++).padStart(3, "0"),
+        name, project, scene, status, valid, start, end, days, limit,
+        task: $("task").value, reward: $("reward").value,
+        postTrigger: scene === "post" ? ($("postWatched").checked ? "watched" : "used") : ""
+      };
+      if (existing) Object.assign(existing, record);
+      else activities.unshift(record);
+      $("filters").reset();
+      showList((draft ? "已保存草稿 " : "已保存 ") + record.id);
+    });
+
+    for (const id of ["limit", "days"]) {
+      const input = $(id);
+      input.addEventListener("input", updateSteppers);
+      $(id + "Down").addEventListener("click", () => {
+        input.stepDown();
+        updateSteppers();
+      });
+      $(id + "Up").addEventListener("click", () => {
+        input.stepUp();
+        updateSteppers();
+      });
+    }
+
+    $("activityName").addEventListener("input", updateNameCount);
+    for (const id of ["start", "end"]) $(id).addEventListener("input", updateDatePlaceholders);
+
+
+    $("filters").addEventListener("submit", event => {
+      event.preventDefault();
+      renderList();
+    });
+    $("filters").addEventListener("reset", () => queueMicrotask(renderList));
+    for (const id of ["filterProject", "filterScene", "filterStatus"]) $(id).addEventListener("change", renderList);
+    for (const id of ["project", "scenePre", "scenePost", "reward"]) $(id).addEventListener("change", () => syncConfig());
+    $("listNav").addEventListener("click", () => showList());
+    $("backBtn").addEventListener("click", () => showList());
+    $("createBtn").addEventListener("click", () => openConfig());
+    $("configNav").addEventListener("click", () => {
+      if ($("configPage").hidden) openConfig();
+    });
+    renderList();
+  </script>
+</body>
+</html>
+
